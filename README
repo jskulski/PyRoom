@@ -1,3 +1,15 @@
+====== PyrRoom Fork ======
+
+I wanted to make a few modifications to PyRoom and found the project to be
+largely abandoned.
+
+I ran into issues branching the bzr on launchpad, so getting around that by
+just taking the source. If this becomes anything other than a personal fork
+I'll go back and retry importing the bzr history.
+
+Cheers,
+jsk
+
 ====== PyRoom Project ======
 
 PyRoom is a fullscreen simple text editor, without a toolbar, a menubar or
