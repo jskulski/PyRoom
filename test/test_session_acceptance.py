@@ -18,3 +18,6 @@ class SessionAcceptanceTest(unittest.TestCase):
     def test_create_an_editor_object(self):
         pyroom_config = PyroomConfig()
         base_edit = BasicEdit(pyroom_config)
+        base_edit.open_file_no_chooser('some/test/file.txt')
+        session_filenames = base_edit.session.get_open_filenames()
+        self.assertTrue('some/test/file.txt' in session_filenames)

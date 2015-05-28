@@ -387,6 +387,9 @@ class BasicEdit(object):
         # Autosave timer object
         autosave.start_autosave(self)
 
+        # Session Management
+        self.session = Session()
+
         self.window.show_all()
         self.window.fullscreen()
 
@@ -542,7 +545,7 @@ Open those instead of the original file?''')
             returns backup filename if there's a backup file and
                     user wants to restore from it, else original filename
             """
-            fname = autosave.get_autosave_filename(filename) 
+            fname = autosave.get_autosave_filename(filename)
             if os.path.isfile(fname):
                 if self.ask_restore():
                     return fname
@@ -776,3 +779,10 @@ continue editing your document.")
         """cleanup before quitting"""
         autosave.stop_autosave(self)
         self.gui.quit()
+
+
+class Session(object):
+    filenames = ['some/test/file.txt']
+
+    def get_open_filenames(self):
+        return self.filenames
