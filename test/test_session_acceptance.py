@@ -53,10 +53,31 @@ class SessionAcceptanceTest(unittest.TestCase):
         pyroom_config = PyroomConfig()
         pyroom_config.clear_session_on_startup(True)
         restarted_base_edit = BasicEdit(pyroom_config)
+
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([], session_filenames)
 
-    # def test_buffers_are_opened_for_files_in_session(self):
+    def test_buffers_are_opened_for_files_in_session(self):
+        self.base_edit.open_file_no_chooser(self.test_filename)
+        del self.base_edit
+
+        pyroom_config = PyroomConfig()
+        restarted_base_edit = BasicEdit(pyroom_config)
+
+        buffer_filenames = [buffer.filename for buffer in restarted_base_edit.buffers]
+        self.assertTrue(self.test_filename in buffer_filenames)
+
+    # def test_opening_buffers_during_init_does_not_readd_to_session(self):
+    #     """ Opening buffers during init from the session shouldn't """
+    #     """ readd them to the session. """
+    #     self.base_edit.open_file_no_chooser(self.test_filename)
+    #     del self.base_edit
+
+    #     pyroom_config = PyroomConfig()
+    #     restarted_base_edit = BasicEdit(pyroom_config)
+
+    #     session_filenames = restarted_base_edit.session.get_open_filenames()
+    #     self.assertEquals([self.test_filename], session_filenames)
 
     def test_shelf_is_created(self):
         session = Session()

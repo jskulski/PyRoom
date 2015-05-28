@@ -376,7 +376,12 @@ class BasicEdit(object):
         self.autosave_timeout_id = ''
         self.autosave_elapsed = ''
 
-        self.new_buffer()
+        opened_file_list = self.session.get_open_filenames()
+        for filename in opened_file_list:
+            self.open_file_no_chooser(filename)
+
+        if opened_file_list == []:
+            self.new_buffer()
 
         self.textbox.connect('key-press-event', self.key_press_event)
 
@@ -556,8 +561,9 @@ Open those instead of the original file?''')
         buf = self.new_buffer()
         buf.filename = filename
         filename_to_open = check_backup(filename)
+
         self.session.add_open_filename(filename_to_open)
-        
+
         try:
             buffer_file = open(filename_to_open, 'r')
             buf = self.buffers[self.current]
