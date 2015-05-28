@@ -698,6 +698,7 @@ continue editing your document.")
             except OSError:
                 raise PyroomError(_('Could not delete autosave file.'))
         if len(self.buffers) > 1:
+            self.session.remove_open_filename(self.buffers[self.current].filename)
             self.buffers.pop(self.current)
             self.current = min(len(self.buffers) - 1, self.current)
             self.set_buffer(self.current)
@@ -783,6 +784,10 @@ continue editing your document.")
 
 class Session(object):
     filenames = ['some/test/file.txt']
+
+    def remove_open_filename(self, filename):
+        if filename in self.filenames:
+            self.filenames.remove(filename)
 
     def get_open_filenames(self):
         return self.filenames
