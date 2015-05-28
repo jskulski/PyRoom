@@ -18,6 +18,7 @@ class SessionAcceptanceTest(unittest.TestCase):
 
     def setUp(self):
         self.pyroom_config = PyroomConfig()
+        self.pyroom_config.clear_session_on_startup(True)
         self.base_edit = BasicEdit(self.pyroom_config)
 
     def test_testing_framework_is_setup(self):
@@ -40,14 +41,26 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_no_chooser(self.test_filename)
         del self.base_edit
 
-        restarted_base_edit = BasicEdit(self.pyroom_config)
+        pyroom_config = PyroomConfig()
+        restarted_base_edit = BasicEdit(pyroom_config)
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filename in session_filenames)
+
+    def test_editor_can_be_started_with_clean_session(self):
+        self.base_edit.open_file_no_chooser(self.test_filename)
+        del self.base_edit
+
+        pyroom_config = PyroomConfig()
+        pyroom_config.clear_session_on_startup(True)
+        restarted_base_edit = BasicEdit(pyroom_config)
+        session_filenames = restarted_base_edit.session.get_open_filenames()
+        self.assertEquals([], session_filenames)
 
     # def test_buffers_are_opened_for_files_in_session(self):
 
     def test_shelf_is_created(self):
         session = Session()
+        session.clear()
         self.assertEquals([], session.shelf['open_filenames'])
 
     def test_shelf_can_add_and_initialize_is_fine(self):
@@ -61,13 +74,6 @@ class SessionAcceptanceTest(unittest.TestCase):
         session = Session()
         session.add_open_filename('test/filename.txt')
         session.clear()
-
         self.assertTrue(
-            'test/filename.txt' not in session.get('open_filenames')
+            'test/filename.txt' not in session.get_open_filenames()
         )
-        
-
-
-
-    
-        

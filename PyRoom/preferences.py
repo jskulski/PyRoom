@@ -52,7 +52,6 @@ DEFAULT_CONF = {
         'indent':0,
     },
     'editor':{
-        'session':'True',
         'autosavetime':'2',
         'autosave':'0',
     },
@@ -96,6 +95,7 @@ class PyroomConfig(object):
         self.data_dir = os.path.join(data_home, 'pyroom')
         self.themes_dir  = os.path.join(self.data_dir, 'themes')
         self.global_themes_dir = '/usr/share/pyroom/themes'
+        self.clear_session = False
         # if we are not using a global installation,
         # take the themes directly from sources
         if not os.path.isdir(self.global_themes_dir) :
@@ -113,6 +113,9 @@ class PyroomConfig(object):
         self.config.readfp(open(self.conf_file, 'r'))
         self.themeslist = self.read_themes_list()
         self.showborderstate = self.config.get('visual', 'showborder')
+
+    def clear_session_on_startup(self, do_it_or_not):
+        self.clear_session = do_it_or_not
 
     def build_default_conf(self):
         """builds necessary default conf.

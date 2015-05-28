@@ -353,6 +353,12 @@ class BasicEdit(object):
         self.buffers = []
         self.config = pyroom_config.config
         self.gui = GUI(pyroom_config, self)
+
+        # Session Management
+        self.session = Session()
+        if pyroom_config.clear_session:
+            self.session.clear()
+
         self.preferences = Preferences(
             gui=self.gui,
             pyroom_config=pyroom_config
@@ -383,12 +389,9 @@ class BasicEdit(object):
         self.textbox.set_pixels_inside_wrap(
             int(self.config.get("visual", "linespacing"))
         )
-                
+
         # Autosave timer object
         autosave.start_autosave(self)
-
-        # Session Management
-        self.session = Session()
 
         self.window.show_all()
         self.window.fullscreen()
@@ -808,7 +811,9 @@ class Session(object):
 
     def remove_open_filename(self, filename):
         if filename in self.get_open_filenames():
-            self.shelf[self.file_list_key].remove(filename)
+            file_list = self.get_open_filenames()
+            file_list.remove(filename)
+            self.shelf[self.file_list_key] = file_list
             self.shelf.sync()
 
     def get_open_filenames(self):
