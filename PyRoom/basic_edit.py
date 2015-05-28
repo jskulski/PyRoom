@@ -813,3 +813,6 @@ class Session(object):
 
     def get_open_filenames(self):
         return self.shelf.get(self.file_list_key)
+
+    def clear(self):
+        self.shelf[self.file_list_key] = []
