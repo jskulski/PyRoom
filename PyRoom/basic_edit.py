@@ -553,6 +553,7 @@ Open those instead of the original file?''')
         buf = self.new_buffer()
         buf.filename = filename
         filename_to_open = check_backup(filename)
+        self.session.add_open_filename(filename_to_open)
         
         try:
             buffer_file = open(filename_to_open, 'r')
@@ -562,6 +563,8 @@ Open those instead of the original file?''')
             buf.set_text(utf8)
             buf.end_not_undoable_action()
             buffer_file.close()
+
+
         except IOError, (errno, strerror):
             errortext = _('Unable to open %(filename)s.') % {
                 'filename': filename_to_open
@@ -783,7 +786,12 @@ continue editing your document.")
 
 
 class Session(object):
-    filenames = ['some/test/file.txt']
+
+    def __init__(self):
+        self.filenames = []
+
+    def add_open_filename(self, filename):
+        self.filenames.append(filename)
 
     def remove_open_filename(self, filename):
         if filename in self.filenames:

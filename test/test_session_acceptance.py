@@ -21,7 +21,7 @@ class SessionAcceptanceTest(unittest.TestCase):
     def test_assert_opened_file_is_added_to_session(self):
         pyroom_config = PyroomConfig()
         base_edit = BasicEdit(pyroom_config)
-
+        
         base_edit.open_file_no_chooser(self.test_filename)
 
         session_filenames = base_edit.session.get_open_filenames()
@@ -36,6 +36,4 @@ class SessionAcceptanceTest(unittest.TestCase):
 
         session_filenames = base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filename not in session_filenames)
-
-
 
