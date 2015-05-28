@@ -13,6 +13,8 @@ from preferences import PyroomConfig
 
 class SessionAcceptanceTest(unittest.TestCase):
 
+    test_filename = 'some/test/file.txt'
+
     def test_testing_framework_is_setup(self):
         self.assertEqual(True, True)
 
@@ -20,19 +22,20 @@ class SessionAcceptanceTest(unittest.TestCase):
         pyroom_config = PyroomConfig()
         base_edit = BasicEdit(pyroom_config)
 
-        base_edit.open_file_no_chooser('some/test/file.txt')
+        base_edit.open_file_no_chooser(self.test_filename)
 
         session_filenames = base_edit.session.get_open_filenames()
-        self.assertTrue('some/test/file.txt' in session_filenames)
+        self.assertTrue(self.test_filename in session_filenames)
 
     def test_assert_opened_then_closed_file_is_not_in_session(self):
         pyroom_config = PyroomConfig()
         base_edit = BasicEdit(pyroom_config)
 
-        base_edit.open_file_no_chooser('some/test/file.txt')
+        base_edit.open_file_no_chooser(self.test_filename)
         base_edit.close_buffer()
 
         session_filenames = base_edit.session.get_open_filenames()
-        self.assertTrue('some/test/file.txt' not in session_filenames)
+        self.assertTrue(self.test_filename not in session_filenames)
+
 
 
