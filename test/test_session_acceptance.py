@@ -1,10 +1,9 @@
 import sys
 sys.path.append('../PyRoom')
 
-import gettext
-
 import unittest
 
+# mock out gettext
 import __builtin__
 __builtin__._ = lambda str: str
 
