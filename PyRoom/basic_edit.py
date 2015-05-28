@@ -701,7 +701,9 @@ continue editing your document.")
             except OSError:
                 raise PyroomError(_('Could not delete autosave file.'))
         if len(self.buffers) > 1:
-            self.session.remove_open_filename(self.buffers[self.current].filename)
+            self.session.remove_open_filename(
+                self.buffers[self.current].filename
+            )
             self.buffers.pop(self.current)
             self.current = min(len(self.buffers) - 1, self.current)
             self.set_buffer(self.current)
@@ -785,17 +787,29 @@ continue editing your document.")
         self.gui.quit()
 
 
+import shelve
+
 class Session(object):
+
+    file_list_key = 'open_filenames'
+    shelve_filename = '/tmp/pyroom.session.tmpfile'
 
     def __init__(self):
         self.filenames = []
+        self.shelf = shelve.open(self.shelve_filename)
+        if self.shelf.get(self.file_list_key) is None:
+            self.shelf[self.file_list_key] = []
 
     def add_open_filename(self, filename):
-        self.filenames.append(filename)
+        file_list = self.shelf.get(self.file_list_key)
+        file_list.append(filename)
+        self.shelf[self.file_list_key] = file_list
+        self.shelf.sync()
 
     def remove_open_filename(self, filename):
-        if filename in self.filenames:
-            self.filenames.remove(filename)
+        if filename in self.get_open_filenames():
+            self.shelf[self.file_list_key].remove(filename)
+            self.shelf.sync()
 
     def get_open_filenames(self):
-        return self.filenames
+        return self.shelf.get(self.file_list_key)
