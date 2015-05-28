@@ -15,7 +15,7 @@ class SessionAcceptanceTest(unittest.TestCase):
     def test_testing_framework_is_setup(self):
         self.assertEqual(True, True)
 
-    def test_create_an_editor_object(self):
+    def test_assert_opened_file_is_added_to_session(self):
         pyroom_config = PyroomConfig()
         base_edit = BasicEdit(pyroom_config)
         base_edit.open_file_no_chooser('some/test/file.txt')
