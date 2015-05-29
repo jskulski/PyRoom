@@ -90,7 +90,7 @@ def make_accel_group(edit_instance):
         'h': edit_instance.show_help,
         'i': edit_instance.show_info,
         'n': edit_instance.new_buffer,
-        'o': edit_instance.open_file,
+        'o': edit_instance.open_file_dialog,
         'p': edit_instance.preferences.show,
         'q': edit_instance.dialog_quit,
         's': edit_instance.save_file,
@@ -378,7 +378,7 @@ class BasicEdit(object):
 
         opened_file_list = self.session.get_open_filenames()
         for filename in opened_file_list:
-            self.open_file_no_chooser(filename)
+            self.open_file(filename)
 
         if opened_file_list == []:
             self.new_buffer()
@@ -529,7 +529,7 @@ Open those instead of the original file?''')
         restore_dialog.destroy()
         return resp == -3
 
-    def open_file(self):
+    def open_file_dialog(self):
         """ Open file """
 
         chooser = gtk.FileChooserDialog('PyRoom', self.window,
@@ -540,12 +540,12 @@ Open those instead of the original file?''')
 
         res = chooser.run()
         if res == gtk.RESPONSE_OK:
-            self.open_file_no_chooser(chooser.get_filename())
+            self.open_file(chooser.get_filename())
         else:
             self.status.set_text(_('Closed, no files selected'))
         chooser.destroy()
 
-    def open_file_no_chooser(self, filename):
+    def open_file(self, filename):
         """ Open specified file """
         def check_backup(filename):
             """check if restore from backup is an option

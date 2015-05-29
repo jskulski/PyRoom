@@ -66,7 +66,7 @@ simply and efficiently in a full-screen window, with no distractions.'))
     buffnum = 0
     if len(files):
         for filename in files:
-            pyroom.open_file_no_chooser(filename)
+            pyroom.open_file(filename)
             buffnum += 1
 
     pyroom.set_buffer(buffnum)

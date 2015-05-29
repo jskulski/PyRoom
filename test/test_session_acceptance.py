@@ -25,20 +25,20 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertEqual(True, True)
 
     def test_assert_opened_file_is_added_to_session(self):
-        self.base_edit.open_file_no_chooser(self.test_filename)
+        self.base_edit.open_file(self.test_filename)
 
         session_filenames = self.base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filename in session_filenames)
 
     def test_assert_opened_then_closed_file_is_not_in_session(self):
-        self.base_edit.open_file_no_chooser(self.test_filename)
+        self.base_edit.open_file(self.test_filename)
         self.base_edit.close_buffer()
 
         session_filenames = self.base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filename not in session_filenames)
 
     def test_session_is_persisted_outside_editor(self):
-        self.base_edit.open_file_no_chooser(self.test_filename)
+        self.base_edit.open_file(self.test_filename)
         del self.base_edit
 
         pyroom_config = PyroomConfig()
@@ -47,7 +47,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertTrue(self.test_filename in session_filenames)
 
     def test_editor_can_be_started_with_clean_session(self):
-        self.base_edit.open_file_no_chooser(self.test_filename)
+        self.base_edit.open_file(self.test_filename)
         del self.base_edit
 
         pyroom_config = PyroomConfig()
@@ -58,7 +58,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertEquals([], session_filenames)
 
     def test_buffers_are_opened_for_files_in_session(self):
-        self.base_edit.open_file_no_chooser(self.test_filename)
+        self.base_edit.open_file(self.test_filename)
         del self.base_edit
 
         pyroom_config = PyroomConfig()
@@ -69,8 +69,8 @@ class SessionAcceptanceTest(unittest.TestCase):
 
     # def test_opening_buffers_during_init_does_not_readd_to_session(self):
     #     """ Opening buffers during init from the session shouldn't """
-    #     """ readd them to the session. """
-    #     self.base_edit.open_file_no_chooser(self.test_filename)
+    #     """ readd them to the session, duplicating the history """
+    #     self.base_edit.open_file(self.test_filename)
     #     del self.base_edit
 
     #     pyroom_config = PyroomConfig()
