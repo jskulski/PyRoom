@@ -67,17 +67,17 @@ class SessionAcceptanceTest(unittest.TestCase):
         buffer_filenames = [buffer.filename for buffer in restarted_base_edit.buffers]
         self.assertTrue(self.test_filename in buffer_filenames)
 
-    # def test_opening_buffers_during_init_does_not_readd_to_session(self):
-    #     """ Opening buffers during init from the session shouldn't """
-    #     """ readd them to the session, duplicating the history """
-    #     self.base_edit.open_file(self.test_filename)
-    #     del self.base_edit
+    def test_opening_buffers_during_init_does_not_readd_to_session(self):
+        """ Opening buffers during init from the session shouldn't """
+        """ readd them to the session, duplicating the history """
+        self.base_edit.open_file(self.test_filename)
+        del self.base_edit
 
-    #     pyroom_config = PyroomConfig()
-    #     restarted_base_edit = BasicEdit(pyroom_config)
+        pyroom_config = PyroomConfig()
+        restarted_base_edit = BasicEdit(pyroom_config)
 
-    #     session_filenames = restarted_base_edit.session.get_open_filenames()
-    #     self.assertEquals([self.test_filename], session_filenames)
+        session_filenames = restarted_base_edit.session.get_open_filenames()
+        self.assertEquals([self.test_filename], session_filenames)
 
     def test_shelf_is_created(self):
         session = Session()
