@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-__VERSION__ = '0.4.1'
+__VERSION__ = '0.4.2'
 import locale
 locale.setlocale(locale.LC_ALL, '')
 

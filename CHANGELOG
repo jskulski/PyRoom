@@ -1,7 +1,13 @@
+pyroom 0.4.2 (2015-05-28)
+=========================
+Features
+--------
+* re-opens buffers after quit
+
 pyroom 0.4.1 (2009-04-06)
 =========================
 Updated tarball with fixed installer
- 
+
 Bugfixes
 --------
 * fix locales installation (LP:#355272)

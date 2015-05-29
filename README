@@ -1,6 +1,6 @@
-====== PyrRoom Fork ======
+# PyRoom Fork 
 
-I wanted to make a few modifications to PyRoom and found the project to be
+Hello there! I wanted to make a few modifications to PyRoom and found the project to be
 largely abandoned.
 
 I ran into issues branching the bzr on launchpad, so getting around that by
@@ -8,7 +8,9 @@ just taking the source. If this becomes anything other than a personal fork
 I'll go back and retry importing the bzr history.
 
 Cheers,
-jsk
+JSK
+
+ORIGINAL README FOLLOWS:
 
 ====== PyRoom Project ======
 
