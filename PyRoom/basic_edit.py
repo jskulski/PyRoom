@@ -32,6 +32,7 @@ import urllib
 
 from pyroom_error import PyroomError
 from gui import GUI
+from session import Session
 from preferences import Preferences
 import autosave
 
@@ -352,6 +353,7 @@ class BasicEdit(object):
         self.current = 0
         self.buffers = []
         self.config = pyroom_config.config
+
         self.gui = GUI(pyroom_config, self)
 
         # Session Management
@@ -761,10 +763,10 @@ continue editing your document.")
             self.buffers[self.current].get_insert(),
             0.0,
         )
+
     def dialog_quit(self):
         """the quit dialog"""
         count = 0
-        ret = False
         for buf in self.buffers:
             if buf.modified:
                 count = count + 1
@@ -797,36 +799,3 @@ continue editing your document.")
         """cleanup before quitting"""
         autosave.stop_autosave(self)
         self.gui.quit()
-
-
-import shelve
-
-class Session(object):
-
-    file_list_key = 'open_filenames'
-    shelve_filename = '/tmp/pyroom.session.tmpfile'
-
-    def __init__(self):
-        self.filenames = []
-        self.shelf = shelve.open(self.shelve_filename)
-        if self.shelf.get(self.file_list_key) is None:
-            self.shelf[self.file_list_key] = []
-
-    def add_open_filename(self, filename):
-        file_list = self.shelf.get(self.file_list_key)
-        file_list.append(filename)
-        self.shelf[self.file_list_key] = file_list
-        self.shelf.sync()
-
-    def remove_open_filename(self, filename):
-        if filename in self.get_open_filenames():
-            file_list = self.get_open_filenames()
-            file_list.remove(filename)
-            self.shelf[self.file_list_key] = file_list
-            self.shelf.sync()
-
-    def get_open_filenames(self):
-        return self.shelf.get(self.file_list_key)
-
-    def clear(self):
-        self.shelf[self.file_list_key] = []
