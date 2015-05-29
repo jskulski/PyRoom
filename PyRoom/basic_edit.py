@@ -78,6 +78,7 @@ Commands:
 
 """) % KEY_BINDINGS
 
+
 def dispatch(*args, **kwargs):
     """call the method passed as args[1] without passing other arguments"""
     def eat(accel_group, acceleratable, keyval, modifier):
@@ -89,6 +90,7 @@ def dispatch(*args, **kwargs):
         pass
     return eat
 
+    
 def make_accel_group(edit_instance):
     keybindings = {
         'h': edit_instance.show_help,
@@ -132,10 +134,9 @@ def define_keybindings(edit_instance):
     return translated_bindings
 
     
-
-
 class BasicEdit(object):
     """editing logic that gets passed around"""
+    """also, handles interaction and creation of the GUI"""
 
     def __init__(self, pyroom_config):
         self.current = 0
@@ -481,7 +482,7 @@ continue editing your document.")
         """dialog has been canceled"""
         self.dialog.hide()
 
-    def unsave_dialog(self, widget, data =None):
+    def unsave_dialog(self, widget, data=None):
         """don't save before closing"""
         self.dialog.hide()
         self.close_buffer()

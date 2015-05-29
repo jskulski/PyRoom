@@ -26,7 +26,6 @@ Additionally allows user to apply custom settings
 
 import gtk
 import gobject
-import pango
 import gtk.glade
 import ConfigParser
 import os
@@ -37,6 +36,7 @@ else:
     from xdg.BaseDirectory import xdg_data_home as data_home
 
 from pyroom_error import PyroomError
+
 
 class Theme(dict):
     """basically a dict with some utility methods"""
@@ -50,10 +50,11 @@ class Theme(dict):
 
     def _lookup_theme(self, theme_name):
         """lookup theme_filename for given theme_name
+        order of preference is homedir, global dir, source dir
+        (if available)"""
 
-        order of preference is homedir, global dir, source dir (if available)"""
         local_directory = os.path.join(data_home, 'pyroom', 'themes')
-        global_directory = '/usr/share/pyroom/themes' # FIXME: platform
+        global_directory = '/usr/share/pyroom/themes'  # FIXME: platform
         # in case PyRoom is run without installation
         fallback_directory = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -73,6 +74,7 @@ class Theme(dict):
             theme_file.set('theme', key, str(value))
         theme_file.set('theme', 'name', os.path.basename(filename))
         theme_file.write(open(filename + '.theme', 'w'))
+
 
 class FadeLabel(gtk.Label):
     """ GTK Label with timed fade out effect """
@@ -127,11 +129,12 @@ class FadeLabel(gtk.Label):
         self.idle = 0
         return False
 
+
 class GUI(object):
     """our basic global gui object"""
 
     def __init__(self, pyroom_config, edit_instance):
-        self.config = pyroom_config.config # FIXME: use pyroom_config itself
+        self.config = pyroom_config.config  # FIXME: use pyroom_config itself
         # Theme
         theme_name = self.config.get('visual', 'theme')
         self.theme = Theme(theme_name)
@@ -191,7 +194,7 @@ class GUI(object):
         
         # text cursor
         gtkrc_string = """\
-        style "pyroom-colored-cursor" { 
+        style "pyroom-colored-cursor" {
         GtkTextView::cursor-color = '%s'
         bg_pixmap[NORMAL] = "<none>"
         }
@@ -203,8 +206,8 @@ class GUI(object):
         self.textbox.set_border_width(padding)
         
         # Screen geometry
-        screen = gtk.gdk.screen_get_default() 
-        root_window = screen.get_root_window() 
+        screen = gtk.gdk.screen_get_default()
+        root_window = screen.get_root_window()
         mouse_x, mouse_y, mouse_mods = root_window.get_pointer()
         current_monitor_number = screen.get_monitor_at_point(mouse_x, mouse_y)
         monitor_geometry = screen.get_monitor_geometry(current_monitor_number)
@@ -222,7 +225,7 @@ class GUI(object):
         self.fixed.move(self.vbox,
                         int(((1 - width_percentage) * screen_width) / 2),
                         int(((1 - height_percentage) * screen_height) / 2)
-                       )
+        )
 
         parse_color = lambda x: gtk.gdk.color_parse(self.theme[x])
         # Colors
@@ -282,7 +285,7 @@ class GUI(object):
         adj = self.scrolled.get_vadjustment()
         if adj.upper > adj.page_size:
             adj.value = min(adj.upper - adj.page_size, adj.value
-                             + adj.step_increment)
+                            + adj.step_increment)
 
     def scroll_up(self):
         """ Scroll window up """
