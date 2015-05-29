@@ -540,10 +540,15 @@ Open those instead of the original file?''')
 
         res = chooser.run()
         if res == gtk.RESPONSE_OK:
-            self.open_file(chooser.get_filename())
+            self.open_file_and_add_to_session(chooser.get_filename())
         else:
             self.status.set_text(_('Closed, no files selected'))
         chooser.destroy()
+
+    def open_file_and_add_to_session(self, filename):
+        """ Open specified file in buffer and add it to our session history """
+        self.session.add_open_filename(filename)
+        self.open_file(filename)
 
     def open_file(self, filename):
         """ Open specified file """
@@ -561,8 +566,6 @@ Open those instead of the original file?''')
         buf = self.new_buffer()
         buf.filename = filename
         filename_to_open = check_backup(filename)
-
-        self.session.add_open_filename(filename_to_open)
 
         try:
             buffer_file = open(filename_to_open, 'r')
