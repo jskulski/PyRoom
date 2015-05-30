@@ -8,7 +8,7 @@ import __builtin__
 __builtin__._ = lambda str: str
 
 from basic_edit import BasicEdit
-from preferences import PyroomConfig
+from preferences import PyroomConfigFileBuilderAndReader
 from basic_edit import Session
 
 
@@ -17,7 +17,7 @@ class SessionAcceptanceTest(unittest.TestCase):
     test_filename = 'some/test/file.txt'
 
     def setUp(self):
-        self.pyroom_config = PyroomConfig()
+        self.pyroom_config = PyroomConfigFileBuilderAndReader()
         self.pyroom_config.clear_session_on_startup(True)
         self.base_edit = BasicEdit(self.pyroom_config)
 
@@ -41,7 +41,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfig()
+        pyroom_config = PyroomConfigFileBuilderAndReader()
         restarted_base_edit = BasicEdit(pyroom_config)
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filename in session_filenames)
@@ -50,7 +50,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfig()
+        pyroom_config = PyroomConfigFileBuilderAndReader()
         pyroom_config.clear_session_on_startup(True)
         restarted_base_edit = BasicEdit(pyroom_config)
 
@@ -61,7 +61,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfig()
+        pyroom_config = PyroomConfigFileBuilderAndReader()
         restarted_base_edit = BasicEdit(pyroom_config)
 
         buffer_filenames = [buffer.filename for buffer in restarted_base_edit.buffers]
@@ -73,7 +73,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfig()
+        pyroom_config = PyroomConfigFileBuilderAndReader()
         restarted_base_edit = BasicEdit(pyroom_config)
 
         session_filenames = restarted_base_edit.session.get_open_filenames()

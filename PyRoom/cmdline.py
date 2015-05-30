@@ -41,11 +41,11 @@ import gtk
 import PyRoom
 from basic_edit import BasicEdit
 from pyroom_error import handle_error
-from preferences import PyroomConfig
+from preferences import PyroomConfigFileBuilderAndReader
 
 __VERSION__ = PyRoom.__VERSION__
 
-pyroom_config = PyroomConfig()
+pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
 
 def main():
     sys.excepthook = handle_error
@@ -62,7 +62,7 @@ simply and efficiently in a full-screen window, with no distractions.'))
     files = args
 
     # Create relevant buffers for file and load them
-    pyroom = BasicEdit(pyroom_config=pyroom_config)
+    pyroom = BasicEdit(pyroom_config_file_builder_and_reader=pyroom_config_file_builder_and_reader)
     buffnum = 0
     if len(files):
         for filename in files:

@@ -133,26 +133,26 @@ def define_keybindings(edit_instance):
         translated_bindings[hardware_keycode] = value
     return translated_bindings
 
-    
+
 class BasicEdit(object):
     """editing logic that gets passed around"""
     """also, handles interaction and creation of the GUI"""
 
-    def __init__(self, pyroom_config):
+    def __init__(self, pyroom_config_file_builder_and_reader):
         self.current = 0
         self.buffers = []
-        self.config = pyroom_config.config
+        self.config = pyroom_config_file_builder_and_reader.config
 
-        self.gui = GUI(pyroom_config, self)
+        self.gui = GUI(pyroom_config_file_builder_and_reader, self)
 
         # Session Management
         self.session = Session()
-        if pyroom_config.clear_session:
+        if pyroom_config_file_builder_and_reader.clear_session:
             self.session.clear()
 
         self.preferences = Preferences(
             gui=self.gui,
-            pyroom_config=pyroom_config
+            pyroom_config_file_builder_and_reader=pyroom_config_file_builder_and_reader
         )
         try:
             self.recent_manager = gtk.recent_manager_get_default()
@@ -206,7 +206,7 @@ class BasicEdit(object):
 
         # Defines the glade file functions for use on closing a buffer
         self.wTree = gtk.glade.XML(os.path.join(
-            pyroom_config.pyroom_absolute_path, "interface.glade"),
+            pyroom_config_file_builder_and_reader.pyroom_absolute_path, "interface.glade"),
             "SaveBuffer")
         self.dialog = self.wTree.get_widget("SaveBuffer")
         self.dialog.set_transient_for(self.window)
@@ -219,7 +219,7 @@ class BasicEdit(object):
 
         #Defines the glade file functions for use on exit
         self.aTree = gtk.glade.XML(os.path.join(
-            pyroom_config.pyroom_absolute_path, "interface.glade"),
+            pyroom_config_file_builder_and_reader.pyroom_absolute_path, "interface.glade"),
             "QuitSave")
         self.quitdialog = self.aTree.get_widget("QuitSave")
         self.quitdialog.set_transient_for(self.window)
