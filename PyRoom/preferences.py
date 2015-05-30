@@ -58,7 +58,7 @@ DEFAULT_CONF = {
     },
 }
 
-class FailsafeConfigParser(SafeConfigParser):
+class PyroomConfig(SafeConfigParser):
     """
     Config parser that returns default values 
 
@@ -109,7 +109,7 @@ class PyroomConfigFileBuilderAndReader(object):
                     'themes'
                 )
         self.conf_file = os.path.join(self.conf_dir, 'pyroom.conf')
-        self.config = FailsafeConfigParser()
+        self.config = PyroomConfig()
         self.build_default_conf()
         self.config.readfp(open(self.conf_file, 'r'))
         self.themeslist = self.read_themes_list()
@@ -197,7 +197,7 @@ class Preferences(object):
                 widget.set_sensitive(bool(self.gnome_fonts))
 
         # Setting up config parser
-        self.customfile = FailsafeConfigParser()
+        self.customfile = PyroomConfig()
         self.customfile.read(
             os.path.join(self.pyroom_config_file_builder_and_reader.themes_dir, 'custom.theme')
         )

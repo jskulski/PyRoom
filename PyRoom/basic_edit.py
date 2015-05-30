@@ -143,7 +143,7 @@ class BasicEdit(object):
         self.buffers = []
         self.config = pyroom_config_file_builder_and_reader.config
 
-        self.gui = GUI(pyroom_config_file_builder_and_reader, self)
+        self.gui = GUI(self.config, self)
 
         # Session Management
         self.session = Session()

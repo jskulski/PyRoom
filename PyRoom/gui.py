@@ -134,7 +134,7 @@ class GUI(object):
     """our basic global gui object"""
 
     def __init__(self, pyroom_config, edit_instance):
-        self.config = pyroom_config.config  # FIXME: use pyroom_config itself
+        self.config = pyroom_config
         # Theme
         theme_name = self.config.get('visual', 'theme')
         self.theme = Theme(theme_name)
