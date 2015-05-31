@@ -599,8 +599,25 @@ continue editing your document.")
 
 
 class VimEmulator(object):
+
+    COMMAND_MODE = 'COMMAND_MODE_MAGIC_STRING'
+    INSERT_MODE = 'INSERT_MODE_MAGIC_STRING'
+
     def __init__(self):
+        self.mode = self.COMMAND_MODE
         pass
+
+    def toggle_mode(self):
+        if self.mode == self.COMMAND_MODE:
+            self.mode = self.INSERT_MODE
+        else:
+            self.mode = self.COMMAND_MODE
+
+    def in_command_mode(self):
+        return self.mode == self.COMMAND_MODE
+
+    def in_insert_mode(self):
+        return self.mode == self.INSERT_MODE
 
 class KeyPressDispatch(object):
     def __init__(self):
