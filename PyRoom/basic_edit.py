@@ -241,9 +241,6 @@ class BasicEdit(object):
 
     def key_(self, widget, event):
         """ key press event dispatcher """
-        keyname = gtk.gdk.keyval_name(event.keyval)
-        print "Key %s (%d) was pressed" % (keyname, event.keyval)
-
         if event.state & gtk.gdk.CONTROL_MASK:
             if event.hardware_keycode in self.keybindings:
                 self.keybindings[event.hardware_keycode]()
