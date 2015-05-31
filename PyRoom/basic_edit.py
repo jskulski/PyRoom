@@ -138,10 +138,6 @@ class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
 
-
-    VIM_EMULATION_INSERT_MODE = "INSERT_MODE"
-
-
     def __init__(self, pyroom_config_file_builder_and_reader):
         self.current = 0
         self.buffers = []
@@ -245,10 +241,18 @@ class BasicEdit(object):
 
     def key_press_event(self, widget, event):
         """ key press event dispatcher """
+        keyname = gtk.gdk.keyval_name(event.keyval)
+        print "Key %s (%d) was pressed" % (keyname, event.keyval)
+
         if event.state & gtk.gdk.CONTROL_MASK:
             if event.hardware_keycode in self.keybindings:
                 self.keybindings[event.hardware_keycode]()
                 return True
+
+        if self.vim_emulator.in_command_mode() and event.keyval & gtk.keysyms.i:
+            self.vim_emulator.toggle_mode()
+            return True
+
         return False
 
     def show_info(self):
