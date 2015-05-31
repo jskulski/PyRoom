@@ -90,7 +90,6 @@ class PyroomConfigFileBuilderAndReader(object):
     def __init__(self, configuration_directory=None):
         self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
 
-        print configuration_directory
         if configuration_directory is not None:
             self.conf_dir = configuration_directory
         else:
@@ -133,7 +132,6 @@ class PyroomConfigFileBuilderAndReader(object):
                 self.config.add_section(section)
                 for key, value in settings.items():
                     self.config.set(section, key, str(value))
-            print self.conf_file
             config_file = open(self.conf_file, "w")
             self.config.write(config_file)
             config_file.close()
