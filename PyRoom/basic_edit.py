@@ -123,20 +123,24 @@ def make_accel_group(edit_instance):
 def define_keybindings(edit_instance):
     """define keybindings, respectively to keyboard layout"""
     keymap = gtk.gdk.keymap_get_default()
-    basic_bindings = {
+    testter = {
         gtk.keysyms.Page_Up: edit_instance.prev_buffer,
         gtk.keysyms.Page_Down: edit_instance.next_buffer,
     }
     translated_bindings = {}
-    for key, value in basic_bindings.items():
+    for key, value in testter.items():
         hardware_keycode = keymap.get_entries_for_keyval(key)[0][0]
         translated_bindings[hardware_keycode] = value
     return translated_bindings
 
 
 class BasicEdit(object):
-    """editing logic that gets passed around"""
-    """also, handles interaction and creation of the GUI"""
+    """editing logic that gets passed around
+       also, handles interaction and creation of the GUI"""
+
+
+    VIM_EMULATION_INSERT_MODE = "INSERT_MODE"
+
 
     def __init__(self, pyroom_config_file_builder_and_reader):
         self.current = 0
@@ -144,6 +148,11 @@ class BasicEdit(object):
         self.config = pyroom_config_file_builder_and_reader.config
 
         self.gui = GUI(self.config, self)
+
+        if (self.config.get('editor', 'vim_emulation_mode') == '1'):
+            self.vim_emulator = VimEmulator()
+        else:
+            self.vim_emulator = None
 
         # Session Management
         self.session = Session()
@@ -238,7 +247,6 @@ class BasicEdit(object):
         """ key press event dispatcher """
         if event.state & gtk.gdk.CONTROL_MASK:
             if event.hardware_keycode in self.keybindings:
-                # FIXME: streamline this again
                 self.keybindings[event.hardware_keycode]()
                 return True
         return False
@@ -282,7 +290,7 @@ class BasicEdit(object):
 
     def ask_restore(self):
         """ask if backups should be restored
-        
+
         returns True if proposal is accepted
         returns False in any other case (declined/dialog closed)"""
         restore_dialog = gtk.Dialog(
@@ -588,3 +596,12 @@ continue editing your document.")
         """cleanup before quitting"""
         autosave.stop_autosave(self)
         self.gui.quit()
+
+
+class VimEmulator(object):
+    def __init__(self):
+        pass
+
+class KeyPressDispatch(object):
+    def __init__(self):
+        pass
