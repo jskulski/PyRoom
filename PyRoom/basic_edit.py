@@ -249,7 +249,7 @@ class BasicEdit(object):
                 self.keybindings[event.hardware_keycode]()
                 return True
 
-        if self.vim_emulator.in_command_mode() and event.keyval & gtk.keysyms.i:
+        if self.vim_emulator and self.vim_emulator.in_command_mode() and event.keyval & gtk.keysyms.i:
             self.vim_emulator.toggle_mode()
             return True
 
