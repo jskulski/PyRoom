@@ -179,7 +179,7 @@ class BasicEdit(object):
         if opened_file_list == []:
             self.new_buffer()
 
-        self.textbox.connect('key-press-event', self.key_press_event)
+        self.textbox.connect('key-press-event', self.key_)
 
         self.textbox.set_pixels_below_lines(
             int(self.config.get("visual", "linespacing"))
@@ -239,7 +239,7 @@ class BasicEdit(object):
         # have its background and padding color from GUI().__init__() already
         self.gui.apply_theme()
 
-    def key_press_event(self, widget, event):
+    def key_(self, widget, event):
         """ key press event dispatcher """
         keyname = gtk.gdk.keyval_name(event.keyval)
         print "Key %s (%d) was pressed" % (keyname, event.keyval)
