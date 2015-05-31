@@ -54,7 +54,7 @@ DEFAULT_CONF = {
     'editor':{
         'autosavetime':'2',
         'autosave':'0',
-        'vim_emulation_mode':False
+        'vim_emulation_mode':'0'
     },
 }
 
@@ -87,9 +87,15 @@ class PyroomConfig(SafeConfigParser):
 class PyroomConfigFileBuilderAndReader(object):
     """Fetches (and/or) builds basic configuration files/dirs."""
 
-    def __init__(self):
+    def __init__(self, configuration_directory=None):
         self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
-        self.conf_dir = os.path.join(config_home, 'pyroom')
+
+        print configuration_directory
+        if configuration_directory is not None:
+            self.conf_dir = configuration_directory
+        else:
+            self.conf_dir = os.path.join(config_home, 'pyroom')
+
         self.data_dir = os.path.join(data_home, 'pyroom')
         self.themes_dir  = os.path.join(self.data_dir, 'themes')
         self.global_themes_dir = '/usr/share/pyroom/themes'
@@ -127,6 +133,7 @@ class PyroomConfigFileBuilderAndReader(object):
                 self.config.add_section(section)
                 for key, value in settings.items():
                     self.config.set(section, key, str(value))
+            print self.conf_file
             config_file = open(self.conf_file, "w")
             self.config.write(config_file)
             config_file.close()
