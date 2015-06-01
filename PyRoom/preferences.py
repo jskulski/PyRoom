@@ -110,8 +110,8 @@ class PyroomConfigFileBuilderAndReader(object):
         else:
             self.conf_dir = os.path.join(config_home, 'pyroom')
 
-
         self.clear_session = False
+
         # if we are not using a global installation,
         # take the themes directly from sources
         if not os.path.isdir(self.global_themes_dir) :
@@ -193,7 +193,7 @@ class Preferences(object):
         self.config = self.pyroom_config_file_builder_and_reader.config
         self.graphical = gui
         self.wTree = gtk.glade.XML(os.path.join(
-            pyroom_config_file_builder_and_reader.pyroom_absolute_path, "interface.glade"),
+            pyroom_config_file_builder_and_reader.config.pyroom_absolute_path, "interface.glade"),
             "dialog-preferences")
 
         self.gnome_fonts = self.get_gnome_fonts()
@@ -232,7 +232,7 @@ class Preferences(object):
         # Setting up config parser
         self.customfile = PyroomConfig()
         self.customfile.read(
-            os.path.join(self.pyroom_config_file_builder_and_reader.themes_dir, 'custom.theme')
+            os.path.join(self.pyroom_config_file_builder_and_reader.config.themes_dir, 'custom.theme')
         )
         if not self.customfile.has_section('theme'):
             self.customfile.add_section('theme')
