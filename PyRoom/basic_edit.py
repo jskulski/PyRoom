@@ -36,7 +36,6 @@ from preferences import Preferences
 
 from session import Session
 from undoable_buffer import UndoableBuffer
-from preferences import PyroomConfigFileBuilderAndReader
 
 import autosave
 

@@ -103,12 +103,6 @@ class PyroomConfigFileBuilderAndReader(object):
     def __init__(self, configuration_directory=None):
         self.config = PyroomConfig()
 
-        # DEPRECEATED use from config not from builder
-        self.pyroom_absolute_path = self.config.pyroom_absolute_path
-        self.data_dir = self.config.data_dir
-        self.themes_dir  = self.config.themes_dir
-        self.global_themes_dir = self.config.global_themes_dir
-
         if configuration_directory is not None:
             self.conf_dir = configuration_directory
         else:
@@ -116,12 +110,12 @@ class PyroomConfigFileBuilderAndReader(object):
 
         # if we are not using a global installation,
         # take the themes directly from sources
-        if not os.path.isdir(self.global_themes_dir) :
+        if not os.path.isdir(self.config.global_themes_dir) :
             if platform == 'win32':
                 self.global_themes_dir = ''
             else:
                 self.global_themes_dir = os.path.join(
-                    self.pyroom_absolute_path,
+                    self.config.pyroom_absolute_path,
                     '..',
                     'themes'
                 )
@@ -133,8 +127,8 @@ class PyroomConfigFileBuilderAndReader(object):
         self.mutate_config_to_default_values(self.config)
         self.read_configuration_and_mutate_config_state()
 
-        if not os.path.isdir(self.themes_dir):
-            os.makedirs(os.path.join(self.themes_dir))
+        if not os.path.isdir(self.config.themes_dir):
+            os.makedirs(os.path.join(self.config.themes_dir))
 
         self.config.themeslist = self.read_themes_list()
         self.config.showborderstate = self.config.get('visual', 'showborder')
@@ -171,7 +165,7 @@ class PyroomConfigFileBuilderAndReader(object):
     def read_themes_list(self):
         """get all the theme files sans file suffix and the custom theme"""
         themeslist = []
-        rawthemeslist = os.listdir(self.themes_dir)
+        rawthemeslist = os.listdir(self.config.themes_dir)
         globalthemeslist = os.listdir(self.global_themes_dir)
         for themefile in rawthemeslist:
             if themefile.endswith('theme') and themefile != 'custom.theme':
