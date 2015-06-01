@@ -54,7 +54,7 @@ DEFAULT_CONF = {
     'editor':{
         'autosavetime':'2',
         'autosave':'0',
-        'vim_emulation_mode':'0'
+        'vim_emulation_mode':'0',
     },
 }
 
@@ -69,6 +69,7 @@ class PyroomConfig(SafeConfigParser):
         self.themes_dir = os.path.join(self.data_dir, 'themes')
         self.themeslist = []
         self.showborderstate = 1
+        self.clear_session = 0
 
 
     """
@@ -113,8 +114,6 @@ class PyroomConfigFileBuilderAndReader(object):
         else:
             self.conf_dir = os.path.join(config_home, 'pyroom')
 
-        self.clear_session = False
-
         # if we are not using a global installation,
         # take the themes directly from sources
         if not os.path.isdir(self.global_themes_dir) :
@@ -143,9 +142,6 @@ class PyroomConfigFileBuilderAndReader(object):
     def read_configuration_and_mutate_config_state(self):
         if (os.path.isfile(self.conf_file)):
             self.config.readfp(open(self.conf_file, 'r'))
-
-    def clear_session_on_startup(self, do_it_or_not):
-        self.clear_session = do_it_or_not
 
     def there_are_no_configuration_files(self):
         return not os.path.isdir(self.conf_dir)

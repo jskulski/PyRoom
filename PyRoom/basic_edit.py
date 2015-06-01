@@ -152,7 +152,7 @@ class BasicEdit(object):
 
         # Session Management
         self.session = Session()
-        if pyroom_config_file_builder_and_reader.clear_session:
+        if pyroom_config_file_builder_and_reader.config.clear_session:
             self.session.clear()
 
         self.preferences = Preferences(

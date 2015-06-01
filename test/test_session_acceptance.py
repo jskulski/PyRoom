@@ -17,9 +17,9 @@ class SessionAcceptanceTest(unittest.TestCase):
     test_filename = 'some/test/file.txt'
 
     def setUp(self):
-        self.pyroom_config = PyroomConfigFileBuilderAndReader()
-        self.pyroom_config.clear_session_on_startup(True)
-        self.base_edit = BasicEdit(self.pyroom_config)
+        self.pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
+        self.pyroom_config_file_builder_and_reader.config.clear_session = 1
+        self.base_edit = BasicEdit(self.pyroom_config_file_builder_and_reader)
 
     def test_testing_framework_is_setup(self):
         self.assertEqual(True, True)
@@ -51,7 +51,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         del self.base_edit
 
         pyroom_config = PyroomConfigFileBuilderAndReader()
-        pyroom_config.clear_session_on_startup(True)
+        pyroom_config.config.clear_session = True
         restarted_base_edit = BasicEdit(pyroom_config)
 
         session_filenames = restarted_base_edit.session.get_open_filenames()
