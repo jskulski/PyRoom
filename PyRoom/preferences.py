@@ -66,6 +66,8 @@ class PyroomConfig(SafeConfigParser):
         self.data_dir = os.path.join(data_home, 'pyroom')
         self.global_themes_dir = '/usr/share/pyroom/themes'
         self.themes_dir = os.path.join(self.data_dir, 'themes')
+        self.themeslist = []
+        self.showborderstate = 1
 
 
     """
@@ -134,7 +136,7 @@ class PyroomConfigFileBuilderAndReader(object):
         if not os.path.isdir(self.themes_dir):
             os.makedirs(os.path.join(self.themes_dir))
 
-        self.themeslist = self.read_themes_list()
+        self.config.themeslist = self.read_themes_list()
         self.config.showborderstate = self.config.get('visual', 'showborder')
 
     def read_configuration_and_mutate_config_state(self):
@@ -189,11 +191,10 @@ class PyroomConfigFileBuilderAndReader(object):
 class Preferences(object):
     """our main preferences object, to be passed around where needed"""
     def __init__(self, gui, pyroom_config_file_builder_and_reader):
-        self.pyroom_config_file_builder_and_reader = pyroom_config_file_builder_and_reader
-        self.config = self.pyroom_config_file_builder_and_reader.config
+        self.config = pyroom_config_file_builder_and_reader.config
         self.graphical = gui
         self.wTree = gtk.glade.XML(os.path.join(
-            pyroom_config_file_builder_and_reader.config.pyroom_absolute_path, "interface.glade"),
+            self.config.pyroom_absolute_path, "interface.glade"),
             "dialog-preferences")
 
         self.gnome_fonts = self.get_gnome_fonts()
@@ -232,7 +233,7 @@ class Preferences(object):
         # Setting up config parser
         self.customfile = PyroomConfig()
         self.customfile.read(
-            os.path.join(self.pyroom_config_file_builder_and_reader.config.themes_dir, 'custom.theme')
+            os.path.join(self.config.themes_dir, 'custom.theme')
         )
         if not self.customfile.has_section('theme'):
             self.customfile.add_section('theme')
@@ -240,7 +241,7 @@ class Preferences(object):
         # Getting preferences from conf file
         self.activestyle = self.config.get("visual", "theme")
 
-        self.pyroom_config_file_builder_and_reader.config.showborderstate = int(
+        self.config.showborderstate = int(
             self.config.get( "visual", "showborder"))
 
         self.autosavestate = self.config.get("editor", "autosave")
@@ -257,7 +258,7 @@ class Preferences(object):
         self.linespacing_spinbutton.set_value(int(self.linespacing))
         self.autosave_spinbutton.set_value(float(self.autosave_time))
         self.autosave.set_active(self.autosavestate)
-        self.showborderbutton.set_active(self.pyroom_config_file_builder_and_reader.config.showborderstate)
+        self.showborderbutton.set_active(self.config.showborderstate)
         font_type = self.config.get('visual', 'use_font_type')
         self.font_radios[font_type].set_active(True)
         
@@ -270,7 +271,7 @@ class Preferences(object):
 
         self.graphical.theme = Theme(self.config.get('visual', 'theme'))
         # Add themes to combobox
-        for i in self.pyroom_config_file_builder_and_reader.themeslist:
+        for i in self.config.themeslist:
             self.stylesvalues['%s' % (i)] = self.startingvalue
             self.startingvalue = self.startingvalue + 1
             current_loading_theme = Theme(i)
@@ -375,7 +376,7 @@ class Preferences(object):
             gtk.STOCK_SAVE, gtk.RESPONSE_OK)
         )
         chooser.set_default_response(gtk.RESPONSE_OK)
-        chooser.set_current_folder(self.pyroom_config_file_builder_and_reader.themes_dir)
+        chooser.set_current_folder(self.config.themes_dir)
         filter_pattern = gtk.FileFilter()
         filter_pattern.add_pattern('*.theme')
         filter_pattern.set_name(_('Theme Files'))
@@ -407,7 +408,7 @@ class Preferences(object):
 
         if self.presetscombobox.get_active_text().lower() == 'custom':
             custom_theme = open(os.path.join(
-                self.pyroom_config_file_builder_and_reader.themes_dir, 'custom.theme'),
+                self.config.themes_dir, 'custom.theme'),
                 "w"
             )
             self.customfile.set("theme", "background", self.bgname)
@@ -420,7 +421,7 @@ class Preferences(object):
             self.customfile.write(custom_theme)
         self.dlg.hide()
         try:
-            config_file = open(os.path.join(self.pyroom_config_file_builder_and_reader.conf_dir,
+            config_file = open(os.path.join(self.config.conf_dir,
                                             "pyroom.conf"), "w")
             self.config.write(config_file)
         except IOError:
@@ -519,17 +520,17 @@ class Preferences(object):
 
     def toggleborder(self, widget):
         """toggle border display"""
-        if self.pyroom_config_file_builder_and_reader.config.showborderstate:
-            self.pyroom_config_file_builder_and_reader.config.showborderstate = 0
+        if self.config.showborderstate:
+            self.config.showborderstate = 0
             self.config.set('visual', 'showborder', '0')
         else:
-            self.pyroom_config_file_builder_and_reader.config.showborderstate = 1
+            self.config.showborderstate = 1
             self.config.set('visual', 'showborder', '1')
         self.graphical.boxout.set_border_width(
-            self.pyroom_config_file_builder_and_reader.config.showborderstate
+            self.config.showborderstate
         )
         self.graphical.boxin.set_border_width(
-            self.pyroom_config_file_builder_and_reader.config.showborderstate
+            self.config.showborderstate
         )
 
     def changelinespacing(self, widget):
