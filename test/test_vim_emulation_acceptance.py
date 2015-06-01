@@ -8,6 +8,9 @@ import __builtin__
 __builtin__._ = lambda str: str
 
 import gtk
+import os
+import uuid
+
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.basic_edit import VimEmulator
 from PyRoom.preferences import PyroomConfigFileBuilderAndReader
@@ -20,14 +23,20 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.basic_editor = BasicEdit(self.pyroom_config_file_builder_and_reader)
 
     def test_that_vim_emulation_mode_is_off_by_default_in_editor(self):
-        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
+        configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
+        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
+            configuration_directory=configuration_directory
+        )
         self.assertEquals(
             '0',
             default_pyroom_config_file_builder_and_reader.config.get('editor', 'vim_emulation_mode')
         )
 
     def test_that_we_can_type_normally_if_vim_emulation_mode_is_off(self):
-        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
+        configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
+        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
+            configuration_directory=configuration_directory
+        )
         default_basic_editor = BasicEdit(default_pyroom_config_file_builder_and_reader)
 
         self._type_key('i', default_basic_editor)
@@ -36,7 +45,10 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.assertEquals(buffer_text, 'i')
 
     def test_that_vim_emulator_object_is_not_created_in_editor(self):
-        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
+        configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
+        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
+            configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
+        )
         default_basic_editor = BasicEdit(default_pyroom_config_file_builder_and_reader)
         self.assertIsNone(default_basic_editor.vim_emulator)
 
@@ -55,6 +67,9 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
 
         self.assertTrue(self.basic_editor.vim_emulator.in_command_mode())
         self.assertFalse(self.basic_editor.vim_emulator.in_insert_mode())
+
+    def test_something(self):
+        self.basic_editor.status = 'can i reassing willy nilly'
 
     ### Testing utility methods
 

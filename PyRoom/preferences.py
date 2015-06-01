@@ -111,32 +111,52 @@ class PyroomConfigFileBuilderAndReader(object):
                     'themes'
                 )
         self.conf_file = os.path.join(self.conf_dir, 'pyroom.conf')
+
         self.config = PyroomConfig()
-        self.build_default_conf()
-        self.config.readfp(open(self.conf_file, 'r'))
+
+        if self.there_are_no_configuration_files():
+            self.write_default_configuration_files()
+
+        self.mutate_config_to_default_values(self.config)
+        self.read_configuration_and_mutate_config_state()
+
+        if not os.path.isdir(self.themes_dir):
+            os.makedirs(os.path.join(self.themes_dir))
+
         self.themeslist = self.read_themes_list()
         self.showborderstate = self.config.get('visual', 'showborder')
+
+    def read_configuration_and_mutate_config_state(self):
+        if (os.path.isfile(self.conf_file)):
+            self.config.readfp(open(self.conf_file, 'r'))
 
     def clear_session_on_startup(self, do_it_or_not):
         self.clear_session = do_it_or_not
 
-    def build_default_conf(self):
+    def there_are_no_configuration_files(self):
+        return not os.path.isdir(self.conf_dir)
+
+    def write_default_configuration_files(self):
         """builds necessary default conf.
         * makes directories if not here,
         * copies theme data
         * builds the default conf file
         """
-        if not os.path.isdir(self.conf_dir):
-            os.makedirs(self.conf_dir)
-            for section, settings in DEFAULT_CONF.items():
-                self.config.add_section(section)
-                for key, value in settings.items():
-                    self.config.set(section, key, str(value))
-            config_file = open(self.conf_file, "w")
-            self.config.write(config_file)
-            config_file.close()
-        if not os.path.isdir(self.themes_dir):
-            os.makedirs(os.path.join(self.themes_dir))
+        os.makedirs(self.conf_dir)
+        config = SafeConfigParser()
+        self.mutate_config_to_default_values(config)
+        self.write_config_state_to_file(config)
+
+    def write_config_state_to_file(self, config):
+        config_file = open(self.conf_file, "w")
+        config.write(config_file)
+        config_file.close()
+
+    def mutate_config_to_default_values(self, config):
+        for section, settings in DEFAULT_CONF.items():
+            config.add_section(section)
+            for key, value in settings.items():
+                config.set(section, key, str(value))
 
     def read_themes_list(self):
         """get all the theme files sans file suffix and the custom theme"""
@@ -530,3 +550,4 @@ class Preferences(object):
         """hide the preferences window"""
         self.dlg.hide()
         return True
+

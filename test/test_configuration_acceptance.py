@@ -22,8 +22,8 @@ class TestConfigurationAcceptanceTest(TestCase):
             configuration_directory=self.configuration_directory)
 
     def tearDown(self):
-        shutil.rmtree(self.configuration_directory)
-
+        if os.path.isdir(self.configuration_directory):
+            shutil.rmtree(self.configuration_directory)
 
     def test_can_inject_config_directory(self):
         self.assertEquals(
