@@ -135,7 +135,7 @@ class PyroomConfigFileBuilderAndReader(object):
             os.makedirs(os.path.join(self.themes_dir))
 
         self.themeslist = self.read_themes_list()
-        self.showborderstate = self.config.get('visual', 'showborder')
+        self.config.showborderstate = self.config.get('visual', 'showborder')
 
     def read_configuration_and_mutate_config_state(self):
         if (os.path.isfile(self.conf_file)):
@@ -240,7 +240,7 @@ class Preferences(object):
         # Getting preferences from conf file
         self.activestyle = self.config.get("visual", "theme")
 
-        self.pyroom_config_file_builder_and_reader.showborderstate = int(
+        self.pyroom_config_file_builder_and_reader.config.showborderstate = int(
             self.config.get( "visual", "showborder"))
 
         self.autosavestate = self.config.get("editor", "autosave")
@@ -257,7 +257,7 @@ class Preferences(object):
         self.linespacing_spinbutton.set_value(int(self.linespacing))
         self.autosave_spinbutton.set_value(float(self.autosave_time))
         self.autosave.set_active(self.autosavestate)
-        self.showborderbutton.set_active(self.pyroom_config_file_builder_and_reader.showborderstate)
+        self.showborderbutton.set_active(self.pyroom_config_file_builder_and_reader.config.showborderstate)
         font_type = self.config.get('visual', 'use_font_type')
         self.font_radios[font_type].set_active(True)
         
@@ -519,18 +519,17 @@ class Preferences(object):
 
     def toggleborder(self, widget):
         """toggle border display"""
-        #FIXME just workaround, we should drop pyroom_config_file_builder_and_reader entirely
-        if self.pyroom_config_file_builder_and_reader.showborderstate:
-            self.pyroom_config_file_builder_and_reader.showborderstate = 0
+        if self.pyroom_config_file_builder_and_reader.config.showborderstate:
+            self.pyroom_config_file_builder_and_reader.config.showborderstate = 0
             self.config.set('visual', 'showborder', '0')
         else:
-            self.pyroom_config_file_builder_and_reader.showborderstate = 1
+            self.pyroom_config_file_builder_and_reader.config.showborderstate = 1
             self.config.set('visual', 'showborder', '1')
         self.graphical.boxout.set_border_width(
-            self.pyroom_config_file_builder_and_reader.showborderstate
+            self.pyroom_config_file_builder_and_reader.config.showborderstate
         )
         self.graphical.boxin.set_border_width(
-            self.pyroom_config_file_builder_and_reader.showborderstate
+            self.pyroom_config_file_builder_and_reader.config.showborderstate
         )
 
     def changelinespacing(self, widget):
