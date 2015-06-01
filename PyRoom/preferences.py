@@ -67,11 +67,22 @@ class PyroomConfig(SafeConfigParser):
         self.user_conf_dir = os.path.join(config_home, 'pyroom')
         self.data_dir = os.path.join(data_home, 'pyroom')
         self.global_themes_dir = '/usr/share/pyroom/themes'
-        self.themes_dir = os.path.join(self.data_dir, 'themes')
-        self.themeslist = []
-        self.showborderstate = 1
+        self.showborderstate = '1'
         self.clear_session = 0
 
+        self.themes_dir = os.path.join(self.data_dir, 'themes')
+        # if we are not using a global installation,
+        # take the themes directly from sources
+        if not os.path.isdir(self.global_themes_dir) :
+            if platform == 'win32':
+                self.global_themes_dir = ''
+            else:
+                self.global_themes_dir = os.path.join(
+                    self.pyroom_absolute_path,
+                    '..',
+                    'themes'
+                )
+        self.themeslist = self.read_themes_list()
 
     """
     Config parser that returns default values 
@@ -103,6 +114,19 @@ class PyroomConfig(SafeConfigParser):
             for key, value in settings.items():
                 config.set(section, key, str(value))
 
+    def read_themes_list(self):
+        """get all the theme files sans file suffix and the custom theme"""
+        themeslist = []
+        rawthemeslist = os.listdir(self.themes_dir)
+        globalthemeslist = os.listdir(self.global_themes_dir)
+        for themefile in rawthemeslist:
+            if themefile.endswith('theme') and themefile != 'custom.theme':
+                themeslist.append(themefile[:-6])
+        for themefile in globalthemeslist:
+            if themefile.endswith('theme') and themefile != 'custom.theme':
+                if not themefile[:-6] in themeslist:
+                    themeslist.append(themefile[:-6])
+        return themeslist
 
 class PyroomConfigFileBuilderAndReader(object):
     """Fetches (and/or) builds basic configuration files/dirs."""
@@ -115,17 +139,6 @@ class PyroomConfigFileBuilderAndReader(object):
         else:
             self.conf_dir = os.path.join(config_home, 'pyroom')
 
-        # if we are not using a global installation,
-        # take the themes directly from sources
-        if not os.path.isdir(self.config.global_themes_dir) :
-            if platform == 'win32':
-                self.global_themes_dir = ''
-            else:
-                self.global_themes_dir = os.path.join(
-                    self.config.pyroom_absolute_path,
-                    '..',
-                    'themes'
-                )
         self.conf_file = os.path.join(self.conf_dir, 'pyroom.conf')
 
         if self.there_are_no_configuration_files():
@@ -136,7 +149,6 @@ class PyroomConfigFileBuilderAndReader(object):
         if not os.path.isdir(self.config.themes_dir):
             os.makedirs(os.path.join(self.config.themes_dir))
 
-        self.config.themeslist = self.read_themes_list()
         self.config.showborderstate = self.config.get('visual', 'showborder')
 
     def read_configuration_and_mutate_config_state(self):
@@ -161,21 +173,6 @@ class PyroomConfigFileBuilderAndReader(object):
         config.write(config_file)
         config_file.close()
 
-    def read_themes_list(self):
-        """get all the theme files sans file suffix and the custom theme"""
-        themeslist = []
-        rawthemeslist = os.listdir(self.config.themes_dir)
-        globalthemeslist = os.listdir(self.global_themes_dir)
-        for themefile in rawthemeslist:
-            if themefile.endswith('theme') and themefile != 'custom.theme':
-                themeslist.append(themefile[:-6])
-        for themefile in globalthemeslist:
-            if themefile.endswith('theme') and themefile != 'custom.theme':
-            	# TODO : do not add in the themelist a theme already existing in
-            	# the personal directory
-                if not themefile[:-6] in themeslist:
-                    themeslist.append(themefile[:-6])
-        return themeslist
 
 
 class Preferences(object):

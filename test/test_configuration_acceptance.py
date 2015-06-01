@@ -13,6 +13,7 @@ import shutil
 import uuid
 
 from PyRoom.preferences import PyroomConfigFileBuilderAndReader
+from PyRoom.preferences import PyroomConfig
 
 class TestConfigurationAcceptanceTest(TestCase):
     
@@ -51,8 +52,15 @@ class TestConfigurationAcceptanceTest(TestCase):
         config_file_contents = self.read_file_into_string(config_file_path)
         self.assertEquals(self.default_config_contents, config_file_contents)
 
-    # Helper methods
+    def test_pyroom_config_default_object_is_the_same_as_the_default_pyroom_file_boject(self):
+        self.maxDiff = None
+        self.assertEquals(
+            self.pyroom_config_file_builder_and_reader.config.__dict__,
+            PyroomConfig().__dict__)
 
+
+
+    # Helper methods
     def read_file_into_string(self, file_path):
         with open(file_path, "r") as file:
             file_contents = file.read()
