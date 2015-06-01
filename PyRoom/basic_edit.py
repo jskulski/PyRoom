@@ -142,11 +142,7 @@ class BasicEdit(object):
     def __init__(self, pyroom_config):
         self.current = 0
         self.buffers = []
-
-        if isinstance(pyroom_config, PyroomConfigFileBuilderAndReader):
-            self.config = pyroom_config.config
-        else:
-            self.config = pyroom_config
+        self.config = pyroom_config
 
         self.gui = GUI(self.config, self)
 
