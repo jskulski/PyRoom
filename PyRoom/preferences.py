@@ -62,6 +62,7 @@ class PyroomConfig(SafeConfigParser):
 
     def __init__(self):
         SafeConfigParser.__init__(self)
+        self.mutate_config_to_default_values(self)
         self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
         self.user_conf_dir = os.path.join(config_home, 'pyroom')
         self.data_dir = os.path.join(data_home, 'pyroom')
@@ -96,7 +97,13 @@ class PyroomConfig(SafeConfigParser):
             else:
                 return default_value
 
-            
+    def mutate_config_to_default_values(self, config):
+        for section, settings in DEFAULT_CONF.items():
+            config.add_section(section)
+            for key, value in settings.items():
+                config.set(section, key, str(value))
+
+
 class PyroomConfigFileBuilderAndReader(object):
     """Fetches (and/or) builds basic configuration files/dirs."""
 
@@ -124,7 +131,6 @@ class PyroomConfigFileBuilderAndReader(object):
         if self.there_are_no_configuration_files():
             self.write_default_configuration_files()
 
-        self.mutate_config_to_default_values(self.config)
         self.read_configuration_and_mutate_config_state()
 
         if not os.path.isdir(self.config.themes_dir):
@@ -147,20 +153,13 @@ class PyroomConfigFileBuilderAndReader(object):
         * builds the default conf file
         """
         os.makedirs(self.conf_dir)
-        config = SafeConfigParser()
-        self.mutate_config_to_default_values(config)
-        self.write_config_state_to_file(config)
+        pyroom_config = PyroomConfig()
+        self.write_config_state_to_file(pyroom_config)
 
     def write_config_state_to_file(self, config):
         config_file = open(self.conf_file, "w")
         config.write(config_file)
         config_file.close()
-
-    def mutate_config_to_default_values(self, config):
-        for section, settings in DEFAULT_CONF.items():
-            config.add_section(section)
-            for key, value in settings.items():
-                config.set(section, key, str(value))
 
     def read_themes_list(self):
         """get all the theme files sans file suffix and the custom theme"""
