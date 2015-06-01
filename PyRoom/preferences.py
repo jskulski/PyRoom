@@ -190,8 +190,8 @@ class PyroomConfigFileBuilderAndReader(object):
 
 class Preferences(object):
     """our main preferences object, to be passed around where needed"""
-    def __init__(self, gui, pyroom_config_file_builder_and_reader):
-        self.config = pyroom_config_file_builder_and_reader.config
+    def __init__(self, gui, pyroom_config):
+        self.config = pyroom_config
         self.graphical = gui
         self.wTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),

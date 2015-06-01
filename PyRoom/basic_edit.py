@@ -157,7 +157,7 @@ class BasicEdit(object):
 
         self.preferences = Preferences(
             gui=self.gui,
-            pyroom_config_file_builder_and_reader=pyroom_config_file_builder_and_reader
+            pyroom_config=pyroom_config_file_builder_and_reader.config
         )
         try:
             self.recent_manager = gtk.recent_manager_get_default()
