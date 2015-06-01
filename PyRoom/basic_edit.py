@@ -247,12 +247,12 @@ class BasicEdit(object):
                 return True
 
         if self.vim_emulator and self.vim_emulator.in_command_mode() and event.keyval == gtk.keysyms.i:
-            self.status.set_text('INSERT MODE!')
+            self.status.set_text('- Insert Mode -', 50)
             self.vim_emulator.toggle_mode()
             return True
 
         if self.vim_emulator and self.vim_emulator.in_insert_mode() and event.keyval == gtk.keysyms.Escape:
-            self.status.set_text('COMMAND MODE!')
+            self.status.set_text('- Command Mode -', 50)
             self.vim_emulator.toggle_mode()
             return True
 
