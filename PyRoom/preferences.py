@@ -239,18 +239,16 @@ class Preferences(object):
 
         # Getting preferences from conf file
         self.activestyle = self.config.get("visual", "theme")
-        self.pyroom_config_file_builder_and_reader.showborderstate = self.config.get(
-            "visual", "showborder"
-        )
+
+        self.pyroom_config_file_builder_and_reader.showborderstate = int(
+            self.config.get( "visual", "showborder"))
+
         self.autosavestate = self.config.get("editor", "autosave")
         if int(self.autosavestate) == 1:
             self.autosave_time = self.config.get("editor", "autosavetime")
         else:
             self.autosave_time = 0
         self.linespacing = self.config.get("visual", "linespacing")
-        self.pyroom_config_file_builder_and_reader.showborderstate = int(
-            self.pyroom_config_file_builder_and_reader.showborderstate
-        )
         self.autosavestate = int(self.autosavestate)
 
         self.vim_emulation_mode = False
