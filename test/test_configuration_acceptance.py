@@ -51,6 +51,8 @@ class TestConfigurationAcceptanceTest(TestCase):
         config_file_contents = self.read_file_into_string(config_file_path)
         self.assertEquals(self.default_config_contents, config_file_contents)
 
+    # Helper methods
+
     def read_file_into_string(self, file_path):
         with open(file_path, "r") as file:
             file_contents = file.read()
