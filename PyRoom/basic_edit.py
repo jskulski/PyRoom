@@ -179,7 +179,7 @@ class BasicEdit(object):
         if opened_file_list == []:
             self.new_buffer()
 
-        self.textbox.connect('key-press-event', self.key_)
+        self.textbox.connect('key-press-event', self.key_press_event)
 
         self.textbox.set_pixels_below_lines(
             int(self.config.get("visual", "linespacing"))
@@ -239,7 +239,7 @@ class BasicEdit(object):
         # have its background and padding color from GUI().__init__() already
         self.gui.apply_theme()
 
-    def key_(self, widget, event):
+    def key_press_event(self, widget, event):
         """ key press event dispatcher """
         if event.state & gtk.gdk.CONTROL_MASK:
             if event.hardware_keycode in self.keybindings:
