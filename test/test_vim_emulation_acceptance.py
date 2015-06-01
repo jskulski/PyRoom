@@ -68,8 +68,11 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.assertTrue(self.basic_editor.vim_emulator.in_command_mode())
         self.assertFalse(self.basic_editor.vim_emulator.in_insert_mode())
 
-    def test_something(self):
-        self.basic_editor.status = 'can i reassing willy nilly'
+    def test_user_is_notified_of_toggling_to_opposoite_modes(self):
+        status_spy = StatusSpy()
+        self.basic_editor.status = status_spy
+        self._type_key('i')
+        self.assertTrue(status_spy.was_notified())
 
     ### Testing utility methods
 
@@ -95,4 +98,14 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         buffer = basic_editor.textbox.get_buffer()
         buffer_text = buffer.get_text(*buffer.get_bounds())
         return buffer_text
+
+class StatusSpy(object):
+    def __init__(self):
+        self.notified = False
+
+    def set_text(self, string):
+        self.notified = True
+
+    def was_notified(self):
+        return self.notified
 

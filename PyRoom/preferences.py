@@ -66,10 +66,10 @@ class PyroomConfig(SafeConfigParser):
         self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
         self.user_conf_dir = os.path.join(config_home, 'pyroom')
         self.data_dir = os.path.join(data_home, 'pyroom')
-        self.global_themes_dir = '/usr/share/pyroom/themes'
         self.showborderstate = '1'
         self.clear_session = 0
 
+        self.global_themes_dir = '/usr/share/pyroom/themes'
         self.themes_dir = os.path.join(self.data_dir, 'themes')
         # if we are not using a global installation,
         # take the themes directly from sources
