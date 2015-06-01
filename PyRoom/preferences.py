@@ -60,6 +60,14 @@ DEFAULT_CONF = {
 
 class PyroomConfig(SafeConfigParser):
 
+    def __init__(self):
+        SafeConfigParser.__init__(self)
+        self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
+        self.data_dir = os.path.join(data_home, 'pyroom')
+        self.global_themes_dir = '/usr/share/pyroom/themes'
+        self.themes_dir = os.path.join(self.data_dir, 'themes')
+
+
     """
     Config parser that returns default values 
 
@@ -91,17 +99,17 @@ class PyroomConfigFileBuilderAndReader(object):
     def __init__(self, configuration_directory=None):
         self.config = PyroomConfig()
 
-        self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
+        # DEPRECEATED use from config not from builder
+        self.pyroom_absolute_path = self.config.pyroom_absolute_path
+        self.data_dir = self.config.data_dir
+        self.themes_dir  = self.config.themes_dir
+        self.global_themes_dir = self.config.global_themes_dir
 
         if configuration_directory is not None:
             self.conf_dir = configuration_directory
         else:
             self.conf_dir = os.path.join(config_home, 'pyroom')
 
-        self.data_dir = os.path.join(data_home, 'pyroom')
-
-        self.themes_dir  = os.path.join(self.data_dir, 'themes')
-        self.global_themes_dir = '/usr/share/pyroom/themes'
 
         self.clear_session = False
         # if we are not using a global installation,
