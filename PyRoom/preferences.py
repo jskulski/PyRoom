@@ -63,6 +63,7 @@ class PyroomConfig(SafeConfigParser):
     def __init__(self):
         SafeConfigParser.__init__(self)
         self.pyroom_absolute_path = os.path.dirname(os.path.abspath(__file__))
+        self.user_conf_dir = os.path.join(config_home, 'pyroom')
         self.data_dir = os.path.join(data_home, 'pyroom')
         self.global_themes_dir = '/usr/share/pyroom/themes'
         self.themes_dir = os.path.join(self.data_dir, 'themes')
@@ -421,7 +422,7 @@ class Preferences(object):
             self.customfile.write(custom_theme)
         self.dlg.hide()
         try:
-            config_file = open(os.path.join(self.config.conf_dir,
+            config_file = open(os.path.join(self.config.user_conf_dir,
                                             "pyroom.conf"), "w")
             self.config.write(config_file)
         except IOError:
