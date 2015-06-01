@@ -62,7 +62,7 @@ simply and efficiently in a full-screen window, with no distractions.'))
     files = args
 
     # Create relevant buffers for file and load them
-    pyroom = BasicEdit(pyroom_config_file_builder_and_reader=pyroom_config_file_builder_and_reader)
+    pyroom = BasicEdit(pyroom_config=pyroom_config_file_builder_and_reader)
     buffnum = 0
     if len(files):
         for filename in files:

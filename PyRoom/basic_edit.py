@@ -36,6 +36,7 @@ from preferences import Preferences
 
 from session import Session
 from undoable_buffer import UndoableBuffer
+from preferences import PyroomConfigFileBuilderAndReader
 
 import autosave
 
@@ -138,10 +139,14 @@ class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
 
-    def __init__(self, pyroom_config_file_builder_and_reader):
+    def __init__(self, pyroom_config):
         self.current = 0
         self.buffers = []
-        self.config = pyroom_config_file_builder_and_reader.config
+
+        if isinstance(pyroom_config, PyroomConfigFileBuilderAndReader):
+            self.config = pyroom_config.config
+        else:
+            self.config = pyroom_config
 
         self.gui = GUI(self.config, self)
 
@@ -152,12 +157,12 @@ class BasicEdit(object):
 
         # Session Management
         self.session = Session()
-        if pyroom_config_file_builder_and_reader.config.clear_session:
+        if self.config.clear_session:
             self.session.clear()
 
         self.preferences = Preferences(
             gui=self.gui,
-            pyroom_config=pyroom_config_file_builder_and_reader.config
+            pyroom_config=self.config
         )
         try:
             self.recent_manager = gtk.recent_manager_get_default()
@@ -211,7 +216,7 @@ class BasicEdit(object):
 
         # Defines the glade file functions for use on closing a buffer
         self.wTree = gtk.glade.XML(os.path.join(
-            pyroom_config_file_builder_and_reader.pyroom_absolute_path, "interface.glade"),
+            self.config.pyroom_absolute_path, "interface.glade"),
             "SaveBuffer")
         self.dialog = self.wTree.get_widget("SaveBuffer")
         self.dialog.set_transient_for(self.window)
@@ -224,7 +229,7 @@ class BasicEdit(object):
 
         #Defines the glade file functions for use on exit
         self.aTree = gtk.glade.XML(os.path.join(
-            pyroom_config_file_builder_and_reader.pyroom_absolute_path, "interface.glade"),
+            self.config.pyroom_absolute_path, "interface.glade"),
             "QuitSave")
         self.quitdialog = self.aTree.get_widget("QuitSave")
         self.quitdialog.set_transient_for(self.window)
