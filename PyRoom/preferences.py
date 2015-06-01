@@ -166,7 +166,7 @@ class PyroomConfigFileBuilderAndReader(object):
         """get all the theme files sans file suffix and the custom theme"""
         themeslist = []
         rawthemeslist = os.listdir(self.config.themes_dir)
-        globalthemeslist = os.listdir(self.config.global_themes_dir)
+        globalthemeslist = os.listdir(self.global_themes_dir)
         for themefile in rawthemeslist:
             if themefile.endswith('theme') and themefile != 'custom.theme':
                 themeslist.append(themefile[:-6])
