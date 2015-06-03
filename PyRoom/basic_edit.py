@@ -151,7 +151,7 @@ class BasicEdit(object):
             self.vim_emulator = None
 
         # Session Management
-        self.session = FileStoreSession()
+        self.session = FileStoreSession('/tmp/pyroom.session.tmpfile')
         if self.config.clear_session:
             self.session.clear()
 

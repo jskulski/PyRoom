@@ -18,11 +18,11 @@ class Session(object):
 class FileStoreSession(Session):
 
     file_list_key = 'open_filenames'
-    shelve_filename = '/tmp/pyroom.session.tmpfile'
 
-    def __init__(self):
+    def __init__(self, filepath):
         self.filenames = []
-        self.shelf = shelve.open(self.shelve_filename)
+        self.shelve_filepath = filepath
+        self.shelf = shelve.open(self.shelve_filepath)
         if self.shelf.get(self.file_list_key) is None:
             self.shelf[self.file_list_key] = []
 

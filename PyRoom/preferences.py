@@ -51,9 +51,6 @@ DEFAULT_CONF = {
         'use_font_type':'custom',
         'indent':0,
     },
-    'session': {
-        'private':'0'
-    },
     'editor':{
         'autosavetime':'2',
         'autosave':'0',

@@ -74,9 +74,6 @@ custom_font = Sans 12
 theme = green
 showborder = 1
 
-[session]
-private = 0
-
 [editor]
 autosavetime = 2
 autosave = 0
@@ -91,9 +88,6 @@ linespacing = 8
 custom_font = Sans 22
 theme = blue
 showborder = 0
-
-[session]
-private = 0
 
 [editor]
 autosavetime = 20
