@@ -198,10 +198,23 @@ class UndoableBuffer(gtk.TextBuffer):
     def place_cursor(self, *args, **kwargs):
         self.text_buffer.place_cursor(*args, **kwargs)
 
+    def set_text(self, *args, **kwargs):
+        self.text_buffer.set_text(*args, **kwargs)
+
     def get_end_iter(self, *args, **kwargs):
         return self.text_buffer.get_end_iter(*args, **kwargs)
 
     def get_insert(self, *args, **kwargs):
         return self.text_buffer.get_insert(*args, **kwargs)
+
+    def get_char_count(self, *args, **kwargs):
+        return self.text_buffer.get_char_count(*args, **kwargs)
+
+    def get_start_iter(self, *args, **kwargs):
+        return self.text_buffer.get_start_iter(*args, **kwargs)
+
+    def get_line_count(self, *args, **kwargs):
+        return self.text_buffer.get_line_count(*args, **kwargs)
+
 
 

@@ -533,7 +533,7 @@ continue editing your document.")
         if index >= 0 and index < len(self.buffers):
             self.current = index
             buf = self.buffers[index]
-            self.textbox.set_buffer(buf)
+            self.textbox.set_buffer(buf.text_buffer)
             if hasattr(self, 'status'):
                 self.status.set_text(
                     _('Switching to buffer %(buffer_id)d (%(buffer_name)s)')

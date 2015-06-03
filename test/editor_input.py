@@ -14,4 +14,11 @@ def type_key(key_char, basic_editor):
 def retrieve_current_buffer_text(basic_editor):
     buffer = basic_editor.textbox.get_buffer()
     buffer_text = buffer.get_text(*buffer.get_bounds())
+
+    tb = basic_editor.textbox
+    buf = tb.get_buffer()
+    print '-----------'
+    print buf.get_text(*buf.get_bounds())
+    print '-----------'
+
     return buffer_text
