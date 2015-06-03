@@ -255,7 +255,6 @@ class BasicEdit(object):
             self.status.set_text('- Command Mode -', 50)
             self.vim_emulator.toggle_mode()
             return True
-
         return False
 
     def show_info(self):

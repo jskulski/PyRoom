@@ -103,7 +103,7 @@ class StatusSpy(object):
     def __init__(self):
         self.notified = False
 
-    def set_text(self, string):
+    def set_text(self, string, something_else):
         self.notified = True
 
     def was_notified(self):
