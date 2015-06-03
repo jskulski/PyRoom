@@ -7,8 +7,7 @@ sys.path.append('../PyRoom')
 import __builtin__
 __builtin__._ = lambda str: str
 
-import os
-import uuid
+import tempfile
 
 import editor_input
 from PyRoom.basic_edit import BasicEdit
@@ -30,6 +29,7 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
 
     def test_that_we_can_type_normally_if_vim_emulation_mode_is_off(self):
         default_pyroom_config = PyroomConfig()
+        default_pyroom_config.set('session', 'filepath', tempfile.NamedTemporaryFile().name)
         default_basic_editor = BasicEdit(default_pyroom_config)
 
         editor_input.type_key('i', default_basic_editor)
