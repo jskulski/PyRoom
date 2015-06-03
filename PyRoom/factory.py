@@ -12,6 +12,8 @@ class Factory(object):
             pyroom_config = PyroomConfig()
 
         if not self.editor:
-            self.editor = BasicEdit(pyroom_config)
+            self.editor = BasicEdit(
+                pyroom_config=pyroom_config
+            )
 
         return self.editor

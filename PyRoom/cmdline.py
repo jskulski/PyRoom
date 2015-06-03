@@ -39,7 +39,6 @@ import os
 import gtk
 
 import PyRoom
-from factory import Factory
 from basic_edit import BasicEdit
 from pyroom_error import handle_error
 from preferences import PyroomConfigFileBuilderAndReader
@@ -63,17 +62,15 @@ simply and efficiently in a full-screen window, with no distractions.'))
     files = args
 
     # Create relevant buffers for file and load them
-    factory = Factory()
-    editor = factory.create_editor(pyroom_config_file_builder_and_reader.config)
-
+    pyroom = BasicEdit(pyroom_config=pyroom_config_file_builder_and_reader.config)
     buffnum = 0
     if len(files):
         for filename in files:
-            editor.open_file(filename)
+            pyroom.open_file(filename)
             buffnum += 1
 
-    editor.set_buffer(buffnum)
-    editor.status.set_text(
+    pyroom.set_buffer(buffnum)
+    pyroom.status.set_text(
         _('Welcome to Pyroom %s, type Control-H for help') % __VERSION__
     )
     gtk.main()
