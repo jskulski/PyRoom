@@ -12,6 +12,8 @@ def type_key(key_char, basic_editor):
         type_event.keyval = gtk.keysyms.space
     elif key_char == ',':
         type_event.keyval = gtk.keysyms.comma
+    elif key_char == '?':
+        type_event.keyval = gtk.keysyms.question
     else:
         type_event.keyval = gtk.keysyms.__dict__.get(key_char)
 

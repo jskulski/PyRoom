@@ -3,11 +3,13 @@ import sys
 sys.path.append('../PyRoom')
 
 import unittest
+import tempfile
 
 # mock out gettext
 import __builtin__
 __builtin__._ = lambda str: str
 
+import editor_input
 from basic_edit import BasicEdit
 from preferences import PyroomConfigFileBuilderAndReader
 from PyRoom.preferences import PyroomConfig
@@ -40,8 +42,32 @@ class SessionAcceptanceTest(unittest.TestCase):
         pyroom_config.set('session', 'filepath', session_filepath)
 
         editor = BasicEdit(pyroom_config)
+        test_file = tempfile.NamedTemporaryFile()
+        test_filepath = test_file.name
+        test_file.write('this is the test contents oohh wee ooooo')
+        editor.open_file_and_add_to_session(test_filepath)
+
 
         self.assertTrue(os.path.isfile(session_filepath))
+
+        file_store_sesion = FileStoreSession(session_filepath)
+        self.assertEquals(
+            [test_filepath],
+            file_store_sesion.get_open_filenames()
+        )
+
+    def test_saving_a_file_will_add_file_to_session(self):
+        test_file = tempfile.NamedTemporaryFile()
+        test_filepath = test_file.name
+
+        pyroom_config = PyroomConfig()
+
+        # editor_input.type_keys('Hello, how are you to day?', editor)
+        # editor.get_current_buffer().filename = '/tmp/pyroom.session.testfile'
+        # editor.save_file()
+
+
+
 
     def test_assert_opened_file_is_added_to_session(self):
         self.base_edit.open_file_and_add_to_session(self.test_filename)

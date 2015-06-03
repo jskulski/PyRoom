@@ -30,8 +30,8 @@ class TestBasicEditAcceptance(TestCase):
         pyroom_config = PyroomConfig()
         editor = BasicEdit(pyroom_config)
 
-        hello_world = "Hello, World!"
-        editor_input.type_key(hello_world)
+        hello_world = "Hello, World"
+        editor_input.type_keys(hello_world, editor)
         self.assertEquals(
             hello_world,
             editor_input.retrieve_current_buffer_text(editor)

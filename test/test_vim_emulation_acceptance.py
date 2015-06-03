@@ -56,8 +56,8 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.assertIsInstance(self.basic_editor.vim_emulator, VimEmulator)
 
     def test_that_typing_ihi_toggles_to_insert_mode_and_types_hi(self):
-        editor_input.type_keys('ihi')
-        buffer_text = editor_input._retrieve_current_buffer_text()
+        editor_input.type_keys('ihi', self.basic_editor)
+        buffer_text = editor_input.retrieve_current_buffer_text(self.basic_editor)
 
         self.assertEquals(buffer_text, 'hi')
 
