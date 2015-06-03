@@ -56,6 +56,8 @@ class SessionAcceptanceTest(unittest.TestCase):
             file_store_sesion.get_open_filenames()
         )
 
+        os.remove(session_filepath)
+
     def test_saving_a_file_will_add_file_to_session(self):
         session_filepath = tempfile.NamedTemporaryFile().name
         saved_filepath = '/tmp/pyroom.session.testfile'
