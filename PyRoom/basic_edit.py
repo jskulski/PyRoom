@@ -99,7 +99,7 @@ def make_accel_group(edit_instance):
         'o': edit_instance.open_file_dialog,
         'p': edit_instance.preferences.show,
         'q': edit_instance.dialog_quit,
-        's': edit_instance.save_file,
+        's': edit_instance.save_file_to_disk_and_session,
         'w': edit_instance.close_dialog,
         'y': edit_instance.redo,
         'z': edit_instance.undo,
@@ -396,7 +396,11 @@ the file.')
         else:
             self.status.set_text(_('File %s open') % filename_to_open)
 
-    def save_file(self):
+    def save_file_to_disk_and_session(self):
+        self.save_file_to_disk()
+        self.session.add_open_filename(self.get_current_buffer().filename)
+
+    def save_file_to_disk(self):
         """ Save file """
         try:
             buf = self.buffers[self.current]
@@ -449,7 +453,7 @@ the file.')
         res = chooser.run()
         if res == gtk.RESPONSE_OK:
             buf.filename = chooser.get_filename()
-            self.save_file()
+            self.save_file_to_disk()
         else:
             self.status.set_text(_('Closed, no files selected'))
         chooser.destroy()
@@ -505,7 +509,7 @@ continue editing your document.")
     def save_dialog(self, widget, data=None):
         """save when closing"""
         self.dialog.hide()
-        self.save_file()
+        self.save_file_to_disk()
         self.close_buffer()
 
     def close_buffer(self):
@@ -591,7 +595,7 @@ continue editing your document.")
                 if buf.filename == FILE_UNNAMED:
                     self.save_file_as()
                 else:
-                    self.save_file()
+                    self.save_file_to_disk()
         self.quit()
 
     def quit_quit(self, widget, data=None):

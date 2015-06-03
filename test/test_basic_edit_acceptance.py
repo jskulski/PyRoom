@@ -64,7 +64,7 @@ class TestBasicEditAcceptance(TestCase):
         buffer = editor.get_current_buffer()
         test_file_path = '/tmp/pyroom.unittest.test_file'
         buffer.filename = test_file_path
-        editor.save_file()
+        editor.save_file_to_disk()
 
         with open(test_file_path) as test_file:
             actual_test_file_contents = test_file.read()

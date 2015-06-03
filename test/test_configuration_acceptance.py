@@ -58,8 +58,6 @@ class TestConfigurationAcceptanceTest(TestCase):
             self.pyroom_config_file_builder_and_reader.config.__dict__,
             PyroomConfig().__dict__)
 
-
-
     # Helper methods
     def read_file_into_string(self, file_path):
         with open(file_path, "r") as file:

@@ -57,14 +57,33 @@ class SessionAcceptanceTest(unittest.TestCase):
         )
 
     def test_saving_a_file_will_add_file_to_session(self):
-        test_file = tempfile.NamedTemporaryFile()
-        test_filepath = test_file.name
+        session_filepath = tempfile.NamedTemporaryFile().name
+        saved_filepath = '/tmp/pyroom.session.testfile'
+
+        if (os.path.isfile(saved_filepath)):
+            os.remove(saved_filepath)
+        if (os.path.isfile(session_filepath)):
+            os.remove(session_filepath)
 
         pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'filepath', session_filepath)
+        editor = BasicEdit(pyroom_config)
 
-        # editor_input.type_keys('Hello, how are you to day?', editor)
-        # editor.get_current_buffer().filename = '/tmp/pyroom.session.testfile'
-        # editor.save_file()
+        editor_input.type_keys('Hello, how are you to day?', editor)
+        editor.get_current_buffer().filename = saved_filepath
+        editor.save_file_to_disk_and_session()
+        del editor
+
+        editor_restarted = BasicEdit(pyroom_config)
+
+        self.assertEquals(
+            editor_restarted.get_current_buffer().filename,
+            saved_filepath
+        )
+
+
+
+
 
 
 

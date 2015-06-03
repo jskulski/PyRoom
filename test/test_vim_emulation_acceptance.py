@@ -13,31 +13,24 @@ import uuid
 import editor_input
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.basic_edit import VimEmulator
-from PyRoom.preferences import PyroomConfigFileBuilderAndReader
+from PyRoom.preferences import PyroomConfig
 
 class VimEmulationAcceptanceTest(unittest.TestCase):
 
     def setUp(self):
-        self.pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
-        self.pyroom_config_file_builder_and_reader.config.set('editor', 'vim_emulation_mode', '1')
-        self.basic_editor = BasicEdit(self.pyroom_config_file_builder_and_reader.config)
+        self.pyroom_config = PyroomConfig()
+        self.pyroom_config.set('editor', 'vim_emulation_mode', '1')
+        self.basic_editor = BasicEdit(self.pyroom_config)
 
     def test_that_vim_emulation_mode_is_off_by_default_in_editor(self):
-        configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
-        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
-            configuration_directory=configuration_directory
-        )
         self.assertEquals(
             '0',
-            default_pyroom_config_file_builder_and_reader.config.get('editor', 'vim_emulation_mode')
+            PyroomConfig().get('editor', 'vim_emulation_mode')
         )
 
     def test_that_we_can_type_normally_if_vim_emulation_mode_is_off(self):
-        configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
-        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
-            configuration_directory=configuration_directory
-        )
-        default_basic_editor = BasicEdit(default_pyroom_config_file_builder_and_reader.config)
+        default_pyroom_config = PyroomConfig()
+        default_basic_editor = BasicEdit(default_pyroom_config)
 
         editor_input.type_key('i', default_basic_editor)
         buffer_text = editor_input.retrieve_current_buffer_text(default_basic_editor)
@@ -45,11 +38,7 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.assertEquals(buffer_text, 'i')
 
     def test_that_vim_emulator_object_is_not_created_in_editor(self):
-        configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
-        default_pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
-            configuration_directory = os.path.join('/tmp/pyroom', str(uuid.uuid4()))
-        )
-        default_basic_editor = BasicEdit(default_pyroom_config_file_builder_and_reader.config)
+        default_basic_editor = BasicEdit(PyroomConfig())
         self.assertIsNone(default_basic_editor.vim_emulator)
 
     def test_that_vim_emulator_is_created_if_turned_on_in_config(self):
