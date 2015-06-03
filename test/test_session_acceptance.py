@@ -18,9 +18,9 @@ class SessionAcceptanceTest(unittest.TestCase):
     test_filename = 'some/test/file.txt'
 
     def setUp(self):
-        self.pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader()
-        self.pyroom_config_file_builder_and_reader.config.clear_session = 1
-        self.base_edit = BasicEdit(self.pyroom_config_file_builder_and_reader.config)
+        self.pyroom_config = PyroomConfig()
+        self.pyroom_config.clear_session = 1
+        self.base_edit = BasicEdit(self.pyroom_config)
 
     def test_testing_framework_is_setup(self):
         self.assertEqual(True, True)
@@ -42,8 +42,8 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfigFileBuilderAndReader()
-        restarted_base_edit = BasicEdit(pyroom_config.config)
+        pyroom_config = PyroomConfig()
+        restarted_base_edit = BasicEdit(pyroom_config)
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filename in session_filenames)
 
@@ -51,9 +51,9 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfigFileBuilderAndReader()
-        pyroom_config.config.clear_session = True
-        restarted_base_edit = BasicEdit(pyroom_config.config)
+        pyroom_config = PyroomConfig()
+        pyroom_config.clear_session = True
+        restarted_base_edit = BasicEdit(pyroom_config)
 
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([], session_filenames)
@@ -67,8 +67,8 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfigFileBuilderAndReader()
-        restarted_base_edit = BasicEdit(pyroom_config.config)
+        pyroom_config = PyroomConfig()
+        restarted_base_edit = BasicEdit(pyroom_config)
 
         buffer_filenames = [buffer.filename for buffer in restarted_base_edit.buffers]
         self.assertTrue(self.test_filename in buffer_filenames)
@@ -79,8 +79,8 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file(self.test_filename)
         del self.base_edit
 
-        pyroom_config = PyroomConfigFileBuilderAndReader()
-        restarted_base_edit = BasicEdit(pyroom_config.config)
+        pyroom_config = PyroomConfig()
+        restarted_base_edit = BasicEdit(pyroom_config)
 
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([self.test_filename], session_filenames)
