@@ -9,8 +9,9 @@ __builtin__._ = lambda str: str
 
 from basic_edit import BasicEdit
 from preferences import PyroomConfigFileBuilderAndReader
-from basic_edit import Session
+from PyRoom.preferences import PyroomConfig
 
+from basic_edit import Session
 
 class SessionAcceptanceTest(unittest.TestCase):
 
@@ -56,6 +57,11 @@ class SessionAcceptanceTest(unittest.TestCase):
 
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([], session_filenames)
+
+    def test_editor_can_have_a_private_session(self):
+        pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'private', '1')
+        editor = BasicEdit(pyroom_config)
 
     def test_buffers_are_opened_for_files_in_session(self):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
