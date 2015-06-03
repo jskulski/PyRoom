@@ -402,8 +402,10 @@ the file.')
             buf = self.buffers[self.current]
             if buf.filename != FILE_UNNAMED:
                 buffer_file = open(buf.filename, 'w')
-                txt = buf.get_text(buf.get_start_iter(),
-                                     buf.get_end_iter())
+                txt = buf.text_buffer.get_text(
+                    buf.text_buffer.get_start_iter(),
+                    buf.text_buffer.get_end_iter()
+                )
                 buffer_file.write(txt)
                 if self.recent_manager:
                     self.recent_manager.add_full(
@@ -602,6 +604,9 @@ continue editing your document.")
         """cleanup before quitting"""
         autosave.stop_autosave(self)
         self.gui.quit()
+
+    def get_current_buffer(self):
+        return self.buffers[self.current]
 
 
 class VimEmulator(object):
