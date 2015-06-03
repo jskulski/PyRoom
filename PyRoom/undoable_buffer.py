@@ -14,15 +14,15 @@ class UndoableBuffer(gtk.TextBuffer):
         """
         we'll need empty stacks for undo/redo and some state keeping
         """
-        gtk.TextBuffer.__init__(self)
         self.undo_stack = []
         self.redo_stack = []
         self.modified = False
         self.not_undoable_action = False
         self.undo_in_progress = False
-        self.connect('insert-text', self.on_insert_text)
-        self.connect('delete-range', self.on_delete_range)
-        self.connect('begin_user_action', self.on_begin_user_action)
+        self.text_buffer = gtk.TextBuffer()
+        self.text_buffer.connect('insert-text', self.on_insert_text)
+        self.text_buffer.connect('delete-range', self.on_delete_range)
+        self.text_buffer.connect('begin_user_action', self.on_begin_user_action)
 
     @property
     def can_undo(self):
@@ -192,3 +192,16 @@ class UndoableBuffer(gtk.TextBuffer):
         self.end_not_undoable_action()
         self.undo_in_progress = False
         self.modified = True
+
+
+    ## Passthrus until we can encapsulate TextBuffer fully
+    def place_cursor(self, *args, **kwargs):
+        self.text_buffer.place_cursor(*args, **kwargs)
+
+    def get_end_iter(self, *args, **kwargs):
+        return self.text_buffer.get_end_iter(*args, **kwargs)
+
+    def get_insert(self, *args, **kwargs):
+        return self.text_buffer.get_insert(*args, **kwargs)
+
+
