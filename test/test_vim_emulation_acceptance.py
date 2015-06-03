@@ -7,10 +7,10 @@ sys.path.append('../PyRoom')
 import __builtin__
 __builtin__._ = lambda str: str
 
-import gtk
 import os
 import uuid
 
+import editor_input
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.basic_edit import VimEmulator
 from PyRoom.preferences import PyroomConfigFileBuilderAndReader
@@ -39,8 +39,8 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         )
         default_basic_editor = BasicEdit(default_pyroom_config_file_builder_and_reader.config)
 
-        self._type_key('i', default_basic_editor)
-        buffer_text = self._retrieve_current_buffer_text(default_basic_editor)
+        editor_input.type_key('i', default_basic_editor)
+        buffer_text = editor_input.retrieve_current_buffer_text(default_basic_editor)
 
         self.assertEquals(buffer_text, 'i')
 
@@ -56,14 +56,14 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.assertIsInstance(self.basic_editor.vim_emulator, VimEmulator)
 
     def test_that_typing_ihi_toggles_to_insert_mode_and_types_hi(self):
-        self._type_keys('ihi')
-        buffer_text = self._retrieve_current_buffer_text()
+        editor_input.type_keys('ihi')
+        buffer_text = editor_input._retrieve_current_buffer_text()
 
         self.assertEquals(buffer_text, 'hi')
 
     def test_escape_in_insert_mode_toggles_to_command_mode(self):
-        self._type_key('i')
-        self._type_key('Escape')
+        editor_input.type_key('i', self.basic_editor)
+        editor_input.type_key('Escape', self.basic_editor)
 
         self.assertTrue(self.basic_editor.vim_emulator.in_command_mode())
         self.assertFalse(self.basic_editor.vim_emulator.in_insert_mode())
@@ -71,33 +71,9 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
     def test_user_is_notified_of_toggling_to_opposoite_modes(self):
         status_spy = StatusSpy()
         self.basic_editor.status = status_spy
-        self._type_key('i')
+        editor_input.type_key('i', self.basic_editor)
         self.assertTrue(status_spy.was_notified())
 
-    ### Testing utility methods
-
-    def _type_keys(self, key_sequence, basic_editor=None):
-        for key in key_sequence:
-            self._type_key(key, basic_editor)
-
-    def _type_key(self, key_char, basic_editor=None):
-
-        if basic_editor is None:
-            basic_editor = self.basic_editor
-
-        type_event = gtk.gdk.Event(gtk.gdk.KEY_PRESS)
-        type_event.keyval = gtk.keysyms.__dict__.get(key_char)
-        type_event.time = 0
-        basic_editor.textbox.emit('key_press_event', type_event)
-
-    def _retrieve_current_buffer_text(self, basic_editor=None):
-
-        if basic_editor is None:
-            basic_editor = self.basic_editor
-
-        buffer = basic_editor.textbox.get_buffer()
-        buffer_text = buffer.get_text(*buffer.get_bounds())
-        return buffer_text
 
 class StatusSpy(object):
     def __init__(self):
