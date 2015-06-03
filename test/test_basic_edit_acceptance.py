@@ -53,11 +53,13 @@ class TestBasicEditAcceptance(TestCase):
         )
 
     def test_can_save_file_in_editor(self):
+        test_file_path = '/tmp/pyroom.unittest.test_file'
+        expected_test_file_contents = "Hello, this is my new file"
+
         pyroom_config = PyroomConfig()
         pyroom_config.clear_session = 1
         editor = BasicEdit(pyroom_config)
 
-        expected_test_file_contents = "Hello, this is my new file"
         editor_input.type_keys(expected_test_file_contents, editor)
         buffer = editor.get_current_buffer()
         test_file_path = '/tmp/pyroom.unittest.test_file'
@@ -71,6 +73,4 @@ class TestBasicEditAcceptance(TestCase):
             expected_test_file_contents,
             actual_test_file_contents
         )
-
-
 

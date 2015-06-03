@@ -151,7 +151,7 @@ class BasicEdit(object):
             self.vim_emulator = None
 
         # Session Management
-        self.session = FileStoreSession('/tmp/pyroom.session.tmpfile')
+        self.session = FileStoreSession(self.config.get('session', 'filepath'))
         if self.config.clear_session:
             self.session.clear()
 
@@ -478,7 +478,6 @@ continue editing your document.")
 
     def new_buffer(self):
         """ Create a new buffer """
-
         buf = UndoableBuffer()
         buf.filename = FILE_UNNAMED
         self.buffers.insert(self.current + 1, buf)

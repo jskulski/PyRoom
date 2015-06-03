@@ -30,13 +30,24 @@ class SessionAcceptanceTest(unittest.TestCase):
         if (os.path.isfile(self.session_filepath)):
             os.remove(self.session_filepath)
 
-    def test_testing_framework_is_setup(self):
-        self.assertEqual(True, True)
+    def test_we_can_tell_the_editor_where_to_store_the_session(self):
+
+        session_filepath = '/tmp/pyroom.unittest.unique.session'
+
+        if (os.path.isfile(session_filepath)):
+            os.remove(session_filepath)
+        pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'filepath', session_filepath)
+
+        editor = BasicEdit(pyroom_config)
+
+        self.assertTrue(os.path.isfile(session_filepath))
 
     def test_assert_opened_file_is_added_to_session(self):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
 
         session_filenames = self.base_edit.session.get_open_filenames()
+
         self.assertTrue(self.test_filename in session_filenames)
 
     def test_assert_opened_then_closed_file_is_not_in_session(self):

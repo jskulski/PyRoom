@@ -51,6 +51,9 @@ DEFAULT_CONF = {
         'use_font_type':'custom',
         'indent':0,
     },
+    'session': {
+        'filepath': os.path.join(data_home, 'pyroom', 'pyroom.session')
+    },
     'editor':{
         'autosavetime':'2',
         'autosave':'0',
