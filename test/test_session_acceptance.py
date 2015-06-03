@@ -11,7 +11,7 @@ from basic_edit import BasicEdit
 from preferences import PyroomConfigFileBuilderAndReader
 from PyRoom.preferences import PyroomConfig
 
-from basic_edit import Session
+from PyRoom.basic_edit import FileStoreSession
 
 class SessionAcceptanceTest(unittest.TestCase):
 
@@ -58,10 +58,19 @@ class SessionAcceptanceTest(unittest.TestCase):
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([], session_filenames)
 
-    def test_editor_can_have_a_private_session(self):
+    def test_editor_can_be_told_where_to_store_the_session(self):
         pyroom_config = PyroomConfig()
-        pyroom_config.set('session', 'private', '1')
+        pyroom_config.set('session', 'session_file', '/tmp/')
         editor = BasicEdit(pyroom_config)
+
+    # def test_editor_can_have_a_private_session(self):
+    #     pyroom_config = PyroomConfig()
+    #     pyroom_config.set('session', 'private', '1')
+    #     pyroom_config.clear_session = '1'
+    #     editor = BasicEdit(pyroom_config)
+    #
+    #     editor.open_file_and_add_to_session(self.test_filename)
+
 
     def test_buffers_are_opened_for_files_in_session(self):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
@@ -74,8 +83,8 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertTrue(self.test_filename in buffer_filenames)
 
     def test_opening_buffers_during_init_does_not_readd_to_session(self):
-        """ Opening buffers during init from the session shouldn't """
-        """ readd them to the session, duplicating the history """
+        """ Opening buffers during init from the session shouldn't
+            readd them to the session, duplicating history """
         self.base_edit.open_file(self.test_filename)
         del self.base_edit
 
@@ -86,19 +95,19 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertEquals([self.test_filename], session_filenames)
 
     def test_shelf_is_created(self):
-        session = Session()
+        session = FileStoreSession()
         session.clear()
         self.assertEquals([], session.shelf['open_filenames'])
 
     def test_shelf_can_add_and_initialize_is_fine(self):
-        session = Session()
+        session = FileStoreSession()
         session.add_open_filename('test/filename.txt')
         self.assertTrue(
             'test/filename.txt' in session.shelf.get('open_filenames')
         )
 
     def test_we_can_start_with_a_clean_session(self):
-        session = Session()
+        session = FileStoreSession()
         session.add_open_filename('test/filename.txt')
         session.clear()
         self.assertTrue(

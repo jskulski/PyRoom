@@ -34,7 +34,7 @@ from pyroom_error import PyroomError
 from gui import GUI
 from preferences import Preferences
 
-from session import Session
+from session import FileStoreSession
 from undoable_buffer import UndoableBuffer
 
 import autosave
@@ -151,7 +151,7 @@ class BasicEdit(object):
             self.vim_emulator = None
 
         # Session Management
-        self.session = Session()
+        self.session = FileStoreSession()
         if self.config.clear_session:
             self.session.clear()
 
