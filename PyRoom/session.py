@@ -2,6 +2,20 @@ import shelve
 
 
 class Session(object):
+    def add_open_filename(self, filename):
+        raise NotImplementedError("Please Implement this method")
+
+    def remove_open_filename(self, filename):
+        raise NotImplementedError("Please Implement this method")
+
+    def get_open_filenames(self):
+        raise NotImplementedError("Please Implement this method")
+
+    def clear(self):
+        raise NotImplementedError("Please Implement this method")
+
+
+class FileStoreSession(Session):
 
     file_list_key = 'open_filenames'
     shelve_filename = '/tmp/pyroom.session.tmpfile'
