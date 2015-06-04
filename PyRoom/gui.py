@@ -23,13 +23,16 @@ basic global GUI
 
 Additionally allows user to apply custom settings
 """
-
+from abc import abstractmethod
+from abc import ABCMeta
 import gtk
 import gobject
-import gtk.glade
 import ConfigParser
 import os
 from sys import platform
+
+import gtk.glade
+
 if platform == 'win32':
     data_home = os.environ['APPDATA']
 else:
@@ -130,7 +133,35 @@ class FadeLabel(gtk.Label):
         return False
 
 
-class GUI(object):
+class AbstractGUI(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def apply_theme(self):
+        pass
+
+    @abstractmethod
+    def quit(self):
+        pass
+
+    @abstractmethod
+    def destroy(self, widget, data):
+        pass
+
+    @abstractmethod
+    def scroll_down(self):
+        pass
+
+    @abstractmethod
+    def scroll_event(self, widget, event):
+        pass
+
+    @abstractmethod
+    def scroll_up(self):
+        pass
+
+
+class GUI(AbstractGUI):
     """our basic global gui object"""
 
     def __init__(self, pyroom_config):
