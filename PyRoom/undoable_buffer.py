@@ -201,6 +201,9 @@ class UndoableBuffer(gtk.TextBuffer):
     def set_text(self, *args, **kwargs):
         self.text_buffer.set_text(*args, **kwargs)
 
+    def get_text(self, *args, **kwargs):
+        return self.text_buffer.get_text(*args, **kwargs)
+
     def get_end_iter(self, *args, **kwargs):
         return self.text_buffer.get_end_iter(*args, **kwargs)
 
