@@ -138,12 +138,15 @@ class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
 
-    def __init__(self, pyroom_config):
+    def __init__(self, pyroom_config, gui=None):
         self.current = 0
         self.buffers = []
         self.config = pyroom_config
 
-        self.gui = GUI(self.config)
+        if gui is None:
+            self.gui = GUI(self.config)
+        else:
+            self.gui = gui
 
         if (self.config.get('editor', 'vim_emulation_mode') == '1'):
             self.vim_emulator = VimEmulator()
