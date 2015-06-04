@@ -284,7 +284,7 @@ class BasicEdit(object):
     def undo(self):
         """ Undo last typing """
 
-        buf = self.textbox.get_buffer()
+        buf = self.get_current_buffer()
         if buf.can_undo:
             buf.undo()
         else:
@@ -293,7 +293,7 @@ class BasicEdit(object):
     def redo(self):
         """ Redo last typing """
 
-        buf = self.textbox.get_buffer()
+        buf = self.get_current_buffer()
         if buf.can_redo:
             buf.redo()
         else:
