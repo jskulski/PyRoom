@@ -9,6 +9,7 @@ __builtin__._ = lambda str: str
 
 
 import editor_input
+from PyRoom.gui import NullGUI
 from PyRoom.preferences import PyroomConfig
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
@@ -74,3 +75,7 @@ class TestBasicEditAcceptance(TestCase):
             actual_test_file_contents
         )
 
+
+    def test_can_create_an_editor_with_a_null_gui(self):
+        pass
+        # editor = BasicEdit(PyroomConfig(), NullGUI())
