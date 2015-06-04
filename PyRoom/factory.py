@@ -14,6 +14,12 @@ class Factory(object):
         if not self.editor:
             self.editor = BasicEdit(
                 pyroom_config=pyroom_config
+                # gui=self.create_gui()
             )
 
         return self.editor
+
+    # def create_gui(self):
+    #     if not self.gui = GUI(
+    #
+    #     )
