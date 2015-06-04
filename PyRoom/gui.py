@@ -133,21 +133,19 @@ class FadeLabel(gtk.Label):
 class GUI(object):
     """our basic global gui object"""
 
-    def __init__(self, pyroom_config, edit_instance):
+    def __init__(self, pyroom_config):
         self.config = pyroom_config
         # Theme
         theme_name = self.config.get('visual', 'theme')
         self.theme = Theme(theme_name)
 
         self.status = FadeLabel()
-        self.edit_instance = edit_instance
-        
+
         # Main window
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_name('PyRoom')
         self.window.set_title("PyRoom")
-        self.window.connect('delete_event', self.delete_event)
         self.window.connect('destroy', self.destroy)
 
         self.textbox = gtk.TextView()
@@ -261,11 +259,6 @@ class GUI(object):
     def quit(self):
         """ quit pyroom """
         gtk.main_quit()
-
-    def delete_event(self, widget, event, data=None):
-        """ Quit """
-        self.edit_instance.dialog_quit()
-        return True
 
     def destroy(self, widget, data=None):
         """ Quit """

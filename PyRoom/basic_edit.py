@@ -143,7 +143,7 @@ class BasicEdit(object):
         self.buffers = []
         self.config = pyroom_config
 
-        self.gui = GUI(self.config, self)
+        self.gui = GUI(self.config)
 
         if (self.config.get('editor', 'vim_emulation_mode') == '1'):
             self.vim_emulator = VimEmulator()
