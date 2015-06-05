@@ -193,6 +193,12 @@ class UndoableBuffer(gtk.TextBuffer):
         self.undo_in_progress = False
         self.modified = True
 
+    def get_text_from_buffer(self):
+        return self.text_buffer.get_text(
+            self.text_buffer.get_start_iter(),
+            self.text_buffer.get_end_iter()
+        )
+
 
     ## Passthrus until we can encapsulate TextBuffer fully
     def place_cursor(self, *args, **kwargs):

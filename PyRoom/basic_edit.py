@@ -411,10 +411,7 @@ the file.')
             buf = self.get_current_buffer()
             if buf.filename != FILE_UNNAMED:
                 buffer_file = open(buf.filename, 'w')
-                txt = buf.text_buffer.get_text(
-                    buf.text_buffer.get_start_iter(),
-                    buf.text_buffer.get_end_iter()
-                )
+                txt = buf.get_text_from_buffer()
                 buffer_file.write(txt)
                 if self.recent_manager:
                     self.recent_manager.add_full(
