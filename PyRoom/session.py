@@ -9,6 +9,9 @@ class Session(object):
         raise NotImplementedError("Please Implement this method")
 
     def get_open_filenames(self):
+        """
+        :return: []
+        """
         raise NotImplementedError("Please Implement this method")
 
     def clear(self):
@@ -44,3 +47,18 @@ class FileStoreSession(Session):
 
     def clear(self):
         self.shelf[self.file_list_key] = []
+
+
+class PrivateSession(Session):
+    def remove_open_filename(self, filename):
+        pass
+
+    def clear(self):
+        pass
+
+    def add_open_filename(self, filename):
+        pass
+
+    def get_open_filenames(self):
+        return []
+        pass

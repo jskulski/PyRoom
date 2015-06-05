@@ -52,6 +52,7 @@ DEFAULT_CONF = {
         'indent':0,
     },
     'session': {
+        'private': '0',
         'filepath': os.path.join(data_home, 'pyroom', 'pyroom.session')
     },
     'editor':{

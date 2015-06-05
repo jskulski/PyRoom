@@ -206,6 +206,8 @@ class UndoableBuffer(gtk.TextBuffer):
 
     def has_filename(self):
         return self.filename != FILE_UNNAMED
+    def has_no_filename(self):
+        return not self.has_filename()
 
 
     ## Passthrus until we can encapsulate TextBuffer fully
@@ -235,6 +237,7 @@ class UndoableBuffer(gtk.TextBuffer):
 
     def get_end_iter(self, *args, **kwargs):
         return self.text_buffer.get_end_iter(*args, **kwargs)
+
 
 
 

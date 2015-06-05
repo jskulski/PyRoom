@@ -28,6 +28,8 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.pyroom_config.clear_session = 1
         self.base_edit = BasicEdit(self.pyroom_config)
 
+        self._clear_session_file()
+
     def _clear_session_file(self):
         if (os.path.isfile(self.session_filepath)):
             os.remove(self.session_filepath)
@@ -82,13 +84,6 @@ class SessionAcceptanceTest(unittest.TestCase):
             editor_restarted.get_current_buffer().filename,
             saved_filepath
         )
-
-
-
-
-
-
-
 
     def test_assert_opened_file_is_added_to_session(self):
         self.base_edit.open_file_and_add_to_session(self.test_filename)
@@ -165,3 +160,15 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertTrue(
             'test/filename.txt' not in session.get_open_filenames()
         )
+
+    def test_private_session_has_one_unnamed_buffer_and_empty(self):
+        pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'private', '1')
+        editor = BasicEdit(pyroom_config)
+
+        self.assertEquals(len(editor.session.get_open_filenames()), 0)
+        self.assertEquals(len(editor.buffers), 1)
+        self.assertTrue(editor.get_current_buffer().has_no_filename())
+
+
+

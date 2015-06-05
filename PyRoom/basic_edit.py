@@ -35,6 +35,7 @@ from gui import GUI
 from preferences import Preferences
 
 from session import FileStoreSession
+from session import PrivateSession
 from undoable_buffer import UndoableBuffer
 
 import autosave
@@ -154,7 +155,10 @@ class BasicEdit(object):
             self.vim_emulator = None
 
         # Session Management
-        self.session = FileStoreSession(self.config.get('session', 'filepath'))
+        if self.config.get('session', 'private') == '1':
+            self.session = PrivateSession()
+        else:
+            self.session = FileStoreSession(self.config.get('session', 'filepath'))
         if self.config.clear_session:
             self.session.clear()
 
@@ -615,6 +619,9 @@ continue editing your document.")
         self.gui.quit()
 
     def get_current_buffer(self):
+        """
+        :rtype : UndoableBuffer
+        """
         return self.buffers[self.current]
 
 

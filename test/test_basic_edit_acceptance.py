@@ -76,6 +76,12 @@ class TestBasicEditAcceptance(TestCase):
             actual_test_file_contents
         )
 
+    def test_first_opened_buffer_is_unnamed(self):
+        pyroom_config = PyroomConfig()
+        pyroom_config.clear_session = 1
+        editor = BasicEdit(pyroom_config)
+        self.assertFalse(editor.get_current_buffer().has_filename())
+
 
     def test_can_create_an_editor_with_a_null_gui(self):
         #editor = BasicEdit(PyroomConfig(), NullGUI())
