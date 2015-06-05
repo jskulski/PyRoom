@@ -77,5 +77,5 @@ class TestBasicEditAcceptance(TestCase):
 
 
     def test_can_create_an_editor_with_a_null_gui(self):
+        #editor = BasicEdit(PyroomConfig(), NullGUI())
         pass
-        # editor = BasicEdit(PyroomConfig(), NullGUI())

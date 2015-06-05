@@ -379,7 +379,7 @@ Open those instead of the original file?''')
 
         try:
             buffer_file = open(filename_to_open, 'r')
-            buf = self.buffers[self.current]
+            buf = self.get_current_buffer()
             buf.begin_not_undoable_action()
             utf8 = unicode(buffer_file.read(), 'utf-8')
             buf.set_text(utf8)
@@ -408,7 +408,7 @@ the file.')
     def save_file_to_disk(self):
         """ Save file """
         try:
-            buf = self.buffers[self.current]
+            buf = self.get_current_buffer()
             if buf.filename != FILE_UNNAMED:
                 buffer_file = open(buf.filename, 'w')
                 txt = buf.text_buffer.get_text(
@@ -447,7 +447,7 @@ the file.')
     def save_file_as(self):
         """ Save file as """
 
-        buf = self.buffers[self.current]
+        buf = self.get_current_buffer()
         chooser = gtk.FileChooserDialog('PyRoom', self.window,
                 gtk.FILE_CHOOSER_ACTION_SAVE,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
@@ -496,7 +496,7 @@ continue editing your document.")
 
     def close_dialog(self):
         """ask for confirmation if there are unsaved contents"""
-        buf = self.buffers[self.current]
+        buf = self.get_current_buffer()
         if buf.modified:
             self.dialog.show()
         else:
@@ -520,7 +520,7 @@ continue editing your document.")
     def close_buffer(self):
         """ Close current buffer """
         autosave_fname = autosave.get_autosave_filename(
-            self.buffers[self.current].filename
+            self.get_current_buffer().filename
         )
         if os.path.isfile(autosave_fname):
             try:
@@ -529,7 +529,7 @@ continue editing your document.")
                 raise PyroomError(_('Could not delete autosave file.'))
         if len(self.buffers) > 1:
             self.session.remove_open_filename(
-                self.buffers[self.current].filename
+                self.get_current_buffer().filename
             )
             self.buffers.pop(self.current)
             self.current = min(len(self.buffers) - 1, self.current)
@@ -542,7 +542,7 @@ continue editing your document.")
 
         if index >= 0 and index < len(self.buffers):
             self.current = index
-            buf = self.buffers[index]
+            buf = self.get_current_buffer()
             self.textbox.set_buffer(buf.text_buffer)
             if hasattr(self, 'status'):
                 self.status.set_text(
@@ -560,7 +560,7 @@ continue editing your document.")
             self.current = 0
         self.set_buffer(self.current)
         self.gui.textbox.scroll_to_mark(
-            self.buffers[self.current].get_insert(),
+            self.get_current_buffer().get_insert(),
             0.0,
         )
 
@@ -573,7 +573,7 @@ continue editing your document.")
             self.current = len(self.buffers) - 1
         self.set_buffer(self.current)
         self.gui.textbox.scroll_to_mark(
-            self.buffers[self.current].get_insert(),
+            self.get_current_buffer().get_insert(),
             0.0,
         )
 

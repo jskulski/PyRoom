@@ -29,7 +29,6 @@ class TestAutosaveAcceptance(TestCase):
         expected_content = 'hello these are words in a document'
         editor_input.type_keys(expected_content, editor)
         editor.get_current_buffer().filename = 'a-file-im-working-on'
-
         expected_autosave_filepath = autosave.get_autosave_filename(
             editor.get_current_buffer().filename
         )
@@ -43,7 +42,6 @@ class TestAutosaveAcceptance(TestCase):
         self.assertEquals(autosave_contents, expected_content)
 
         autosave.stop_autosave(editor)
-
 
     def trick_editor_into_thinking_time_has_passed(self, editor, autosave_time):
         enough_elapsed_time_counter = 60 * autosave_time
