@@ -4,6 +4,10 @@ from undoable_insert import UndoableInsert
 from undoable_delete import UndoableDelete
 
 
+FILE_UNNAMED = _('* Unnamed *')
+
+
+
 class UndoableBuffer(gtk.TextBuffer):
     """text buffer with added undo capabilities
 
@@ -198,6 +202,9 @@ class UndoableBuffer(gtk.TextBuffer):
             self.text_buffer.get_start_iter(),
             self.text_buffer.get_end_iter()
         )
+
+    def has_filename(self):
+        return self.filename != FILE_UNNAMED
 
 
     ## Passthrus until we can encapsulate TextBuffer fully

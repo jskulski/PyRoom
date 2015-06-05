@@ -409,7 +409,8 @@ the file.')
         """ Save file """
         try:
             buf = self.get_current_buffer()
-            if buf.filename != FILE_UNNAMED:
+            buffer_has_filename = buf.has_filename()
+            if buffer_has_filename:
                 buffer_file = open(buf.filename, 'w')
                 txt = buf.get_text_from_buffer()
                 buffer_file.write(txt)
