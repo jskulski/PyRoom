@@ -486,7 +486,6 @@ continue editing your document.")
     def new_buffer(self):
         """ Create a new buffer """
         buf = UndoableBuffer()
-        buf.filename = FILE_UNNAMED
         self.buffers.insert(self.current + 1, buf)
         buf.place_cursor(buf.get_end_iter())
         self.next_buffer()

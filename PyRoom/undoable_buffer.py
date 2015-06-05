@@ -18,6 +18,7 @@ class UndoableBuffer(gtk.TextBuffer):
         """
         we'll need empty stacks for undo/redo and some state keeping
         """
+        self.filename = FILE_UNNAMED
         self.undo_stack = []
         self.redo_stack = []
         self.modified = False
