@@ -265,7 +265,7 @@ class BasicEdit(object):
     def show_info(self):
         """ Display buffer information on status label for 5 seconds """
 
-        buf = self.buffers[self.current]
+        buf = self.get_current_buffer()
         if buf.modified:
             status = _(' (modified)')
         else:
@@ -352,7 +352,7 @@ Open those instead of the original file?''')
         if res == gtk.RESPONSE_OK:
             self.open_file_and_add_to_session(chooser.get_filename())
         else:
-            self.status.set_text(_('Closed, no files selected'))
+            self.file_chooser_closed_with_no_file_selected()
         chooser.destroy()
 
     def open_file_and_add_to_session(self, filename):
@@ -446,20 +446,24 @@ the file.')
         """ Save file as """
 
         buf = self.get_current_buffer()
+
         chooser = gtk.FileChooserDialog('PyRoom', self.window,
                 gtk.FILE_CHOOSER_ACTION_SAVE,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                 gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         chooser.set_default_response(gtk.RESPONSE_OK)
-        if buf.filename != FILE_UNNAMED:
+        if buf.has_filename():
             chooser.set_filename(buf.filename)
         res = chooser.run()
         if res == gtk.RESPONSE_OK:
             buf.filename = chooser.get_filename()
             self.save_file_to_disk()
         else:
-            self.status.set_text(_('Closed, no files selected'))
+            self.file_chooser_display_status_no_file_selected()
         chooser.destroy()
+
+    def file_chooser_closed_with_no_file_selected(self):
+        self.status.set_text(_('Closed, no files selected'))
 
     def word_count(self, buf):
         """ Word count in a text buffer """

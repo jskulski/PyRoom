@@ -29,6 +29,7 @@ class TestBasicEditAcceptance(TestCase):
 
     def test_can_type_in_editor_and_see_it_in_buffer(self):
         pyroom_config = PyroomConfig()
+        pyroom_config.clear_session = '1'
         editor = BasicEdit(pyroom_config)
 
         hello_world = "Hello, World"
