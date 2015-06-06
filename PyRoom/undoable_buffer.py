@@ -154,15 +154,15 @@ class UndoableBuffer(gtk.TextBuffer):
         undo_action = self.undo_stack.pop()
         self.redo_stack.append(undo_action)
         if isinstance(undo_action, UndoableInsert):
-            start = self.get_iter_at_offset(undo_action.offset)
-            stop = self.get_iter_at_offset(
+            start = self.text_buffer.get_iter_at_offset(undo_action.offset)
+            stop = self.text_buffer.get_iter_at_offset(
                 undo_action.offset + undo_action.length
             )
-            self.delete(start, stop)
+            self.text_buffer.delete(start, stop)
             self.place_cursor(start)
         else:
-            start = self.get_iter_at_offset(undo_action.start)
-            stop = self.get_iter_at_offset(undo_action.end)
+            start = self.text_buffer.get_iter_at_offset(undo_action.start)
+            stop = self.text_buffer.get_iter_at_offset(undo_action.end)
             self.insert(start, undo_action.deleted_text)
             if undo_action.delete_key_used:
                 self.place_cursor(start)
@@ -183,16 +183,16 @@ class UndoableBuffer(gtk.TextBuffer):
         redo_action = self.redo_stack.pop()
         self.undo_stack.append(redo_action)
         if isinstance(redo_action, UndoableInsert):
-            start = self.get_iter_at_offset(redo_action.offset)
+            start = self.text_buffer.get_iter_at_offset(redo_action.offset)
             self.insert(start, redo_action.text)
-            new_cursor_pos = self.get_iter_at_offset(
+            new_cursor_pos = self.text_buffer.get_iter_at_offset(
                 redo_action.offset + redo_action.length
             )
             self.place_cursor(new_cursor_pos)
         else:
-            start = self.get_iter_at_offset(redo_action.start)
-            stop = self.get_iter_at_offset(redo_action.end)
-            self.delete(start, stop)
+            start = self.text_buffer.get_iter_at_offset(redo_action.start)
+            stop = self.text_buffer.get_iter_at_offset(redo_action.end)
+            self.text_buffer.delete(start, stop)
             self.place_cursor(start)
         self.end_not_undoable_action()
         self.undo_in_progress = False
@@ -237,6 +237,8 @@ class UndoableBuffer(gtk.TextBuffer):
 
     def get_end_iter(self, *args, **kwargs):
         return self.text_buffer.get_end_iter(*args, **kwargs)
+
+
 
 
 

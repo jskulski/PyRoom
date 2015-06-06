@@ -11,7 +11,6 @@ __builtin__._ = lambda str: str
 
 import editor_input
 from basic_edit import BasicEdit
-from preferences import PyroomConfigFileBuilderAndReader
 from PyRoom.preferences import PyroomConfig
 
 from PyRoom.basic_edit import FileStoreSession
@@ -36,26 +35,18 @@ class SessionAcceptanceTest(unittest.TestCase):
 
     def test_we_can_tell_the_editor_where_to_store_the_session(self):
 
-        session_filepath = '/tmp/pyroom.unittest.unique.session'
+        session_filepath = self._generate_temporary_filename()
 
-        if (os.path.isfile(session_filepath)):
-            os.remove(session_filepath)
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'filepath', session_filepath)
 
         editor = BasicEdit(pyroom_config)
-        test_file = tempfile.NamedTemporaryFile()
-        test_filepath = test_file.name
-        test_file.write('this is the test contents oohh wee ooooo')
-        editor.open_file_and_add_to_session(test_filepath)
+        test_filepath = self._edit_test_file_and_save(editor)
 
-
-        self.assertTrue(os.path.isfile(session_filepath))
-
-        file_store_sesion = FileStoreSession(session_filepath)
+        file_store_session = FileStoreSession(session_filepath)
         self.assertEquals(
             [test_filepath],
-            file_store_sesion.get_open_filenames()
+            file_store_session.get_open_filenames()
         )
 
         os.remove(session_filepath)
@@ -170,5 +161,38 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.assertEquals(len(editor.buffers), 1)
         self.assertTrue(editor.get_current_buffer().has_no_filename())
 
+    def test_private_session_does_not_open_file_store_session(self):
+        session_filepath = self._generate_temporary_filename()
+        user_session_editor = self._create_user_session_editor(session_filepath)
+        self._edit_test_file_and_save(user_session_editor)
 
+        private_session_editor = self._create_private_session_editor(session_filepath)
 
+        self.assertEquals(len(private_session_editor.session.get_open_filenames()), 0)
+        self.assertEquals(len(private_session_editor.buffers), 1)
+        self.assertTrue(private_session_editor.get_current_buffer().has_no_filename())
+
+    def _edit_test_file_and_save(self, editor):
+        test_file = tempfile.NamedTemporaryFile()
+        test_filepath = test_file.name
+        test_file.write('this is the test contents oohh wee ooooo')
+        editor.open_file_and_add_to_session(test_filepath)
+        return test_filepath
+
+    def test_opening_file_then_saving_file_does_not_duplicate_filename_in_session(self):
+        pass
+
+    def _create_user_session_editor(self, session_filepath):
+        user_session_pyroom_config = PyroomConfig()
+        user_session_pyroom_config.set('session', 'private', '0')
+        user_session_pyroom_config.set('session', 'filepath', session_filepath)
+        return BasicEdit(user_session_pyroom_config)
+
+    def _create_private_session_editor(self, session_filepath):
+        private_session_pyroom_config = PyroomConfig()
+        private_session_pyroom_config.set('session', 'private', '1')
+        private_session_pyroom_config.set('session', 'filepath', session_filepath)
+        return BasicEdit(private_session_pyroom_config)
+
+    def _generate_temporary_filename(self):
+        return next(tempfile._get_candidate_names())

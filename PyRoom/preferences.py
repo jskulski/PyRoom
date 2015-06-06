@@ -40,7 +40,6 @@ else:
 
 from gui import Theme
 from pyroom_error import PyroomError
-import autosave
 
 DEFAULT_CONF = {
     'visual':{
