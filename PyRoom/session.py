@@ -61,4 +61,3 @@ class PrivateSession(Session):
 
     def get_open_filenames(self):
         return []
-        pass

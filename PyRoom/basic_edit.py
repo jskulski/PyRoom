@@ -159,6 +159,7 @@ class BasicEdit(object):
             self.session = PrivateSession()
         else:
             self.session = FileStoreSession(self.config.get('session', 'filepath'))
+
         if self.config.clear_session:
             self.session.clear()
 
