@@ -207,35 +207,39 @@ class BasicEdit(object):
 
         self._quote_handle_unquote_multiple_monitors()
 
-        # Defines the glade file functions for use on closing a buffer
-        self.wTree = gtk.glade.XML(os.path.join(
-            self.config.pyroom_absolute_path, "interface.glade"),
-            "SaveBuffer")
-        self.dialog = self.wTree.get_widget("SaveBuffer")
-        self.dialog.set_transient_for(self.window)
-        dic = {
-                "on_button-close_clicked": self.unsave_dialog,
-                "on_button-cancel_clicked": self.cancel_dialog,
-                "on_button-save_clicked": self.save_dialog,
-                }
-        self.wTree.signal_autoconnect(dic)
+        self._defines_the_glade_file_functions_for_use_on_closing_a_buffer()
+        self._defines_the_glade_file_functions_for_use_on_exit()
 
-        #Defines the glade file functions for use on exit
+        self.keybindings = define_keybindings(self)
+        # this sucks, shouldn't have to call this here, textbox should
+        # have its background and padding color from GUI().__init__() already
+        self.gui.apply_theme()
+
+    def _defines_the_glade_file_functions_for_use_on_exit(self):
         self.aTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "QuitSave")
         self.quitdialog = self.aTree.get_widget("QuitSave")
         self.quitdialog.set_transient_for(self.window)
         dic = {
-                "on_button-close2_clicked": self.quit_quit,
-                "on_button-cancel2_clicked": self.cancel_quit,
-                "on_button-save2_clicked": self.save_quit,
-                }
+            "on_button-close2_clicked": self.quit_quit,
+            "on_button-cancel2_clicked": self.cancel_quit,
+            "on_button-save2_clicked": self.save_quit,
+        }
         self.aTree.signal_autoconnect(dic)
-        self.keybindings = define_keybindings(self)
-        # this sucks, shouldn't have to call this here, textbox should
-        # have its background and padding color from GUI().__init__() already
-        self.gui.apply_theme()
+
+    def _defines_the_glade_file_functions_for_use_on_closing_a_buffer(self):
+        self.wTree = gtk.glade.XML(os.path.join(
+            self.config.pyroom_absolute_path, "interface.glade"),
+            "SaveBuffer")
+        self.dialog = self.wTree.get_widget("SaveBuffer")
+        self.dialog.set_transient_for(self.window)
+        dic = {
+            "on_button-close_clicked": self.unsave_dialog,
+            "on_button-cancel_clicked": self.cancel_dialog,
+            "on_button-save_clicked": self.save_dialog,
+        }
+        self.wTree.signal_autoconnect(dic)
 
     def _quote_handle_unquote_multiple_monitors(self):
         screen = gtk.gdk.screen_get_default()
