@@ -332,3 +332,14 @@ class GUI(AbstractGUI):
             int(self.config.get("visual", "linespacing"))
         )
 
+    def show_text_buffer(self, text_buffer):
+        self.textbox.set_buffer(text_buffer)
+
+    def show_changed_buffer_status(self, buffer_id, buffer_filename):
+        if hasattr(self, 'status'):
+            self.status.set_text(
+                _('Switching to buffer %(buffer_id)d (%(buffer_name)s)')
+                % {'buffer_id': buffer_id,
+                   'buffer_name': buffer_filename}
+            )
+

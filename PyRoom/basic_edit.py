@@ -551,13 +551,9 @@ continue editing your document.")
         if index >= 0 and index < len(self.buffers):
             self.current = index
             buf = self.get_current_buffer()
-            self.gui.textbox.set_buffer(buf.text_buffer)
-            if hasattr(self, 'status'):
-                self.status.set_text(
-                    _('Switching to buffer %(buffer_id)d (%(buffer_name)s)')
-                    % {'buffer_id': self.current + 1,
-                       'buffer_name': buf.filename}
-                )
+            self.gui.show_text_buffer(buf.text_buffer)
+            self.gui.show_changed_buffer_status(self.current + 1, buf.filename)
+
 
     def next_buffer(self):
         """ Switch to next buffer """
@@ -626,6 +622,9 @@ continue editing your document.")
         :rtype : UndoableBuffer
         """
         return self.buffers[self.current]
+
+    def supercede_gui(self, gui):
+        self.gui = gui
 
 
 class VimEmulator(object):

@@ -10,19 +10,53 @@ __builtin__._ = lambda str: str
 
 import editor_input
 from PyRoom.gui import AbstractGUI
+from PyRoom.gui import GUI
 from PyRoom.preferences import PyroomConfig
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
 
 
-def test_can_create_an_editor_with_mock_gui(self):
-    pyroom_config = PyroomConfig()
-    pyroom_config.set('session', 'private', '1')
-    editor = BasicEdit(pyroom_config, I())
-    pass
+class GUIExtractionAcceptanceTest(TestCase):
+
+    mock_buffers = [
+        UndoableBuffer(),
+        UndoableBuffer(),
+        UndoableBuffer(),
+    ]
+
+    def setUp(self):
+        self.pyroom_config = PyroomConfig()
+        self.pyroom_config.set('session', 'private', '1')
+        self.editor = BasicEdit(self.pyroom_config)
+
+    def test_can_supercede_gui_in_editor(self):
+        gui = MockGUI()
+        self.editor.gui = gui
+
+    def test_setting_buffer_tells_gtk_textbox_to_set_buffer(self):
+        def test_set_buffer_is_called(text_buffer):
+            self.assertEquals(
+                text_buffer,
+                self.mock_buffers[2].text_buffer
+            )
+
+        gui = GUI(self.pyroom_config)
+        gui.textbox.set_buffer = test_set_buffer_is_called
+        self.editor.gui = gui
+
+        self.editor.buffers = self.mock_buffers
+        self.editor.set_buffer(2)
+
+    def test_switching_to_next_buffer_sets_the_expected_buffer(self):
+        pass
+
 
 
 class MockGUI(AbstractGUI):
+
+    def __init__(self):
+        pass
+
     def apply_theme(self):
         super(MockGUI, self).apply_theme()
 
