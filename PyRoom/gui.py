@@ -343,3 +343,9 @@ class GUI(AbstractGUI):
                    'buffer_name': buffer_filename}
             )
 
+    def place_cursor_at_start_of_buffer(self, buffer_insert):
+        self.textbox.scroll_to_mark(
+            buffer_insert,
+            0.0,
+        )
+

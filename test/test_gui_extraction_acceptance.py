@@ -65,6 +65,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.supercede_gui(gui)
 
         self.editor.next_buffer()
+
         self.assertTrue(WasCalled.called)
 
 class MockGUI(AbstractGUI):

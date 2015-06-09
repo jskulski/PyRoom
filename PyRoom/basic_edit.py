@@ -563,10 +563,7 @@ continue editing your document.")
         else:
             self.current = 0
         self.set_buffer(self.current)
-        self.gui.textbox.scroll_to_mark(
-            self.get_current_buffer().get_insert(),
-            0.0,
-        )
+        self.gui.place_cursor_at_start_of_buffer(self.get_current_buffer().get_insert())
 
     def prev_buffer(self):
         """ Switch to prev buffer """
@@ -576,10 +573,7 @@ continue editing your document.")
         else:
             self.current = len(self.buffers) - 1
         self.set_buffer(self.current)
-        self.gui.textbox.scroll_to_mark(
-            self.get_current_buffer().get_insert(),
-            0.0,
-        )
+        self.gui.place_cursor_at_start_of_buffer(self.get_current_buffer().get_insert())
 
     def dialog_quit(self):
         """the quit dialog"""
