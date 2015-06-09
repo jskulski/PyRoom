@@ -23,7 +23,7 @@ class TestAutosaveAcceptance(TestCase):
         pyroom_config = PyroomConfig()
         pyroom_config.set('editor', 'autosave', '1')
         pyroom_config.set('editor', 'autosavetime', str(autosave_time))
-        pyroom_config.clear_session = 1
+        pyroom_config.set('session', 'private', '1')
         editor = BasicEdit(pyroom_config)
 
         expected_content = 'hello these are words in a document'

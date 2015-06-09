@@ -25,7 +25,11 @@ class TestBasicEditAcceptance(TestCase):
         buffer.place_cursor(buffer.get_end_iter())
 
     def test_can_create_an_editor(self):
-        editor = BasicEdit(PyroomConfig())
+        pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'private', '1')
+        editor = BasicEdit(pyroom_config)
+
+        self.assertIsInstance(editor, BasicEdit)
 
     def test_can_type_in_editor_and_see_it_in_buffer(self):
         editor = self._create_private_session_editor()

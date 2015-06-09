@@ -370,6 +370,13 @@ Open those instead of the original file?''')
             """
             fname = autosave.get_autosave_filename(filename)
             if os.path.isfile(fname):
+                print '-------'
+                print 'filename = %s ' % filename
+                print 'autosave fname = %s ' % fname
+                import traceback
+                for line in traceback.format_stack():
+                    print line.strip()
+                print '-------'
                 if self.ask_restore():
                     return fname
             return filename

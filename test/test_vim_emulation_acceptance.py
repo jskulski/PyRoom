@@ -39,7 +39,9 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
         self.assertEquals(buffer_text, 'i')
 
     def test_that_vim_emulator_object_is_not_created_in_editor(self):
-        default_basic_editor = BasicEdit(PyroomConfig())
+        pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'private', '1')
+        default_basic_editor = BasicEdit(pyroom_config)
         self.assertIsNone(default_basic_editor.vim_emulator)
 
     def test_that_vim_emulator_is_created_if_turned_on_in_config(self):
