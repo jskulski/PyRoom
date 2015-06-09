@@ -18,9 +18,9 @@ def type_key(key_char, basic_editor):
         type_event.keyval = gtk.keysyms.__dict__.get(key_char)
 
     type_event.time = 0
-    basic_editor.textbox.emit('key_press_event', type_event)
+    basic_editor.gui.textbox.emit('key_press_event', type_event)
 
 def retrieve_current_buffer_text(basic_editor):
-    buffer = basic_editor.textbox.get_buffer()
+    buffer = basic_editor.gui.textbox.get_buffer()
     buffer_text = buffer.get_text(*buffer.get_bounds())
     return buffer_text

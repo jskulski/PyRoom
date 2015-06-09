@@ -174,7 +174,6 @@ class BasicEdit(object):
         self.status = self.gui.status
         self.window = self.gui.window
         self.window.add_accel_group(make_accel_group(self))
-        self.textbox = self.gui.textbox
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
         self.autosave_timeout_id = ''
@@ -187,17 +186,9 @@ class BasicEdit(object):
         if opened_file_list == []:
             self.new_buffer()
 
-        self.textbox.connect('key-press-event', self.key_press_event)
+        self.gui.textbox.connect('key-press-event', self.key_press_event)
 
-        self.textbox.set_pixels_below_lines(
-            int(self.config.get("visual", "linespacing"))
-        )
-        self.textbox.set_pixels_above_lines(
-            int(self.config.get("visual", "linespacing"))
-        )
-        self.textbox.set_pixels_inside_wrap(
-            int(self.config.get("visual", "linespacing"))
-        )
+        self.gui.style_textbox()
 
         # Autosave timer object
         autosave.start_autosave(self)
@@ -553,7 +544,7 @@ continue editing your document.")
         if index >= 0 and index < len(self.buffers):
             self.current = index
             buf = self.get_current_buffer()
-            self.textbox.set_buffer(buf.text_buffer)
+            self.gui.textbox.set_buffer(buf.text_buffer)
             if hasattr(self, 'status'):
                 self.status.set_text(
                     _('Switching to buffer %(buffer_id)d (%(buffer_name)s)')

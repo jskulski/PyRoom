@@ -339,3 +339,15 @@ class GUI(AbstractGUI):
             adj.value -= adj.step_increment
         else:
             adj.value = 0
+
+    def style_textbox(self):
+        self.textbox.set_pixels_below_lines(
+            int(self.config.get("visual", "linespacing"))
+        )
+        self.textbox.set_pixels_above_lines(
+            int(self.config.get("visual", "linespacing"))
+        )
+        self.textbox.set_pixels_inside_wrap(
+            int(self.config.get("visual", "linespacing"))
+        )
+
