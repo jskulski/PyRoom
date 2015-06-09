@@ -196,7 +196,7 @@ class BasicEdit(object):
         self.window.show_all()
         self.window.fullscreen()
 
-        self._quote_handle_unquote_multiple_monitors()
+        self._adjust_window_if_multiple_monitors()
 
         self._defines_the_glade_file_functions_for_use_on_closing_a_buffer()
         self._defines_the_glade_file_functions_for_use_on_exit()
@@ -232,7 +232,7 @@ class BasicEdit(object):
         }
         self.wTree.signal_autoconnect(dic)
 
-    def _quote_handle_unquote_multiple_monitors(self):
+    def _adjust_window_if_multiple_monitors(self):
         screen = gtk.gdk.screen_get_default()
         root_window = screen.get_root_window()
         mouse_x, mouse_y, mouse_mods = root_window.get_pointer()
