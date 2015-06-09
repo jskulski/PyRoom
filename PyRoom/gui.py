@@ -161,25 +161,6 @@ class AbstractGUI(object):
         pass
 
 
-class NullGUI(AbstractGUI):
-    def apply_theme(self):
-        super(NullGUI, self).apply_theme()
-
-    def scroll_event(self, widget, event):
-        super(NullGUI, self).scroll_event(widget, event)
-
-    def destroy(self, widget, data):
-        super(NullGUI, self).destroy(widget, data)
-
-    def quit(self):
-        super(NullGUI, self).quit()
-
-    def scroll_down(self):
-        super(NullGUI, self).scroll_down()
-
-    def scroll_up(self):
-        super(NullGUI, self).scroll_up()
-
 
 class GUI(AbstractGUI):
     """our basic global gui object"""
