@@ -28,9 +28,7 @@ class TestBasicEditAcceptance(TestCase):
         editor = BasicEdit(PyroomConfig())
 
     def test_can_type_in_editor_and_see_it_in_buffer(self):
-        pyroom_config = PyroomConfig()
-        pyroom_config.clear_session = '1'
-        editor = BasicEdit(pyroom_config)
+        editor = self._create_private_session_editor()
 
         hello_world = "Hello, World"
         editor_input.type_keys(hello_world, editor)
@@ -44,9 +42,7 @@ class TestBasicEditAcceptance(TestCase):
         with file(test_file_path) as test_file:
             test_file_contents = test_file.read()
 
-        pyroom_config = PyroomConfig()
-        pyroom_config.clear_session = 1
-        editor = BasicEdit(pyroom_config)
+        editor = self._create_private_session_editor()
         editor.open_file(test_file_path)
 
         self.assertEquals(
@@ -58,9 +54,7 @@ class TestBasicEditAcceptance(TestCase):
         test_file_path = '/tmp/pyroom.unittest.test_file'
         expected_test_file_contents = "Hello, this is my new file"
 
-        pyroom_config = PyroomConfig()
-        pyroom_config.clear_session = 1
-        editor = BasicEdit(pyroom_config)
+        editor = self._create_private_session_editor()
 
         editor_input.type_keys(expected_test_file_contents, editor)
         buffer = editor.get_current_buffer()
@@ -76,10 +70,13 @@ class TestBasicEditAcceptance(TestCase):
             actual_test_file_contents
         )
 
-    def test_first_opened_buffer_is_unnamed(self):
+    def _create_private_session_editor(self):
         pyroom_config = PyroomConfig()
-        pyroom_config.clear_session = 1
-        editor = BasicEdit(pyroom_config)
+        pyroom_config.set('session', 'private', '1')
+        return BasicEdit(pyroom_config)
+
+    def test_first_opened_buffer_is_unnamed(self):
+        editor = self._create_private_session_editor()
         self.assertFalse(editor.get_current_buffer().has_filename())
 
 
