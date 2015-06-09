@@ -48,9 +48,24 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.set_buffer(2)
 
     def test_switching_to_next_buffer_sets_the_expected_buffer(self):
-        pass
+        class WasCalled:
+            called = False
+        def _test_scroll_to_mark_called(buffer_insert, position):
+            WasCalled.called = True
+            self.assertEquals(
+                buffer_insert,
+                self.mock_buffers[1].get_insert()
+            )
+            self.assertEquals(0.0, position)
 
+        self.editor.buffers = self.mock_buffers
 
+        gui = GUI(self.pyroom_config)
+        gui.textbox.scroll_to_mark = _test_scroll_to_mark_called
+        self.editor.supercede_gui(gui)
+
+        self.editor.next_buffer()
+        self.assertTrue(WasCalled.called)
 
 class MockGUI(AbstractGUI):
 
