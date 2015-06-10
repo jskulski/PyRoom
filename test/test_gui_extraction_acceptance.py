@@ -28,6 +28,11 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'private', '1')
         self.editor = BasicEdit(self.pyroom_config)
+        self.editor.buffers = self.mock_buffers
+        self.gui = GUI(self.pyroom_config)
+        self.editor.gui = self.gui
+
+        self.spy_was_called = False
 
     def test_can_supercede_gui_in_editor(self):
         gui = MockGUI()
@@ -37,36 +42,44 @@ class GUIExtractionAcceptanceTest(TestCase):
         def test_set_buffer_is_called(text_buffer):
             self.assertEquals(
                 text_buffer,
-                self.mock_buffers[2].text_buffer
+                self.mock_buffers[1].text_buffer
             )
 
-        gui = GUI(self.pyroom_config)
-        gui.textbox.set_buffer = test_set_buffer_is_called
-        self.editor.gui = gui
+        self.gui.textbox.set_buffer = test_set_buffer_is_called
 
-        self.editor.buffers = self.mock_buffers
-        self.editor.set_buffer(2)
+        self.editor.set_buffer(1)
 
     def test_switching_to_next_buffer_sets_the_expected_buffer(self):
-        class WasCalled:
-            called = False
-        def _test_scroll_to_mark_called(buffer_insert, position):
-            WasCalled.called = True
-            self.assertEquals(
-                buffer_insert,
-                self.mock_buffers[1].get_insert()
-            )
-            self.assertEquals(0.0, position)
-
-        self.editor.buffers = self.mock_buffers
-
-        gui = GUI(self.pyroom_config)
-        gui.textbox.scroll_to_mark = _test_scroll_to_mark_called
-        self.editor.supercede_gui(gui)
+        self.editor.set_buffer(0)
+        self.gui.textbox.scroll_to_mark = self._assert_cursor_scrolled_to_mark
 
         self.editor.next_buffer()
 
-        self.assertTrue(WasCalled.called)
+        self.assertTrue(self.spy_was_called)
+
+    def test_switching_to_prev_buffer_sets_expected_buffer(self):
+        self.editor.set_buffer(2)
+        self.gui.textbox.scroll_to_mark = self._assert_cursor_scrolled_to_mark
+
+        self.editor.prev_buffer()
+
+        self.assertTrue(self.spy_was_called)
+
+
+    def test_that_editing_a_buffer_then_quitting_causes_save_dialog(self):
+        pass
+
+    def _assert_cursor_scrolled_to_mark(self, buffer_insert, position):
+        self.spy_was_called = True
+
+        self.assertEquals(
+            buffer_insert,
+            self.mock_buffers[1].get_insert()
+        )
+        self.assertEquals(0.0, position)
+
+
+
 
 class MockGUI(AbstractGUI):
 
