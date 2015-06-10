@@ -18,23 +18,30 @@ from PyRoom.undoable_buffer import UndoableBuffer
 
 class GUIExtractionAcceptanceTest(TestCase):
 
-    mock_buffers = [
-        UndoableBuffer(),
-        UndoableBuffer(),
-        UndoableBuffer(),
-    ]
-
     def setUp(self):
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'private', '1')
 
         self.editor = BasicEdit(self.pyroom_config)
+        self.mock_buffers = self._setup_mock_buffers()
         self.editor.buffers = self.mock_buffers
 
         self.gui = GUI(self.pyroom_config)
         self.editor.gui = self.gui
+        self.disable_gtk_quit()
 
         self.spy_was_called = False
+
+    def _setup_mock_buffers(self):
+        return [
+            UndoableBuffer(),
+            UndoableBuffer(),
+            UndoableBuffer(),
+        ]
+
+
+    def disable_gtk_quit(self):
+        self.editor.gui.quit = self._noop
 
     def test_can_supercede_gui_in_editor(self):
         gui = MockGUI()
@@ -67,7 +74,6 @@ class GUIExtractionAcceptanceTest(TestCase):
 
         self.assertTrue(self.spy_was_called)
 
-
     def test_that_editing_a_buffer_then_quitting_causes_save_dialog(self):
         self.editor.set_buffer(0)
         def mock_quit_dialog():
@@ -76,12 +82,21 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.quitdialog.show = mock_quit_dialog
         editor_input.type_keys('modify the buffer', self.editor)
 
-        # disable gtk quit
-        self.editor.gui.quit = self._noop
-
         self.editor.dialog_quit()
 
         self.assertTrue(self.editor.quitdialog.show.was_called)
+
+    def test_that_quitting_with_no_modified_buffers_does_not_show_dialog(self):
+        self.editor.set_buffer(0)
+        def mock_quit_dialog():
+            mock_quit_dialog.was_called = True
+        mock_quit_dialog.was_called = False
+        self.editor.quitdialog.show = mock_quit_dialog
+
+        self.editor.dialog_quit()
+
+        self.assertFalse(self.editor.quitdialog.show.was_called)
+
 
     def _noop(self):
         pass
