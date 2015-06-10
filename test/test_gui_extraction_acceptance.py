@@ -82,7 +82,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.quitdialog.show = mock_quit_dialog
         editor_input.type_keys('modify the buffer', self.editor)
 
-        self.editor.dialog_quit()
+        self.editor.ask_to_save_if_modifed_buffers_else_quit()
 
         self.assertTrue(self.editor.quitdialog.show.was_called)
 
@@ -93,7 +93,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         mock_quit_dialog.was_called = False
         self.editor.quitdialog.show = mock_quit_dialog
 
-        self.editor.dialog_quit()
+        self.editor.ask_to_save_if_modifed_buffers_else_quit()
 
         self.assertFalse(self.editor.quitdialog.show.was_called)
 
