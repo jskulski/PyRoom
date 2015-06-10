@@ -207,19 +207,13 @@ class BasicEdit(object):
         self.gui.apply_theme()
 
     def _defines_the_glade_file_functions_for_use_on_exit(self):
-
-        def hide_dialog_and_quit_pyroom(widget, data=None):
-            print 'hi there'
-            self.quit_quit(widget, data)
-
-
         self.aTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "QuitSave")
-        self.quitdialog = self.aTree.get_widget("QuitSave")
-        self.quitdialog.set_transient_for(self.window)
+        self.gui.quitdialog = self.aTree.get_widget("QuitSave")
+        self.gui.quitdialog.set_transient_for(self.window)
         dic = {
-            "on_button-close2_clicked": hide_dialog_and_quit_pyroom,
+            "on_button-close2_clicked": self.hide_dialog_and_quit_editor,
             "on_button-cancel2_clicked": self.cancel_quit,
             "on_button-save2_clicked": self.save_quit,
         }
@@ -584,7 +578,7 @@ continue editing your document.")
     def ask_to_save_if_modifed_buffers_else_quit(self):
         count = self.count_modified_buffers()
         if count > 0:
-            self.quitdialog.show()
+            self.show_quit_dialog()
         else:
             self.quit()
 
@@ -597,23 +591,32 @@ continue editing your document.")
 
     def cancel_quit(self, widget, data=None):
         """don't quit"""
-        self.quitdialog.hide()
+        self.hide_quit_dialog()
 
     def save_quit(self, widget, data=None):
         """save before quitting"""
-        self.quitdialog.hide()
-        for buf in self.buffers:
-            if buf.modified:
-                if buf.filename == FILE_UNNAMED:
-                    self.save_file_as()
-                else:
-                    self.save_file_to_disk()
+        self.hide_quit_dialog()
+        for buffer in self.buffers:
+            if buffer.modified:
+                self.ask_for_filename_and_save_buffer(buffer)
         self.quit()
 
-    def quit_quit(self, widget, data=None):
+    def ask_for_filename_and_save_buffer(self, buf):
+        if buf.filename == FILE_UNNAMED:
+            self.save_file_as()
+        else:
+            self.save_file_to_disk()
+
+    def hide_dialog_and_quit_editor(self, widget, data=None):
         """really quit"""
-        self.quitdialog.hide()
+        self.hide_quit_dialog()
         self.quit()
+
+    def hide_quit_dialog(self):
+        self.gui.quitdialog.hide()
+
+    def show_quit_dialog(self):
+        self.gui.quitdialog.show()
 
     def quit(self):
         """cleanup before quitting"""
