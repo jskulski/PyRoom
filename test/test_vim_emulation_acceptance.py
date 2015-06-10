@@ -18,8 +18,8 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
 
     def setUp(self):
         self.pyroom_config = PyroomConfig()
+        self.pyroom_config.set('session', 'private', '1')
         self.pyroom_config.set('editor', 'vim_emulation_mode', '1')
-        self.pyroom_config.clear_session = 1
         self.basic_editor = BasicEdit(self.pyroom_config)
 
     def test_that_vim_emulation_mode_is_off_by_default_in_editor(self):
