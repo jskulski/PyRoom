@@ -98,6 +98,20 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.assertFalse(self.editor.quitdialog.show.was_called)
 
 
+    def test_cancel_action_on_quit_dialog_hides_dialog(self):
+        def mock_quit_dialog():
+            mock_quit_dialog.was_called = True
+        mock_quit_dialog.was_called = False
+        self.editor.quitdialog.hide = mock_quit_dialog
+
+        editor_input.type_keys('modifying the buffer with strings', self.editor)
+        self.editor.quit_quit(None)
+
+        self.assertTrue(self.editor.quitdialog.hide.was_called)
+
+
+
+
     def _noop(self):
         pass
 

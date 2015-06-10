@@ -99,7 +99,7 @@ def make_accel_group(edit_instance):
         'n': edit_instance.new_buffer,
         'o': edit_instance.open_file_dialog,
         'p': edit_instance.preferences.show,
-        'q': edit_instance.dialog_quit,
+        'q': edit_instance.ask_to_save_if_modifed_buffers_else_quit,
         's': edit_instance.save_file_to_disk_and_session,
         'w': edit_instance.close_dialog,
         'y': edit_instance.redo,
@@ -207,13 +207,19 @@ class BasicEdit(object):
         self.gui.apply_theme()
 
     def _defines_the_glade_file_functions_for_use_on_exit(self):
+
+        def hide_dialog_and_quit_pyroom(widget, data=None):
+            print 'hi there'
+            self.quit_quit(widget, data)
+
+
         self.aTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "QuitSave")
         self.quitdialog = self.aTree.get_widget("QuitSave")
         self.quitdialog.set_transient_for(self.window)
         dic = {
-            "on_button-close2_clicked": self.quit_quit,
+            "on_button-close2_clicked": hide_dialog_and_quit_pyroom,
             "on_button-cancel2_clicked": self.cancel_quit,
             "on_button-save2_clicked": self.save_quit,
         }
@@ -575,16 +581,19 @@ continue editing your document.")
         self.set_buffer(self.current)
         self.gui.place_cursor_at_start_of_buffer(self.get_current_buffer().get_insert())
 
-    def dialog_quit(self):
-        """the quit dialog"""
-        count = 0
-        for buf in self.buffers:
-            if buf.modified:
-                count = count + 1
+    def ask_to_save_if_modifed_buffers_else_quit(self):
+        count = self.count_modified_buffers()
         if count > 0:
             self.quitdialog.show()
         else:
             self.quit()
+
+    def count_modified_buffers(self):
+        count = 0
+        for buf in self.buffers:
+            if buf.modified:
+                count = count + 1
+        return count
 
     def cancel_quit(self, widget, data=None):
         """don't quit"""
