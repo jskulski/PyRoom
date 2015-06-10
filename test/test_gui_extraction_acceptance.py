@@ -27,8 +27,10 @@ class GUIExtractionAcceptanceTest(TestCase):
     def setUp(self):
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'private', '1')
+
         self.editor = BasicEdit(self.pyroom_config)
         self.editor.buffers = self.mock_buffers
+
         self.gui = GUI(self.pyroom_config)
         self.editor.gui = self.gui
 
@@ -51,7 +53,7 @@ class GUIExtractionAcceptanceTest(TestCase):
 
     def test_switching_to_next_buffer_sets_the_expected_buffer(self):
         self.editor.set_buffer(0)
-        self.gui.textbox.scroll_to_mark = self._assert_cursor_scrolled_to_mark
+        self.gui.textbox.scroll_to_mark = self._assert_cursor_scrolled_to_mark_to_middle_buffer
 
         self.editor.next_buffer()
 
@@ -59,7 +61,7 @@ class GUIExtractionAcceptanceTest(TestCase):
 
     def test_switching_to_prev_buffer_sets_expected_buffer(self):
         self.editor.set_buffer(2)
-        self.gui.textbox.scroll_to_mark = self._assert_cursor_scrolled_to_mark
+        self.gui.textbox.scroll_to_mark = self._assert_cursor_scrolled_to_mark_to_middle_buffer
 
         self.editor.prev_buffer()
 
@@ -67,9 +69,24 @@ class GUIExtractionAcceptanceTest(TestCase):
 
 
     def test_that_editing_a_buffer_then_quitting_causes_save_dialog(self):
+        self.editor.set_buffer(0)
+        def mock_quit_dialog():
+            mock_quit_dialog.was_called = True
+        mock_quit_dialog.was_called = False
+        self.editor.quitdialog.show = mock_quit_dialog
+        editor_input.type_keys('modify the buffer', self.editor)
+
+        # disable gtk quit
+        self.editor.gui.quit = self._noop
+
+        self.editor.dialog_quit()
+
+        self.assertTrue(self.editor.quitdialog.show.was_called)
+
+    def _noop(self):
         pass
 
-    def _assert_cursor_scrolled_to_mark(self, buffer_insert, position):
+    def _assert_cursor_scrolled_to_mark_to_middle_buffer(self, buffer_insert, position):
         self.spy_was_called = True
 
         self.assertEquals(
