@@ -99,7 +99,7 @@ def make_accel_group(edit_instance):
         'n': edit_instance.new_buffer,
         'o': edit_instance.open_file_dialog,
         'p': edit_instance.preferences.show,
-        'q': edit_instance.ask_to_save_if_modifed_buffers_else_quit,
+        'q': edit_instance.save_dialog_or_quit_editor,
         's': edit_instance.save_file_to_disk_and_session,
         'w': edit_instance.close_dialog,
         'y': edit_instance.redo,
@@ -199,25 +199,17 @@ class BasicEdit(object):
         self._adjust_window_if_multiple_monitors()
 
         self._defines_the_glade_file_functions_for_use_on_closing_a_buffer()
-        self._defines_the_glade_file_functions_for_use_on_exit()
+        self.gui._defines_the_glade_file_functions_for_use_on_exit(
+            self.save_quit,
+            self.close_button_handler,
+            self.cancel_quit
+
+        )
 
         self.keybindings = define_keybindings(self)
         # this sucks, shouldn't have to call this here, textbox should
         # have its background and padding color from GUI().__init__() already
         self.gui.apply_theme()
-
-    def _defines_the_glade_file_functions_for_use_on_exit(self):
-        self.aTree = gtk.glade.XML(os.path.join(
-            self.config.pyroom_absolute_path, "interface.glade"),
-            "QuitSave")
-        self.gui.quitdialog = self.aTree.get_widget("QuitSave")
-        self.gui.quitdialog.set_transient_for(self.window)
-        dic = {
-            "on_button-close2_clicked": self.hide_dialog_and_quit_editor,
-            "on_button-cancel2_clicked": self.cancel_quit,
-            "on_button-save2_clicked": self.save_quit,
-        }
-        self.aTree.signal_autoconnect(dic)
 
     def _defines_the_glade_file_functions_for_use_on_closing_a_buffer(self):
         self.wTree = gtk.glade.XML(os.path.join(
@@ -575,7 +567,7 @@ continue editing your document.")
         self.set_buffer(self.current)
         self.gui.place_cursor_at_start_of_buffer(self.get_current_buffer().get_insert())
 
-    def ask_to_save_if_modifed_buffers_else_quit(self):
+    def save_dialog_or_quit_editor(self):
         count = self.count_modified_buffers()
         if count > 0:
             self.show_quit_dialog()
@@ -607,9 +599,12 @@ continue editing your document.")
         else:
             self.save_file_to_disk()
 
-    def hide_dialog_and_quit_editor(self, widget, data=None):
+    def close_button_handler(self, widget, data=None):
         """really quit"""
-        self.hide_quit_dialog()
+        self.gui.quitdialog.hide()
+        self.quit_editor()
+
+    def quit_editor(self):
         self.quit()
 
     def hide_quit_dialog(self):
