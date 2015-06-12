@@ -214,12 +214,12 @@ class BasicEdit(object):
         self.wTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "SaveBuffer")
-        self.gui.closedialog = self.wTree.get_widget("SaveBuffer")
-        self.gui.closedialog.set_transient_for(self.window)
+        self.gui.close_buffer_dialog = self.wTree.get_widget("SaveBuffer")
+        self.gui.close_buffer_dialog.set_transient_for(self.window)
         dic = {
-            "on_button-save_clicked": self.save_dialog,
-            "on_button-close_clicked": self.unsave_dialog,
-            "on_button-cancel_clicked": self.cancel_dialog,
+            "on_button-save_clicked": self.close_buffer_save_button_handler,
+            "on_button-close_clicked": self.close_buffer_close_without_save_button_handler,
+            "on_button-cancel_clicked": self.close_buffer_cancel_button_handler,
         }
         self.wTree.signal_autoconnect(dic)
 
@@ -497,22 +497,22 @@ continue editing your document.")
         """ask for confirmation if there are unsaved contents"""
         buf = self.get_current_buffer()
         if buf.modified:
-            self.gui.closedialog.show()
+            self.gui.close_buffer_dialog.show()
         else:
             self.close_current_buffer()
 
-    def cancel_dialog(self, widget, data=None):
+    def close_buffer_cancel_button_handler(self, widget, data=None):
         """dialog has been canceled"""
-        self.gui.closedialog.hide()
+        self.gui.close_buffer_dialog.hide()
 
-    def unsave_dialog(self, widget, data=None):
+    def close_buffer_close_without_save_button_handler(self, widget, data=None):
         """don't save before closing"""
-        self.gui.closedialog.hide()
+        self.gui.close_buffer_dialog.hide()
         self.close_current_buffer()
 
-    def save_dialog(self, widget, data=None):
+    def close_buffer_save_button_handler(self, widget, data=None):
         """save when closing"""
-        self.gui.closedialog.hide()
+        self.gui.close_buffer_dialog.hide()
         self.save_file_to_disk()
         self.close_current_buffer()
 
