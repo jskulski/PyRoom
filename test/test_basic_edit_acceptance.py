@@ -13,6 +13,8 @@ from PyRoom.preferences import PyroomConfig
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
 
+from PyRoom.preferences import Preferences
+from PyRoom.gui import GUI
 
 class TestBasicEditAcceptance(TestCase):
 
@@ -73,12 +75,27 @@ class TestBasicEditAcceptance(TestCase):
             actual_test_file_contents
         )
 
+    def test_first_opened_buffer_is_unnamed(self):
+        editor = self._create_private_session_editor()
+        self.assertFalse(editor.get_current_buffer().has_filename())
+
+    def test_can_create_editor_with_injected_preferences(self):
+        pyroom_config = PyroomConfig()
+        pyroom_config.set('session', 'private', '1')
+        preferences = Preferences(
+            gui=GUI(pyroom_config),
+            pyroom_config=pyroom_config
+        )
+        editor = BasicEdit(pyroom_config, preferences=preferences)
+
+        self.assertEquals(
+            editor.preferences,
+            preferences
+        )
+
+
     def _create_private_session_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')
         return BasicEdit(pyroom_config)
-
-    def test_first_opened_buffer_is_unnamed(self):
-        editor = self._create_private_session_editor()
-        self.assertFalse(editor.get_current_buffer().has_filename())
 

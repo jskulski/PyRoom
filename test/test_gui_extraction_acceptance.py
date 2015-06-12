@@ -45,6 +45,10 @@ class GUIExtractionAcceptanceTest(TestCase):
         gui = MockGUI()
         self.editor.gui = gui
 
+    # def test_can_create_editor_with_mock_gui(self):
+    #     BasicEdit(PyroomConfig(), MockGUI())
+    #     pass
+
     def test_setting_buffer_tells_gtk_textbox_to_set_buffer(self):
         def assert_function_is_called_correctly(text_buffer):
             self.assertEquals(
@@ -201,6 +205,22 @@ class GUIExtractionAcceptanceTest(TestCase):
 
 
 class MockGUI(AbstractGUI):
+
+    class MockWindow:
+        def add_accel_group(self, *args, **kwargs):
+            pass
+
+    class MockTexbox:
+        def modify_font(self, *args, **kwargs):
+            pass
+
+    class MockStatus:
+        def set_text(self, *args, **kwargs):
+            pass
+
+    window = MockWindow()
+    textbox = MockTexbox()
+    status = MockStatus()
 
     def __init__(self):
         pass

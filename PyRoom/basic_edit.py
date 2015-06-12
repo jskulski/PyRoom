@@ -139,7 +139,7 @@ class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
 
-    def __init__(self, pyroom_config, gui=None):
+    def __init__(self, pyroom_config, gui=None, preferences=None):
         self.current = 0
         self.buffers = []
         self.config = pyroom_config
@@ -163,17 +163,23 @@ class BasicEdit(object):
         if self.config.clear_session:
             self.session.clear()
 
-        self.preferences = Preferences(
-            gui=self.gui,
-            pyroom_config=self.config
-        )
+
+        if preferences is None:
+            self.preferences = Preferences(
+                gui=self.gui,
+                pyroom_config=self.config
+            )
+        else:
+            self.preferences = preferences
+            pass
+
         try:
             self.recent_manager = gtk.recent_manager_get_default()
         except AttributeError:
             self.recent_manager = None
         self.status = self.gui.status
         self.window = self.gui.window
-        self.window.add_accel_group(make_accel_group(self))
+        self.gui.window.add_accel_group(make_accel_group(self))
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
         self.autosave_timeout_id = ''
@@ -193,8 +199,8 @@ class BasicEdit(object):
         # Autosave timer object
         autosave.start_autosave(self)
 
-        self.window.show_all()
-        self.window.fullscreen()
+        self.gui.window.show_all()
+        self.gui.window.fullscreen()
 
         self._adjust_window_if_multiple_monitors()
 
@@ -220,8 +226,8 @@ class BasicEdit(object):
         mouse_x, mouse_y, mouse_mods = root_window.get_pointer()
         current_monitor_number = screen.get_monitor_at_point(mouse_x, mouse_y)
         monitor_geometry = screen.get_monitor_geometry(current_monitor_number)
-        self.window.move(monitor_geometry.x, monitor_geometry.y)
-        self.window.set_geometry_hints(None, min_width=monitor_geometry.width,
+        self.gui.window.move(monitor_geometry.x, monitor_geometry.y)
+        self.gui.window.set_geometry_hints(None, min_width=monitor_geometry.width,
                                        min_height=monitor_geometry.height, max_width=monitor_geometry.width,
                                        max_height=monitor_geometry.height
                                        )
@@ -288,7 +294,7 @@ class BasicEdit(object):
         returns False in any other case (declined/dialog closed)"""
         restore_dialog = gtk.Dialog(
             title=_('Restore backup?'),
-            parent=self.window,
+            parent=self.gui.window,
             flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
             buttons=(
                 gtk.STOCK_DISCARD, gtk.RESPONSE_REJECT,
@@ -324,7 +330,7 @@ Open those instead of the original file?''')
     def open_file_dialog(self):
         """ Open file """
 
-        chooser = gtk.FileChooserDialog('PyRoom', self.window,
+        chooser = gtk.FileChooserDialog('PyRoom', self.gui.window,
                 gtk.FILE_CHOOSER_ACTION_OPEN,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                 gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -436,7 +442,7 @@ the file.')
 
         buf = self.get_current_buffer()
 
-        chooser = gtk.FileChooserDialog('PyRoom', self.window,
+        chooser = gtk.FileChooserDialog('PyRoom', self.gui.window,
                 gtk.FILE_CHOOSER_ACTION_SAVE,
                 buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                 gtk.STOCK_SAVE, gtk.RESPONSE_OK))
