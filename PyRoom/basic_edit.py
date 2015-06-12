@@ -200,10 +200,9 @@ class BasicEdit(object):
 
         self._defines_the_glade_file_functions_for_use_on_closing_a_buffer()
         self.gui._defines_the_glade_file_functions_for_use_on_exit(
-            self.save_quit,
-            self.close_button_handler,
-            self.cancel_quit
-
+            self.save_and_quit_button_handler,
+            self.quit_without_saving_handler,
+            self.cancel_button_handler
         )
 
         self.keybindings = define_keybindings(self)
@@ -215,8 +214,8 @@ class BasicEdit(object):
         self.wTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "SaveBuffer")
-        self.closedialog = self.wTree.get_widget("SaveBuffer")
-        self.closedialog.set_transient_for(self.window)
+        self.gui.closedialog = self.wTree.get_widget("SaveBuffer")
+        self.gui.closedialog.set_transient_for(self.window)
         dic = {
             "on_button-save_clicked": self.save_dialog,
             "on_button-close_clicked": self.unsave_dialog,
@@ -498,22 +497,22 @@ continue editing your document.")
         """ask for confirmation if there are unsaved contents"""
         buf = self.get_current_buffer()
         if buf.modified:
-            self.closedialog.show()
+            self.gui.closedialog.show()
         else:
             self.close_current_buffer()
 
     def cancel_dialog(self, widget, data=None):
         """dialog has been canceled"""
-        self.closedialog.hide()
+        self.gui.closedialog.hide()
 
     def unsave_dialog(self, widget, data=None):
         """don't save before closing"""
-        self.closedialog.hide()
+        self.gui.closedialog.hide()
         self.close_current_buffer()
 
     def save_dialog(self, widget, data=None):
         """save when closing"""
-        self.closedialog.hide()
+        self.gui.closedialog.hide()
         self.save_file_to_disk()
         self.close_current_buffer()
 
@@ -581,11 +580,11 @@ continue editing your document.")
                 count = count + 1
         return count
 
-    def cancel_quit(self, widget, data=None):
+    def cancel_button_handler(self, widget, data=None):
         """don't quit"""
         self.hide_quit_dialog()
 
-    def save_quit(self, widget, data=None):
+    def save_and_quit_button_handler(self, widget, data=None):
         """save before quitting"""
         self.hide_quit_dialog()
         for buffer in self.buffers:
@@ -599,7 +598,7 @@ continue editing your document.")
         else:
             self.save_file_to_disk()
 
-    def close_button_handler(self, widget, data=None):
+    def quit_without_saving_handler(self, widget, data=None):
         """really quit"""
         self.gui.quitdialog.hide()
         self.quit_editor()

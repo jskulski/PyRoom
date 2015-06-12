@@ -46,13 +46,13 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.gui = gui
 
     def test_setting_buffer_tells_gtk_textbox_to_set_buffer(self):
-        def test_set_buffer_is_called(text_buffer):
+        def assert_function_is_called_correctly(text_buffer):
             self.assertEquals(
                 text_buffer,
                 self.mock_buffers[1].text_buffer
             )
 
-        self.editor.gui.textbox.set_buffer = test_set_buffer_is_called
+        self.editor.gui.textbox.set_buffer = assert_function_is_called_correctly
 
         self.editor.set_buffer(1)
 
@@ -94,7 +94,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.quit = self.spy()
 
         editor_input.type_keys('modifying the buffer with strings', self.editor)
-        self.editor.close_button_handler(None)
+        self.editor.quit_without_saving_handler(None)
 
         self.assertTrue(self.editor.gui.quitdialog.hide.was_called)
         self.assertTrue(self.editor.quit.was_called)
@@ -104,7 +104,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.quit = self.spy()
 
         editor_input.type_keys('modifying the buffer with strings', self.editor)
-        self.editor.cancel_quit(None)
+        self.editor.cancel_button_handler(None)
 
         self.assertTrue(self.editor.gui.quitdialog.hide.was_called)
         self.assertFalse(self.editor.quit.was_called)
@@ -116,7 +116,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.ask_for_filename_and_save_buffer = self.spy()
 
         editor_input.type_keys('modifying buffer with strings', self.editor)
-        self.editor.save_quit(None)
+        self.editor.save_and_quit_button_handler(None)
 
         self.assertTrue(self.editor.gui.quitdialog.hide.was_called)
         self.assertTrue(self.editor.ask_for_filename_and_save_buffer.was_called)
@@ -125,21 +125,21 @@ class GUIExtractionAcceptanceTest(TestCase):
     def test_closing_buffer_on_modified_buffer_shows_dialog(self):
         self.editor.set_buffer(0)
         editor_input.type_keys('modifying buffer with strings', self.editor)
-        self.editor.closedialog.show = self.spy()
+        self.editor.gui.closedialog.show = self.spy()
 
         self.editor.close_dialog()
 
-        self.assertTrue(self.editor.closedialog.show.was_called)
+        self.assertTrue(self.editor.gui.closedialog.show.was_called)
 
     def test_cancel_on_close_dialog_hides_dialog_does_not_close_buffer(self):
         self.editor.set_buffer(0)
         editor_input.type_keys('modifying buffer with strings', self.editor)
-        self.editor.closedialog.hide = self.spy()
+        self.editor.gui.closedialog.hide = self.spy()
         expected_current_buffer = self.editor.get_current_buffer()
 
         self.editor.cancel_dialog(None)
 
-        self.assertTrue(self.editor.closedialog.hide.was_called)
+        self.assertTrue(self.editor.gui.closedialog.hide.was_called)
         self.assertEquals(
             self.editor.get_current_buffer(),
             expected_current_buffer
@@ -149,12 +149,12 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.set_buffer(0)
         editor_input.type_keys('modifying buffer with strings', self.editor)
         next_buffer_in_stack = self.editor.buffers[1]
-        self.editor.closedialog.hide = self.spy()
+        self.editor.gui.closedialog.hide = self.spy()
         self.editor.save_file_to_disk = self.spy()
 
         self.editor.unsave_dialog(None)
 
-        self.assertTrue(self.editor.closedialog.hide.was_called)
+        self.assertTrue(self.editor.gui.closedialog.hide.was_called)
         self.assertEqual(
             self.editor.get_current_buffer(),
             next_buffer_in_stack
@@ -164,12 +164,12 @@ class GUIExtractionAcceptanceTest(TestCase):
     def test_close_with_save_button_works_as_advertised(self):
         self.editor.set_buffer(0)
         editor_input.type_keys('modifying buffer with strings', self.editor)
-        self.editor.closedialog.hide = self.spy()
+        self.editor.gui.closedialog.hide = self.spy()
         self.editor.save_file_to_disk = self.spy()
 
         self.editor.save_dialog(None)
 
-        self.assertTrue(self.editor.closedialog.hide.was_called)
+        self.assertTrue(self.editor.gui.closedialog.hide.was_called)
         self.assertEqual(
             self.editor.get_current_buffer(),
             self.editor.buffers[1]
