@@ -182,7 +182,7 @@ class Preferences(object):
     """our main preferences object, to be passed around where needed"""
     def __init__(self, gui, pyroom_config):
         self.config = pyroom_config
-        self.graphical = gui
+        self.gui = gui
         self.wTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "dialog-preferences")
@@ -254,12 +254,12 @@ class Preferences(object):
         
         self.toggleautosave(self.autosave)
 
-        self.window.set_transient_for(self.graphical.window)
+        self.window.set_transient_for(self.gui.window)
 
         self.stylesvalues = {'custom': 0}
         self.startingvalue = 1
 
-        self.graphical.theme = Theme(self.config.get('visual', 'theme'))
+        self.gui.theme = Theme(self.config.get('visual', 'theme'))
         # Add themes to combobox
         for i in self.config.themeslist:
             self.stylesvalues['%s' % (i)] = self.startingvalue
@@ -333,7 +333,7 @@ class Preferences(object):
             font_type = widget.get_name().split('_')[1]
             self.config.set('visual', 'use_font_type', font_type)
         self.set_font()
-        self.graphical.apply_theme()
+        self.gui.apply_theme()
     
     def set_font(self):
         """set font according to settings"""
@@ -343,7 +343,7 @@ class Preferences(object):
         else:
             font_type = self.config.get('visual', 'use_font_type')
             new_font = self.gnome_fonts[font_type]
-        self.graphical.textbox.modify_font(pango.FontDescription(new_font))
+        self.gui.textbox.modify_font(pango.FontDescription(new_font))
         
     def build_visual_preferences_from_gui(self):
         """reads custom themes"""
@@ -374,7 +374,7 @@ class Preferences(object):
         res = chooser.run()
         if res == gtk.RESPONSE_OK:
             theme_filename = chooser.get_filename()
-            self.graphical.theme.save(theme_filename)
+            self.gui.theme.save(theme_filename)
             theme_name = os.path.basename(theme_filename)
             theme_id = max(self.stylesvalues.values()) + 1
             self.presetscombobox.append_text(theme_name)
@@ -427,20 +427,20 @@ class Preferences(object):
             self.config.get('visual', 'custom_font')
         )
         parse_color = lambda x: gtk.gdk.color_parse(
-            self.graphical.theme[x]
+            self.gui.theme[x]
         )
         self.colorpreference.set_color(parse_color('foreground'))
         self.textboxbgpreference.set_color(parse_color('textboxbg'))
         self.bgpreference.set_color(parse_color('background'))
         self.borderpreference.set_color(parse_color('border'))
         self.paddingpreference.set_value(float(
-            self.graphical.theme['padding'])
+            self.gui.theme['padding'])
         )
         self.widthpreference.set_value(
-            float(self.graphical.theme['width']) * 100
+            float(self.gui.theme['width']) * 100
         )
         self.heightpreference.set_value(
-            float(self.graphical.theme['height']) * 100
+            float(self.gui.theme['height']) * 100
         )
 
     def presetchanged(self, widget, mode=None):
@@ -466,33 +466,33 @@ class Preferences(object):
             })
 
             self.config.set("visual", "theme", str(active_theme))
-            self.graphical.theme = custom_theme
+            self.gui.theme = custom_theme
             self.save_custom_button.set_sensitive(True)
         else:
             new_theme = Theme(active_theme)
-            self.graphical.theme = new_theme
+            self.gui.theme = new_theme
             parse_color = lambda x: gtk.gdk.color_parse(
-                self.graphical.theme[x]
+                self.gui.theme[x]
             )
             self.colorpreference.set_color(parse_color('foreground'))
             self.textboxbgpreference.set_color(parse_color('textboxbg'))
             self.bgpreference.set_color(parse_color('background'))
             self.borderpreference.set_color(parse_color('border'))
             self.paddingpreference.set_value(float(
-                self.graphical.theme['padding'])
+                self.gui.theme['padding'])
             )
             self.widthpreference.set_value(
-                float(self.graphical.theme['width']) * 100
+                float(self.gui.theme['width']) * 100
             )
             self.heightpreference.set_value(
-                float(self.graphical.theme['height']) * 100
+                float(self.gui.theme['height']) * 100
             )
             self.config.set("visual", "theme", str(active_theme))
             self.presetscombobox.set_active(active_theme_id)
             self.save_custom_button.set_sensitive(False)
 
-        self.graphical.apply_theme()
-        self.graphical.status.set_text(_('Style Changed to %s') %
+        self.gui.apply_theme()
+        self.gui.status.set_text(_('Style Changed to %s') %
                                         (active_theme))
 
     def show(self):
@@ -506,7 +506,7 @@ class Preferences(object):
             self.config.set('visual', 'indent', '0')
         else:
             self.config.set('visual', 'indent', '1')
-        self.graphical.apply_theme()
+        self.gui.apply_theme()
 
     def toggleborder(self, widget):
         """toggle border display"""
@@ -516,19 +516,19 @@ class Preferences(object):
         else:
             self.config.showborderstate = 1
             self.config.set('visual', 'showborder', '1')
-        self.graphical.boxout.set_border_width(
+        self.gui.boxout.set_border_width(
             self.config.showborderstate
         )
-        self.graphical.boxin.set_border_width(
+        self.gui.boxin.set_border_width(
             self.config.showborderstate
         )
 
     def changelinespacing(self, widget):
         """Change line spacing"""
         self.linespacing = self.linespacing_spinbutton.get_value()
-        self.graphical.textbox.set_pixels_below_lines(int(self.linespacing))
-        self.graphical.textbox.set_pixels_above_lines(int(self.linespacing))
-        self.graphical.textbox.set_pixels_inside_wrap(int(self.linespacing))
+        self.gui.textbox.set_pixels_below_lines(int(self.linespacing))
+        self.gui.textbox.set_pixels_above_lines(int(self.linespacing))
+        self.gui.textbox.set_pixels_inside_wrap(int(self.linespacing))
         
 
     def toggleautosave(self, widget):
