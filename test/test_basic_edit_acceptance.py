@@ -33,7 +33,7 @@ class TestBasicEditAcceptance(TestCase):
     def test_can_create_an_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')
-        editor = self.factory.create_editor(pyroom_config)
+        editor = self.factory.create_new_editor(pyroom_config)
 
         self.assertIsInstance(editor, BasicEdit)
 
@@ -106,5 +106,5 @@ class TestBasicEditAcceptance(TestCase):
     def _create_private_session_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')
-        return self.factory.create_editor(pyroom_config)
+        return self.factory.create_new_editor(pyroom_config)
 

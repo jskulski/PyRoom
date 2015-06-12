@@ -24,7 +24,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'private', '1')
 
-        self.editor = self.factory.create_editor(self.pyroom_config)
+        self.editor = self.factory.create_new_editor(self.pyroom_config)
         self.mock_buffers = self._setup_mock_buffers()
         self.editor.buffers = self.mock_buffers
 

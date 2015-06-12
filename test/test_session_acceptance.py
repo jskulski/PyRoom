@@ -26,7 +26,7 @@ class SessionAcceptanceTest(unittest.TestCase):
 
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'filepath', self.session_filepath)
-        self.base_edit = self.factory.create_editor(self.pyroom_config)
+        self.base_edit = self.factory.create_new_editor(self.pyroom_config)
 
     def tearDown(self):
         if (os.path.isfile(self.session_filepath)):
@@ -59,7 +59,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         editor.save_file_to_disk_and_session(),
         del editor
 
-        editor_restarted = self.factory.create_editor(self.pyroom_config)
+        editor_restarted = self.factory.create_new_editor(self.pyroom_config)
 
         self.assertEquals(
             saved_filepath,
@@ -84,7 +84,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filepath)
         del self.base_edit
 
-        restarted_base_edit = self.factory.create_editor(self.pyroom_config)
+        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filepath in session_filenames)
 
@@ -93,7 +93,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         del self.base_edit
 
         self.pyroom_config.clear_session = True
-        restarted_base_edit = self.factory.create_editor(self.pyroom_config)
+        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
 
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([], session_filenames)
@@ -102,7 +102,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filepath)
         del self.base_edit
 
-        restarted_base_edit = self.factory.create_editor(self.pyroom_config)
+        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
 
         buffer_filenames = [buffer.filename for buffer in restarted_base_edit.buffers]
         self.assertTrue(self.test_filepath in buffer_filenames)
@@ -111,7 +111,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         self.base_edit.open_file_and_add_to_session(self.test_filepath)
         del self.base_edit
 
-        restarted_base_edit = self.factory.create_editor(self.pyroom_config)
+        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
 
         session_filenames = restarted_base_edit.session.get_open_filenames()
         self.assertEquals([self.test_filepath], session_filenames)
@@ -164,13 +164,13 @@ class SessionAcceptanceTest(unittest.TestCase):
         user_session_pyroom_config = PyroomConfig()
         user_session_pyroom_config.set('session', 'private', '0')
         user_session_pyroom_config.set('session', 'filepath', session_filepath)
-        return self.factory.create_editor(user_session_pyroom_config)
+        return self.factory.create_new_editor(user_session_pyroom_config)
 
     def _create_private_session_editor(self, session_filepath):
         private_session_pyroom_config = PyroomConfig()
         private_session_pyroom_config.set('session', 'private', '1')
         private_session_pyroom_config.set('session', 'filepath', session_filepath)
-        return self.factory.create_editor(private_session_pyroom_config)
+        return self.factory.create_new_editor(private_session_pyroom_config)
 
     def _generate_temporary_filepath(self):
         temporary_filename = next(tempfile._get_candidate_names())

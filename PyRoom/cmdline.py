@@ -65,7 +65,7 @@ simply and efficiently in a full-screen window, with no distractions.'))
     # Create relevant buffers for file and load them
     pyroom_config = pyroom_config_file_builder_and_reader.config
     factory = Factory(pyroom_config)
-    editor = factory.create_editor()
+    editor = factory.create_new_editor()
     buffnum = 0
     if len(files):
         for filename in files:

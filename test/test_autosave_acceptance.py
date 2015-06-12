@@ -29,7 +29,7 @@ class TestAutosaveAcceptance(TestCase):
         pyroom_config.set('editor', 'autosave', '1')
         pyroom_config.set('editor', 'autosavetime', str(autosave_time))
         pyroom_config.set('session', 'private', '1')
-        editor = self.factory.create_editor(pyroom_config)
+        editor = self.factory.create_new_editor(pyroom_config)
 
         expected_content = 'hello these are words in a document'
         editor_input.type_keys(expected_content, editor)
