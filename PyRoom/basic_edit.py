@@ -171,7 +171,6 @@ class BasicEdit(object):
             )
         else:
             self.preferences = preferences
-            pass
 
         try:
             self.recent_manager = gtk.recent_manager_get_default()

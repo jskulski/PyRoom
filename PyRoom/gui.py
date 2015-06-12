@@ -160,6 +160,9 @@ class AbstractGUI(object):
     def scroll_up(self):
         pass
 
+    @abstractmethod
+    def show_text_buffer(self, text_buffer):
+        pass
 
 
 class GUI(AbstractGUI):

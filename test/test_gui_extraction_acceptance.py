@@ -12,6 +12,7 @@ import editor_input
 from PyRoom.gui import AbstractGUI
 from PyRoom.gui import GUI
 from PyRoom.preferences import PyroomConfig
+from PyRoom.preferences import Preferences
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
 
@@ -46,8 +47,11 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.gui = gui
 
     # def test_can_create_editor_with_mock_gui(self):
-    #     BasicEdit(PyroomConfig(), MockGUI())
-    #     pass
+    #     pyroom_config = PyroomConfig()
+    #     mock_gui = MockGUI()
+    #     gui = GUI(pyroom_config)
+    #     preferences = Preferences(gui=gui, pyroom_config=pyroom_config)
+    #     BasicEdit(pyroom_config, mock_gui, preferences)
 
     def test_setting_buffer_tells_gtk_textbox_to_set_buffer(self):
         def assert_function_is_called_correctly(text_buffer):
@@ -180,14 +184,12 @@ class GUIExtractionAcceptanceTest(TestCase):
         )
         self.assertTrue(self.editor.save_file_to_disk.was_called)
 
-
-
     def spy(self):
-        def mock_quit_dialog(*args, **kwargs):
-            mock_quit_dialog.was_called = True
+        def spy_function(*args, **kwargs):
+            spy_function.was_called = True
 
-        mock_quit_dialog.was_called = False
-        return mock_quit_dialog
+        spy_function.was_called = False
+        return spy_function
 
     def _noop(self):
         pass
@@ -200,7 +202,6 @@ class GUIExtractionAcceptanceTest(TestCase):
             self.mock_buffers[1].get_insert()
         )
         self.assertEquals(0.0, position)
-
 
 
 
@@ -242,4 +243,7 @@ class MockGUI(AbstractGUI):
 
     def scroll_up(self):
         super(MockGUI, self).scroll_up()
+        
+    def show_text_buffer(self, text_buffer):
+        super(MockGUI, self).show_text_buffer(text_buffer)
 
