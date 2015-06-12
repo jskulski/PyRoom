@@ -349,7 +349,7 @@ class GUI(AbstractGUI):
             0.0,
         )
 
-    def _defines_the_glade_file_functions_for_use_on_exit(
+    def create_quit_dialog_and_register_handlers(
             self,
             save_button_callback,
             close_button_callback,
@@ -367,4 +367,22 @@ class GUI(AbstractGUI):
             "on_button-cancel2_clicked": cancel_button_callback,
         }
         self.aTree.signal_autoconnect(dic)
+
+    def create_close_buffer_dialog_and_register_handlers(
+            self,
+            save_button_handler,
+            close_button_handler,
+            quit_button_handler
+    ):
+        self.wTree = gtk.glade.XML(os.path.join(
+            self.config.pyroom_absolute_path, "interface.glade"),
+            "SaveBuffer")
+        self.close_buffer_dialog = self.wTree.get_widget("SaveBuffer")
+        self.close_buffer_dialog.set_transient_for(self.window)
+        dic = {
+            "on_button-save_clicked": save_button_handler,
+            "on_button-close_clicked": close_button_handler,
+            "on_button-cancel_clicked": quit_button_handler,
+        }
+        self.wTree.signal_autoconnect(dic)
 

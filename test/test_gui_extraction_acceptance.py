@@ -94,7 +94,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.quit = self.spy()
 
         editor_input.type_keys('modifying the buffer with strings', self.editor)
-        self.editor.quit_without_saving_handler(None)
+        self.editor.quit_dialog_close_button_handler(None)
 
         self.assertTrue(self.editor.gui.quitdialog.hide.was_called)
         self.assertTrue(self.editor.quit.was_called)
@@ -104,7 +104,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.quit = self.spy()
 
         editor_input.type_keys('modifying the buffer with strings', self.editor)
-        self.editor.cancel_button_handler(None)
+        self.editor.quit_dialog_cancel_button(None)
 
         self.assertTrue(self.editor.gui.quitdialog.hide.was_called)
         self.assertFalse(self.editor.quit.was_called)
@@ -116,7 +116,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.editor.ask_for_filename_and_save_buffer = self.spy()
 
         editor_input.type_keys('modifying buffer with strings', self.editor)
-        self.editor.save_and_quit_button_handler(None)
+        self.editor.quit_dialog_save_button_handler(None)
 
         self.assertTrue(self.editor.gui.quitdialog.hide.was_called)
         self.assertTrue(self.editor.ask_for_filename_and_save_buffer.was_called)

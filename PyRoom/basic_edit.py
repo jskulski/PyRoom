@@ -198,30 +198,21 @@ class BasicEdit(object):
 
         self._adjust_window_if_multiple_monitors()
 
-        self._defines_the_glade_file_functions_for_use_on_closing_a_buffer()
-        self.gui._defines_the_glade_file_functions_for_use_on_exit(
-            self.save_and_quit_button_handler,
-            self.quit_without_saving_handler,
-            self.cancel_button_handler
+        self.gui.create_close_buffer_dialog_and_register_handlers(
+            self.close_buffer_save_button_handler,
+            self.close_buffer_close_without_save_button_handler,
+            self.close_buffer_cancel_button_handler
+        )
+        self.gui.create_quit_dialog_and_register_handlers(
+            self.quit_dialog_save_button_handler,
+            self.quit_dialog_close_button_handler,
+            self.quit_dialog_cancel_button
         )
 
         self.keybindings = define_keybindings(self)
         # this sucks, shouldn't have to call this here, textbox should
         # have its background and padding color from GUI().__init__() already
         self.gui.apply_theme()
-
-    def _defines_the_glade_file_functions_for_use_on_closing_a_buffer(self):
-        self.wTree = gtk.glade.XML(os.path.join(
-            self.config.pyroom_absolute_path, "interface.glade"),
-            "SaveBuffer")
-        self.gui.close_buffer_dialog = self.wTree.get_widget("SaveBuffer")
-        self.gui.close_buffer_dialog.set_transient_for(self.window)
-        dic = {
-            "on_button-save_clicked": self.close_buffer_save_button_handler,
-            "on_button-close_clicked": self.close_buffer_close_without_save_button_handler,
-            "on_button-cancel_clicked": self.close_buffer_cancel_button_handler,
-        }
-        self.wTree.signal_autoconnect(dic)
 
     def _adjust_window_if_multiple_monitors(self):
         screen = gtk.gdk.screen_get_default()
@@ -580,11 +571,11 @@ continue editing your document.")
                 count = count + 1
         return count
 
-    def cancel_button_handler(self, widget, data=None):
+    def quit_dialog_cancel_button(self, widget, data=None):
         """don't quit"""
         self.hide_quit_dialog()
 
-    def save_and_quit_button_handler(self, widget, data=None):
+    def quit_dialog_save_button_handler(self, widget, data=None):
         """save before quitting"""
         self.hide_quit_dialog()
         for buffer in self.buffers:
@@ -598,7 +589,7 @@ continue editing your document.")
         else:
             self.save_file_to_disk()
 
-    def quit_without_saving_handler(self, widget, data=None):
+    def quit_dialog_close_button_handler(self, widget, data=None):
         """really quit"""
         self.gui.quitdialog.hide()
         self.quit_editor()
