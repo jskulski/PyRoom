@@ -148,16 +148,26 @@ class GUIExtractionAcceptanceTest(TestCase):
     def test_close_without_saving_button_hides_dialog_and_does_what_it_says(self):
         self.editor.set_buffer(0)
         editor_input.type_keys('modifying buffer with strings', self.editor)
+        next_buffer_in_stack = self.editor.buffers[1]
         self.editor.closedialog.hide = self.spy()
-        expected_current_buffer = self.editor.buffers[1]
+        self.editor.save_file_to_disk = self.spy()
 
         self.editor.unsave_dialog(None)
 
         self.assertTrue(self.editor.closedialog.hide.was_called)
         self.assertEqual(
             self.editor.get_current_buffer(),
-            expected_current_buffer
+            next_buffer_in_stack
         )
+        self.assertFalse(self.editor.save_file_to_disk.was_called)
+
+    # def test_close_with_save_button_works_as_advertised(self):
+    #     self.editor.set_buffer(0)
+    #     editor_input.type_keys('modifying buffer with strings', self.editor)
+    #     self.editor.closedialog.hide = self.spy()
+    #     next_buffer_in_stack = self.editor.buffers[1]
+    #
+    #
 
     def spy(self):
         def mock_quit_dialog(*args, **kwargs):
