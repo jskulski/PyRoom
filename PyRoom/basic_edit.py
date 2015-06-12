@@ -215,12 +215,12 @@ class BasicEdit(object):
         self.wTree = gtk.glade.XML(os.path.join(
             self.config.pyroom_absolute_path, "interface.glade"),
             "SaveBuffer")
-        self.dialog = self.wTree.get_widget("SaveBuffer")
-        self.dialog.set_transient_for(self.window)
+        self.closedialog = self.wTree.get_widget("SaveBuffer")
+        self.closedialog.set_transient_for(self.window)
         dic = {
+            "on_button-save_clicked": self.save_dialog,
             "on_button-close_clicked": self.unsave_dialog,
             "on_button-cancel_clicked": self.cancel_dialog,
-            "on_button-save_clicked": self.save_dialog,
         }
         self.wTree.signal_autoconnect(dic)
 
@@ -498,26 +498,26 @@ continue editing your document.")
         """ask for confirmation if there are unsaved contents"""
         buf = self.get_current_buffer()
         if buf.modified:
-            self.dialog.show()
+            self.closedialog.show()
         else:
-            self.close_buffer()
+            self.close_current_buffer()
 
     def cancel_dialog(self, widget, data=None):
         """dialog has been canceled"""
-        self.dialog.hide()
+        self.closedialog.hide()
 
     def unsave_dialog(self, widget, data=None):
         """don't save before closing"""
-        self.dialog.hide()
-        self.close_buffer()
+        self.closedialog.hide()
+        self.close_current_buffer()
 
     def save_dialog(self, widget, data=None):
         """save when closing"""
-        self.dialog.hide()
+        self.closedialog.hide()
         self.save_file_to_disk()
-        self.close_buffer()
+        self.close_current_buffer()
 
-    def close_buffer(self):
+    def close_current_buffer(self):
         """ Close current buffer """
         autosave_fname = autosave.get_autosave_filename(
             self.get_current_buffer().filename

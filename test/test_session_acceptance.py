@@ -73,7 +73,7 @@ class SessionAcceptanceTest(unittest.TestCase):
 
     def test_assert_opened_then_closed_file_is_not_in_session(self):
         self.base_edit.open_file_and_add_to_session(self.test_filepath)
-        self.base_edit.close_buffer()
+        self.base_edit.close_current_buffer()
 
         session_filenames = self.base_edit.session.get_open_filenames()
         self.assertTrue(self.test_filepath not in session_filenames)

@@ -122,6 +122,30 @@ class GUIExtractionAcceptanceTest(TestCase):
         self.assertTrue(self.editor.ask_for_filename_and_save_buffer.was_called)
         self.assertTrue(self.editor.quit.was_called)
 
+    def test_closing_buffer_on_modified_buffer_shows_dialog(self):
+        self.editor.set_buffer(0)
+        editor_input.type_keys('modifying buffer with strings', self.editor)
+        self.editor.closedialog.show = self.spy()
+
+        self.editor.close_dialog()
+
+        self.assertTrue(self.editor.closedialog.show.was_called)
+
+    def test_cancel_on_close_dialog_hides_dialog_does_not_close_buffer(self):
+        self.editor.set_buffer(0)
+        editor_input.type_keys('modifying buffer with strings', self.editor)
+        self.editor.closedialog.hide = self.spy()
+        expected_current_buffer = self.editor.get_current_buffer()
+
+        self.editor.cancel_dialog(None)
+
+        self.assertTrue(self.editor.closedialog.hide.was_called)
+        self.assertEquals(
+            self.editor.get_current_buffer(),
+            expected_current_buffer
+        )
+
+
     def spy(self):
         def mock_quit_dialog(*args, **kwargs):
             mock_quit_dialog.was_called = True
