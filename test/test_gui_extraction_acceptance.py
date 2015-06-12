@@ -12,7 +12,7 @@ import editor_input
 from PyRoom.gui import AbstractGUI
 from PyRoom.gui import GUI
 from PyRoom.preferences import PyroomConfig
-from PyRoom.preferences import Preferences
+from PyRoom.factory import Factory
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
 
@@ -20,10 +20,11 @@ from PyRoom.undoable_buffer import UndoableBuffer
 class GUIExtractionAcceptanceTest(TestCase):
 
     def setUp(self):
+        self.factory = Factory()
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'private', '1')
 
-        self.editor = BasicEdit(self.pyroom_config)
+        self.editor = self.factory.create_editor(self.pyroom_config)
         self.mock_buffers = self._setup_mock_buffers()
         self.editor.buffers = self.mock_buffers
 
@@ -50,8 +51,11 @@ class GUIExtractionAcceptanceTest(TestCase):
     #     pyroom_config = PyroomConfig()
     #     mock_gui = MockGUI()
     #     gui = GUI(pyroom_config)
-    #     preferences = Preferences(gui=gui, pyroom_config=pyroom_config)
+    #     preferences = MockPreferences()
     #     BasicEdit(pyroom_config, mock_gui, preferences)
+
+    # def test_user_is_asked_to_restore_backup_if_backup_exists(self):
+    #     pass
 
     def test_setting_buffer_tells_gtk_textbox_to_set_buffer(self):
         def assert_function_is_called_correctly(text_buffer):
@@ -247,3 +251,14 @@ class MockGUI(AbstractGUI):
     def show_text_buffer(self, text_buffer):
         super(MockGUI, self).show_text_buffer(text_buffer)
 
+    def place_cursor_at_start_of_buffer(self, buffer_insert):
+        super(MockGUI, self).place_cursor_at_start_of_buffer(buffer_insert)
+
+    def show_changed_buffer_status(self, buffer_id, buffer_filename):
+        super(MockGUI, self).show_changed_buffer_status(buffer_id, buffer_filename)
+
+
+
+class MockPreferences():
+    def show(self):
+        pass

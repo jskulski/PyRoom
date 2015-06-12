@@ -8,15 +8,20 @@ import __builtin__
 __builtin__._ = lambda str: str
 
 import os
-
 import editor_input
 
 from PyRoom import autosave
+
+from PyRoom.factory import Factory
 from PyRoom.preferences import PyroomConfig
 from PyRoom.basic_edit import BasicEdit
 
 
 class TestAutosaveAcceptance(TestCase):
+
+    def setUp(self):
+        self.factory = Factory()
+
 
     def test_when_an_editor_is_created_my_file_is_saved_after_configurable_time(self):
         autosave_time = 20
@@ -24,7 +29,7 @@ class TestAutosaveAcceptance(TestCase):
         pyroom_config.set('editor', 'autosave', '1')
         pyroom_config.set('editor', 'autosavetime', str(autosave_time))
         pyroom_config.set('session', 'private', '1')
-        editor = BasicEdit(pyroom_config)
+        editor = self.factory.create_editor(pyroom_config)
 
         expected_content = 'hello these are words in a document'
         editor_input.type_keys(expected_content, editor)

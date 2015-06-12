@@ -164,6 +164,15 @@ class AbstractGUI(object):
     def show_text_buffer(self, text_buffer):
         pass
 
+    @abstractmethod
+    def show_changed_buffer_status(self, buffer_id, buffer_filename):
+        pass
+
+    @abstractmethod
+    def place_cursor_at_start_of_buffer(self, buffer_insert):
+        pass
+
+
 
 class GUI(AbstractGUI):
     """our basic global gui object"""

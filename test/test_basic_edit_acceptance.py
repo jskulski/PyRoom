@@ -9,7 +9,9 @@ __builtin__._ = lambda str: str
 
 
 import editor_input
+from PyRoom.factory import Factory
 from PyRoom.preferences import PyroomConfig
+from PyRoom.session import PrivateSession
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
 
@@ -17,6 +19,9 @@ from PyRoom.preferences import Preferences
 from PyRoom.gui import GUI
 
 class TestBasicEditAcceptance(TestCase):
+
+    def setUp(self):
+        self.factory = Factory()
 
     def test_can_create_a_buffer(self):
         buffer = UndoableBuffer()
@@ -28,7 +33,7 @@ class TestBasicEditAcceptance(TestCase):
     def test_can_create_an_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')
-        editor = BasicEdit(pyroom_config)
+        editor = self.factory.create_editor(pyroom_config)
 
         self.assertIsInstance(editor, BasicEdit)
 
@@ -86,7 +91,11 @@ class TestBasicEditAcceptance(TestCase):
             gui=GUI(pyroom_config),
             pyroom_config=pyroom_config
         )
-        editor = BasicEdit(pyroom_config, preferences=preferences)
+        editor = BasicEdit(
+            pyroom_config,
+            preferences=preferences,
+            session=PrivateSession()
+        )
 
         self.assertEquals(
             editor.preferences,
@@ -97,5 +106,5 @@ class TestBasicEditAcceptance(TestCase):
     def _create_private_session_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')
-        return BasicEdit(pyroom_config)
+        return self.factory.create_editor(pyroom_config)
 

@@ -10,17 +10,18 @@ __builtin__._ = lambda str: str
 import tempfile
 
 import editor_input
-from PyRoom.basic_edit import BasicEdit
+from PyRoom.factory import Factory
 from PyRoom.basic_edit import VimEmulator
 from PyRoom.preferences import PyroomConfig
 
 class VimEmulationAcceptanceTest(unittest.TestCase):
 
     def setUp(self):
+        self.factory = Factory()
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'private', '1')
         self.pyroom_config.set('editor', 'vim_emulation_mode', '1')
-        self.basic_editor = BasicEdit(self.pyroom_config)
+        self.basic_editor = self.factory.create_editor(self.pyroom_config)
 
     def test_that_vim_emulation_mode_is_off_by_default_in_editor(self):
         self.assertEquals(
@@ -31,7 +32,7 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
     def test_that_we_can_type_normally_if_vim_emulation_mode_is_off(self):
         default_pyroom_config = PyroomConfig()
         default_pyroom_config.set('session', 'filepath', tempfile.NamedTemporaryFile().name)
-        default_basic_editor = BasicEdit(default_pyroom_config)
+        default_basic_editor = self.factory.create_editor(default_pyroom_config)
 
         editor_input.type_key('i', default_basic_editor)
         buffer_text = editor_input.retrieve_current_buffer_text(default_basic_editor)
@@ -41,7 +42,7 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
     def test_that_vim_emulator_object_is_not_created_in_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')
-        default_basic_editor = BasicEdit(pyroom_config)
+        default_basic_editor = self.factory.create_editor(pyroom_config)
         self.assertIsNone(default_basic_editor.vim_emulator)
 
     def test_that_vim_emulator_is_created_if_turned_on_in_config(self):

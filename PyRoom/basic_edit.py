@@ -139,10 +139,16 @@ class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
 
-    def __init__(self, pyroom_config, gui=None, preferences=None):
+    def __init__(self,
+                 pyroom_config,
+                 session,
+                 gui=None,
+                 preferences=None,
+    ):
         self.current = 0
         self.buffers = []
         self.config = pyroom_config
+        self.session = session
 
         if gui is None:
             self.gui = GUI(self.config)
@@ -154,15 +160,8 @@ class BasicEdit(object):
         else:
             self.vim_emulator = None
 
-        # Session Management
-        if self.config.get('session', 'private') == '1':
-            self.session = PrivateSession()
-        else:
-            self.session = FileStoreSession(self.config.get('session', 'filepath'))
-
         if self.config.clear_session:
             self.session.clear()
-
 
         if preferences is None:
             self.preferences = Preferences(
@@ -291,6 +290,9 @@ class BasicEdit(object):
 
         returns True if proposal is accepted
         returns False in any other case (declined/dialog closed)"""
+        return self.ask_user_to_restore_backup()
+
+    def ask_user_to_restore_backup(self):
         restore_dialog = gtk.Dialog(
             title=_('Restore backup?'),
             parent=self.gui.window,
@@ -305,13 +307,11 @@ class BasicEdit(object):
 Open those instead of the original file?''')
         )
         question_asked.set_line_wrap(True)
-
         question_sign = gtk.image_new_from_stock(
             stock_id=gtk.STOCK_DIALOG_QUESTION,
             size=gtk.ICON_SIZE_DIALOG
         )
         question_sign.show()
-
         hbox = gtk.HBox()
         hbox.pack_start(question_sign, True, True, 0)
         hbox.pack_start(question_asked, True, True, 0)
@@ -319,7 +319,6 @@ Open those instead of the original file?''')
         restore_dialog.vbox.pack_start(
             hbox, True, True, 0
         )
-
         restore_dialog.set_default_response(gtk.RESPONSE_ACCEPT)
         restore_dialog.show_all()
         resp = restore_dialog.run()
