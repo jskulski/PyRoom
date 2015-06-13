@@ -63,7 +63,7 @@ class VimEmulationAcceptanceTest(unittest.TestCase):
 
     def test_user_is_notified_of_toggling_to_opposoite_modes(self):
         status_spy = StatusSpy()
-        self.basic_editor.status = status_spy
+        self.basic_editor.gui.status = status_spy
         editor_input.type_key('i', self.basic_editor)
         self.assertTrue(status_spy.was_notified())
 

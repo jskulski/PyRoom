@@ -347,6 +347,9 @@ class GUI(AbstractGUI):
     def show_text_buffer(self, text_buffer):
         self.textbox.set_buffer(text_buffer)
 
+    def tell_user(self, message):
+        self.status.set_text(message, 500)
+
     def show_changed_buffer_status(self, buffer_id, buffer_filename):
         if hasattr(self, 'status'):
             self.status.set_text(
@@ -381,11 +384,11 @@ class GUI(AbstractGUI):
         }
         self.aTree.signal_autoconnect(dic)
 
-    def create_close_buffer_dialog_and_register_handlers(
+    def create_close_buffer_dialog_and_register_callbacks(
             self,
-            save_button_handler,
-            close_button_handler,
-            quit_button_handler
+            yes_callback,
+            no_callback,
+            cancel_callback
     ):
         self.wTree = gtk.glade.XML(
             os.path.join(self.config.pyroom_absolute_path, "interface.glade"),
@@ -393,9 +396,9 @@ class GUI(AbstractGUI):
         self.close_buffer_dialog = self.wTree.get_widget("SaveBuffer")
         self.close_buffer_dialog.set_transient_for(self.window)
         dic = {
-            "on_button-save_clicked": save_button_handler,
-            "on_button-close_clicked": close_button_handler,
-            "on_button-cancel_clicked": quit_button_handler,
+            "on_button-save_clicked": yes_callback,
+            "on_button-close_clicked": no_callback,
+            "on_button-cancel_clicked": cancel_callback,
         }
         self.wTree.signal_autoconnect(dic)
 

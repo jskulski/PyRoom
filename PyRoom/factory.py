@@ -7,22 +7,11 @@ from PyRoom.gui import GUI
 
 class Factory(object):
 
-    def __init__(self, pyroom_config=None):
-        self.pyroom_config = pyroom_config if pyroom_config else PyroomConfig()
-        self.editor = None
-        self.gui = None
-        self.session = None
-
-    def create_new_editor(self, pyroom_config=None):
-        if pyroom_config is None:
-            pyroom_config = self.pyroom_config
-
-        session = self.create_new_session(pyroom_config)
-
+    def create_new_editor(self, pyroom_config):
         return BasicEdit(
             pyroom_config=pyroom_config,
-            gui=self.create_gui(),
-            session=session
+            gui=self.create_gui(pyroom_config),
+            session=self.create_new_session(pyroom_config)
         )
 
     def create_new_session(self, pyroom_config):
@@ -32,8 +21,7 @@ class Factory(object):
             session = FileStoreSession(pyroom_config.get('session', 'filepath'))
         return session
 
-    def create_gui(self):
-        if not self.gui:
-            self.gui = GUI(
-                self.pyroom_config
-            )
+    def create_gui(self, pyroom_config):
+        return GUI(
+            pyroom_config
+        )

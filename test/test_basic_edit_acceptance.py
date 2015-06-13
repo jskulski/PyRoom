@@ -94,6 +94,7 @@ class TestBasicEditAcceptance(TestCase):
         editor = BasicEdit(
             pyroom_config,
             preferences=preferences,
+            gui=GUI(pyroom_config),
             session=PrivateSession()
         )
 

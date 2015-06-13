@@ -124,12 +124,12 @@ def make_accel_group(edit_instance):
 def define_keybindings(edit_instance):
     """define keybindings, respectively to keyboard layout"""
     keymap = gtk.gdk.keymap_get_default()
-    testter = {
+    basic_bindings = {
         gtk.keysyms.Page_Up: edit_instance.prev_buffer,
         gtk.keysyms.Page_Down: edit_instance.next_buffer,
     }
     translated_bindings = {}
-    for key, value in testter.items():
+    for key, value in basic_bindings.items():
         hardware_keycode = keymap.get_entries_for_keyval(key)[0][0]
         translated_bindings[hardware_keycode] = value
     return translated_bindings
@@ -141,19 +141,15 @@ class BasicEdit(object):
 
     def __init__(self,
                  pyroom_config,
+                 gui,
                  session,
-                 gui=None,
                  preferences=None,
     ):
         self.current = 0
         self.buffers = []
         self.config = pyroom_config
+        self.gui = gui
         self.session = session
-
-        if gui is None:
-            self.gui = GUI(self.config)
-        else:
-            self.gui = gui
 
         if (self.config.get('editor', 'vim_emulation_mode') == '1'):
             self.vim_emulator = VimEmulator()
@@ -202,7 +198,7 @@ class BasicEdit(object):
 
         self._adjust_window_if_multiple_monitors()
 
-        self.gui.create_close_buffer_dialog_and_register_handlers(
+        self.gui.create_close_buffer_dialog_and_register_callbacks(
             self.close_buffer_save_button_handler,
             self.close_buffer_close_without_save_button_handler,
             self.close_buffer_cancel_button_handler
@@ -225,10 +221,13 @@ class BasicEdit(object):
         current_monitor_number = screen.get_monitor_at_point(mouse_x, mouse_y)
         monitor_geometry = screen.get_monitor_geometry(current_monitor_number)
         self.gui.window.move(monitor_geometry.x, monitor_geometry.y)
-        self.gui.window.set_geometry_hints(None, min_width=monitor_geometry.width,
-                                       min_height=monitor_geometry.height, max_width=monitor_geometry.width,
-                                       max_height=monitor_geometry.height
-                                       )
+        self.gui.window.set_geometry_hints(
+            None,
+            min_width=monitor_geometry.width,
+            min_height=monitor_geometry.height,
+            max_width=monitor_geometry.width,
+            max_height=monitor_geometry.height
+        )
 
     def key_press_event(self, widget, event):
         """ key press event dispatcher """
@@ -238,15 +237,16 @@ class BasicEdit(object):
                 return True
 
         if self.vim_emulator and self.vim_emulator.in_command_mode() and event.keyval == gtk.keysyms.i:
-            self.status.set_text('- Insert Mode -', 50)
+            self.gui.tell_user('- Insert Mode -')
             self.vim_emulator.toggle_mode()
             return True
 
         if self.vim_emulator and self.vim_emulator.in_insert_mode() and event.keyval == gtk.keysyms.Escape:
-            self.status.set_text('- Command Mode -', 50)
+            self.gui.tell_user('- Command Mode -')
             self.vim_emulator.toggle_mode()
             return True
         return False
+
 
     def show_info(self):
         """ Display buffer information on status label for 5 seconds """
@@ -256,7 +256,7 @@ class BasicEdit(object):
             status = _(' (modified)')
         else:
             status = ''
-        self.status.set_text(_('Buffer %(buffer_id)d: %(buffer_name)s\
+        self.gui.tell_user(_('Buffer %(buffer_id)d: %(buffer_name)s\
 %(status)s, %(char_count)d character(s), %(word_count)d word(s)\
 , %(lines)d line(s)') % {
             'buffer_id': self.current + 1,
@@ -265,7 +265,7 @@ class BasicEdit(object):
             'char_count': buf.get_char_count(),
             'word_count': self.word_count(buf),
             'lines': buf.get_line_count(),
-            }, 5000)
+            })
 
     def undo(self):
         """ Undo last typing """
@@ -274,7 +274,7 @@ class BasicEdit(object):
         if buf.can_undo:
             buf.undo()
         else:
-            self.status.set_text(_('Nothing more to undo!'))
+            self.gui.tell_user(_('Nothing more to undo!'))
 
     def redo(self):
         """ Redo last typing """
@@ -283,7 +283,7 @@ class BasicEdit(object):
         if buf.can_redo:
             buf.redo()
         else:
-            self.status.set_text(_('Nothing more to redo!'))
+            self.gui.tell_user(_('Nothing more to redo!'))
 
     def open_file_dialog(self):
         """ Open file """
@@ -346,7 +346,7 @@ the file.')
         except:
             raise PyroomError(_('Unable to open %s\n') % filename_to_open)
         else:
-            self.status.set_text(_('File %s open') % filename_to_open)
+            self.gui.tell_user(_('File %s open') % filename_to_open)
 
     def save_file_to_disk_and_session(self):
         self.save_file_to_disk()
@@ -375,7 +375,7 @@ the file.')
                 buffer_file.close()
                 buf.begin_not_undoable_action()
                 buf.end_not_undoable_action()
-                self.status.set_text(_('File %s saved') % buf.filename)
+                self.gui.tell_user(_('File %s saved') % buf.filename)
             else:
                 self.save_file_as()
         except IOError, (errno, strerror):
@@ -410,7 +410,7 @@ the file.')
         chooser.destroy()
 
     def file_chooser_closed_with_no_file_selected(self):
-        self.status.set_text(_('Closed, no files selected'))
+        self.gui.tell_user(_('Closed, no files selected'))
 
     def word_count(self, buf):
         """ Word count in a text buffer """
@@ -431,7 +431,7 @@ the file.')
         buf.begin_not_undoable_action()
         buf.set_text(HELP)
         buf.end_not_undoable_action()
-        self.status.set_text("Displaying help. Press control W to exit and \
+        self.gui.tell_user("Displaying help. Press control W to exit and \
 continue editing your document.")
 
     def new_buffer(self):
