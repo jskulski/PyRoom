@@ -63,7 +63,7 @@ def get_autosave_filename(filename):
 def autosave(edit_instance):
     """save all open files that have been saved before"""
     for buf in edit_instance.buffers:
-        if not buf.filename == edit_instance.UNNAMED_FILENAME:
+        if buf.has_filename():
             backup_file = open(
                 get_autosave_filename(buf.filename),
                 'w'
@@ -71,7 +71,7 @@ def autosave(edit_instance):
             try:
                 try:
                     backup_file.write(
-                        buf.get_text(buf.get_start_iter(), buf.get_end_iter())
+                        buf.get_text_from_buffer()
                     )
                 except IOError:
                     raise PyroomError(_("Could not autosave file %s") % 
