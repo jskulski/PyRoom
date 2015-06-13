@@ -185,7 +185,6 @@ class BasicEdit(object):
             self.new_buffer()
 
         self.gui.textbox.connect('key-press-event', self.key_press_event)
-
         self.gui.style_textbox()
 
         # Autosave timer object
@@ -205,7 +204,7 @@ class BasicEdit(object):
         self.keybindings = define_keybindings(self)
         # this sucks, shouldn't have to call this here, textbox should
         # have its background and padding color from GUI().__init__() already
-        self.gui.apply_theme()
+        # self.gui.apply_theme()
 
     def key_press_event(self, widget, event):
         """ key press event dispatcher """
@@ -264,20 +263,11 @@ class BasicEdit(object):
             self.gui.tell_user(_('Nothing more to redo!'))
 
     def open_file_dialog(self):
-        """ Open file """
-
-        chooser = gtk.FileChooserDialog('PyRoom', self.gui.window,
-                gtk.FILE_CHOOSER_ACTION_OPEN,
-                buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-        chooser.set_default_response(gtk.RESPONSE_OK)
-
-        res = chooser.run()
-        if res == gtk.RESPONSE_OK:
-            self.open_file_and_add_to_session(chooser.get_filename())
+        filename = self.gui.ask_user_which_file_to_open()
+        if filename:
+            self.open_file_and_add_to_session(filename)
         else:
-            self.file_chooser_closed_with_no_file_selected()
-        chooser.destroy()
+            self.gui.tell_user(_('Closed, no files selected'))
 
     def open_file_and_add_to_session(self, filename):
         """ Open specified file in buffer and add it to our session history """
@@ -384,11 +374,8 @@ the file.')
             buf.filename = chooser.get_filename()
             self.save_file_to_disk()
         else:
-            self.file_chooser_display_status_no_file_selected()
+            self.gui.tell_user(_('Closed, no files selected'))
         chooser.destroy()
-
-    def file_chooser_closed_with_no_file_selected(self):
-        self.gui.tell_user(_('Closed, no files selected'))
 
     def word_count(self, buf):
         """ Word count in a text buffer """

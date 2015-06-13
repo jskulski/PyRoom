@@ -444,6 +444,27 @@ Open those instead of the original file?''')
         restore_dialog.show_all()
         return restore_dialog
 
+    def ask_user_which_file_to_open(self):
+        chooser = gtk.FileChooserDialog(
+            'PyRoom',
+            self.window,
+            gtk.FILE_CHOOSER_ACTION_OPEN,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_OPEN, gtk.RESPONSE_OK)
+        )
+
+        chooser.set_default_response(gtk.RESPONSE_OK)
+        user_response = chooser.run()
+
+        if user_response == gtk.RESPONSE_OK:
+            filename = chooser.get_filename()
+        else:
+            filename = None
+
+        chooser.destroy()
+        return filename
+
+
     def _adjust_window_if_multiple_monitors(self):
         screen = gtk.gdk.screen_get_default()
         root_window = screen.get_root_window()
