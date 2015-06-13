@@ -323,7 +323,7 @@ Open those instead of the original file?''')
         restore_dialog.show_all()
         resp = restore_dialog.run()
         restore_dialog.destroy()
-        return resp == -3
+        return resp == gtk.RESPONSE_ACCEPT
 
     def open_file_dialog(self):
         """ Open file """
