@@ -285,13 +285,6 @@ class BasicEdit(object):
         else:
             self.status.set_text(_('Nothing more to redo!'))
 
-    def ask_restore(self):
-        """ask if backups should be restored
-
-        returns True if proposal is accepted
-        returns False in any other case (declined/dialog closed)"""
-        return self.gui.user_wants_to_restore_backup()
-
     def open_file_dialog(self):
         """ Open file """
 
@@ -323,7 +316,7 @@ class BasicEdit(object):
             """
             autosave_filename = autosave.get_autosave_filename(filename)
             if self.has_autosave_backup(autosave_filename):
-                if self.ask_restore():
+                if self.gui.user_wants_to_restore_backup():
                     return autosave_filename
             return filename
 
