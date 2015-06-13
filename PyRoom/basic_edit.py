@@ -290,40 +290,7 @@ class BasicEdit(object):
 
         returns True if proposal is accepted
         returns False in any other case (declined/dialog closed)"""
-        return self.ask_user_to_restore_backup()
-
-    def ask_user_to_restore_backup(self):
-        restore_dialog = gtk.Dialog(
-            title=_('Restore backup?'),
-            parent=self.gui.window,
-            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-            buttons=(
-                gtk.STOCK_DISCARD, gtk.RESPONSE_REJECT,
-                gtk.STOCK_OPEN, gtk.RESPONSE_ACCEPT
-            )
-        )
-        question_asked = gtk.Label(
-            _('''Backup information for this file has been found.
-Open those instead of the original file?''')
-        )
-        question_asked.set_line_wrap(True)
-        question_sign = gtk.image_new_from_stock(
-            stock_id=gtk.STOCK_DIALOG_QUESTION,
-            size=gtk.ICON_SIZE_DIALOG
-        )
-        question_sign.show()
-        hbox = gtk.HBox()
-        hbox.pack_start(question_sign, True, True, 0)
-        hbox.pack_start(question_asked, True, True, 0)
-        hbox.show()
-        restore_dialog.vbox.pack_start(
-            hbox, True, True, 0
-        )
-        restore_dialog.set_default_response(gtk.RESPONSE_ACCEPT)
-        restore_dialog.show_all()
-        resp = restore_dialog.run()
-        restore_dialog.destroy()
-        return resp == gtk.RESPONSE_ACCEPT
+        return self.gui.user_wants_to_restore_backup()
 
     def open_file_dialog(self):
         """ Open file """
@@ -354,18 +321,12 @@ Open those instead of the original file?''')
             returns backup filename if there's a backup file and
                     user wants to restore from it, else original filename
             """
-            fname = autosave.get_autosave_filename(filename)
-            if os.path.isfile(fname):
-                print '-------'
-                print 'filename = %s ' % filename
-                print 'autosave fname = %s ' % fname
-                import traceback
-                for line in traceback.format_stack():
-                    print line.strip()
-                print '-------'
+            autosave_filename = autosave.get_autosave_filename(filename)
+            if self.has_autosave_backup(autosave_filename):
                 if self.ask_restore():
-                    return fname
+                    return autosave_filename
             return filename
+
         buf = self.new_buffer()
         buf.filename = filename
         filename_to_open = check_backup(filename)
@@ -618,6 +579,9 @@ continue editing your document.")
         """
         return self.buffers[self.current]
 
+    def has_autosave_backup(self, fname):
+        return os.path.isfile(fname)
+
     def supercede_gui(self, gui):
         self.gui = gui
 
@@ -642,6 +606,7 @@ class VimEmulator(object):
 
     def in_insert_mode(self):
         return self.mode == self.INSERT_MODE
+
 
 class KeyPressDispatch(object):
     def __init__(self):

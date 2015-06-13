@@ -368,9 +368,10 @@ class GUI(AbstractGUI):
             cancel_button_callback
     ):
 
-        self.aTree = gtk.glade.XML(os.path.join(
-            self.config.pyroom_absolute_path, "interface.glade"),
-            "QuitSave")
+        self.aTree = gtk.glade.XML(
+            os.path.join(self.config.pyroom_absolute_path, "interface.glade"),
+            "QuitSave"
+        )
         self.quitdialog = self.aTree.get_widget("QuitSave")
         self.quitdialog.set_transient_for(self.window)
         dic = {
@@ -386,8 +387,8 @@ class GUI(AbstractGUI):
             close_button_handler,
             quit_button_handler
     ):
-        self.wTree = gtk.glade.XML(os.path.join(
-            self.config.pyroom_absolute_path, "interface.glade"),
+        self.wTree = gtk.glade.XML(
+            os.path.join(self.config.pyroom_absolute_path, "interface.glade"),
             "SaveBuffer")
         self.close_buffer_dialog = self.wTree.get_widget("SaveBuffer")
         self.close_buffer_dialog.set_transient_for(self.window)
@@ -397,4 +398,41 @@ class GUI(AbstractGUI):
             "on_button-cancel_clicked": quit_button_handler,
         }
         self.wTree.signal_autoconnect(dic)
+
+    def user_wants_to_restore_backup(self):
+        restore_dialog = self.create_and_display_restore_dialog()
+        resp = restore_dialog.run()
+        restore_dialog.destroy()
+        return resp == gtk.RESPONSE_ACCEPT
+
+    def create_and_display_restore_dialog(self):
+        restore_dialog = gtk.Dialog(
+            title=_('Restore backup?'),
+            parent=self.window,
+            flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            buttons=(
+                gtk.STOCK_DISCARD, gtk.RESPONSE_REJECT,
+                gtk.STOCK_OPEN, gtk.RESPONSE_ACCEPT
+            )
+        )
+        question_asked = gtk.Label(
+            _('''Backup information for this file has been found.
+Open those instead of the original file?''')
+        )
+        question_asked.set_line_wrap(True)
+        question_sign = gtk.image_new_from_stock(
+            stock_id=gtk.STOCK_DIALOG_QUESTION,
+            size=gtk.ICON_SIZE_DIALOG
+        )
+        question_sign.show()
+        hbox = gtk.HBox()
+        hbox.pack_start(question_sign, True, True, 0)
+        hbox.pack_start(question_asked, True, True, 0)
+        hbox.show()
+        restore_dialog.vbox.pack_start(
+            hbox, True, True, 0
+        )
+        restore_dialog.set_default_response(gtk.RESPONSE_ACCEPT)
+        restore_dialog.show_all()
+        return restore_dialog
 

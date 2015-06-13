@@ -64,17 +64,21 @@ def autosave(edit_instance):
     """save all open files that have been saved before"""
     for buffer in edit_instance.buffers:
         if buffer.has_filename():
-            backup_file = open(
-                get_autosave_filename(buffer.filename),
-                'w'
+            save_autosave_file_for_buffer(buffer)
+
+
+def save_autosave_file_for_buffer(buffer):
+    backup_file = open(
+        get_autosave_filename(buffer.filename),
+        'w'
+    )
+    try:
+        try:
+            backup_file.write(
+                buffer.get_text_from_buffer()
             )
-            try:
-                try:
-                    backup_file.write(
-                        buffer.get_text_from_buffer()
-                    )
-                except IOError:
-                    raise PyroomError(_("Could not autosave file %s") % 
-                                        filename)
-            finally:
-                backup_file.close()
+        except IOError:
+            raise PyroomError(_("Could not autosave file %s") %
+                              buffer.filename)
+    finally:
+        backup_file.close()

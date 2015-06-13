@@ -32,26 +32,6 @@ class TestConfigurationAcceptanceTest(TestCase):
             self.configuration_directory
         )
 
-    # def test_does_not_modify_existing_configuration(self):
-    #     tmp_dir = tempfile.mkdtemp()
-    #     conf_file_path = os.path.join(tmp_dir, 'pyroom.conf')
-    #     conf_file = open(conf_file_path, 'w')
-    #     conf_file.write(self.customized_config_contents)
-    #     conf_file.close()
-    #
-    #     self.pyroom_config_file_builder_and_reader = PyroomConfigFileBuilderAndReader(
-    #         configuration_directory=tmp_dir)
-    #
-    #     config_file_contents = self.read_file_into_string(conf_file_path)
-    #     self.assertEquals(self.customized_config_contents, config_file_contents)
-    #
-    # # def test_creates_a_pyroom_conf_file_with_default_configuration(self):
-    #     config_file_path = os.path.join(self.configuration_directory, 'pyroom.conf')
-    #     self.assertTrue(os.path.isfile(config_file_path))
-    #
-    #     config_file_contents = self.read_file_into_string(config_file_path)
-    #     self.assertEquals(self.default_config_contents, config_file_contents)
-
     def test_pyroom_config_default_object_is_the_same_as_the_default_pyroom_file_boject(self):
         self.maxDiff = None
         self.assertEquals(
