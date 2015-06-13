@@ -67,15 +67,17 @@ simply and efficiently in a full-screen window, with no distractions.'))
     factory = Factory()
     editor = factory.create_new_editor(pyroom_config)
     buffnum = 0
+
     if len(files):
         for filename in files:
             editor.open_file(filename)
             buffnum += 1
 
     editor.set_buffer(buffnum)
-    editor.status.set_text(
+    editor.gui.tell_user(
         _('Welcome to Pyroom %s, type Control-H for help') % __VERSION__
     )
+
     gtk.main()
 
 if __name__ == '__main__':

@@ -225,8 +225,13 @@ class GUI(AbstractGUI):
         self.vbox.pack_end(self.hbox, False, False, 0)
         self.status.set_alignment(0.0, 0.5)
         self.status.set_justify(gtk.JUSTIFY_LEFT)
-        
+
+
+        self._adjust_window_if_multiple_monitors()
         self.apply_theme()
+
+        self.window.show_all()
+        self.window.fullscreen()
 
     def apply_theme(self):
         """immediately apply the theme given in configuration
@@ -438,4 +443,19 @@ Open those instead of the original file?''')
         restore_dialog.set_default_response(gtk.RESPONSE_ACCEPT)
         restore_dialog.show_all()
         return restore_dialog
+
+    def _adjust_window_if_multiple_monitors(self):
+        screen = gtk.gdk.screen_get_default()
+        root_window = screen.get_root_window()
+        mouse_x, mouse_y, mouse_mods = root_window.get_pointer()
+        current_monitor_number = screen.get_monitor_at_point(mouse_x, mouse_y)
+        monitor_geometry = screen.get_monitor_geometry(current_monitor_number)
+        self.window.move(monitor_geometry.x, monitor_geometry.y)
+        self.window.set_geometry_hints(
+            None,
+            min_width=monitor_geometry.width,
+            min_height=monitor_geometry.height,
+            max_width=monitor_geometry.width,
+            max_height=monitor_geometry.height
+        )
 

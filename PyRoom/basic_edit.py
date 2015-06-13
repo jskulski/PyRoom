@@ -134,7 +134,6 @@ def define_keybindings(edit_instance):
         translated_bindings[hardware_keycode] = value
     return translated_bindings
 
-
 class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
@@ -171,8 +170,7 @@ class BasicEdit(object):
             self.recent_manager = gtk.recent_manager_get_default()
         except AttributeError:
             self.recent_manager = None
-        self.status = self.gui.status
-        self.window = self.gui.window
+
         self.gui.window.add_accel_group(make_accel_group(self))
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
@@ -193,11 +191,6 @@ class BasicEdit(object):
         # Autosave timer object
         autosave.start_autosave(self)
 
-        self.gui.window.show_all()
-        self.gui.window.fullscreen()
-
-        self._adjust_window_if_multiple_monitors()
-
         self.gui.create_close_buffer_dialog_and_register_callbacks(
             self.close_buffer_save_button_handler,
             self.close_buffer_close_without_save_button_handler,
@@ -213,21 +206,6 @@ class BasicEdit(object):
         # this sucks, shouldn't have to call this here, textbox should
         # have its background and padding color from GUI().__init__() already
         self.gui.apply_theme()
-
-    def _adjust_window_if_multiple_monitors(self):
-        screen = gtk.gdk.screen_get_default()
-        root_window = screen.get_root_window()
-        mouse_x, mouse_y, mouse_mods = root_window.get_pointer()
-        current_monitor_number = screen.get_monitor_at_point(mouse_x, mouse_y)
-        monitor_geometry = screen.get_monitor_geometry(current_monitor_number)
-        self.gui.window.move(monitor_geometry.x, monitor_geometry.y)
-        self.gui.window.set_geometry_hints(
-            None,
-            min_width=monitor_geometry.width,
-            min_height=monitor_geometry.height,
-            max_width=monitor_geometry.width,
-            max_height=monitor_geometry.height
-        )
 
     def key_press_event(self, widget, event):
         """ key press event dispatcher """
