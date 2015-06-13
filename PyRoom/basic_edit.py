@@ -117,7 +117,7 @@ def make_accel_group(edit_instance):
         ord('s'),
         gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK,
         gtk.ACCEL_VISIBLE,
-        dispatch(edit_instance.save_file_as)
+        dispatch(edit_instance.save_current_buffer_as)
     )
     return ag
 
@@ -345,7 +345,7 @@ the file.')
                 buf.end_not_undoable_action()
                 self.gui.tell_user(_('File %s saved') % buf.filename)
             else:
-                self.save_file_as()
+                self.save_current_buffer_as()
         except IOError, (errno, strerror):
             errortext = _('Unable to save %(filename)s.') % {
                 'filename': buf.filename}
@@ -357,25 +357,21 @@ the file.')
             raise PyroomError(_('Unable to save %s\n') % buf.filename)
         buf.modified = False
 
-    def save_file_as(self):
-        """ Save file as """
-
+    def save_current_buffer_as(self):
         buf = self.get_current_buffer()
 
-        chooser = gtk.FileChooserDialog('PyRoom', self.gui.window,
-                gtk.FILE_CHOOSER_ACTION_SAVE,
-                buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-        chooser.set_default_response(gtk.RESPONSE_OK)
         if buf.has_filename():
-            chooser.set_filename(buf.filename)
-        res = chooser.run()
-        if res == gtk.RESPONSE_OK:
-            buf.filename = chooser.get_filename()
+            current_filename = buf.filename
+        else:
+            current_filename = None
+
+        chosen_filename = self.gui.ask_user_which_file_to_save_to(current_filename)
+
+        if chosen_filename:
+            buf.filename = chosen_filename
             self.save_file_to_disk()
         else:
             self.gui.tell_user(_('Closed, no files selected'))
-        chooser.destroy()
 
     def word_count(self, buf):
         """ Word count in a text buffer """
@@ -452,7 +448,6 @@ continue editing your document.")
 
     def set_buffer(self, index):
         """ Set current buffer """
-
         if index >= 0 and index < len(self.buffers):
             self.current = index
             buf = self.get_current_buffer()
@@ -508,7 +503,7 @@ continue editing your document.")
 
     def ask_for_filename_and_save_buffer(self, buf):
         if buf.filename == FILE_UNNAMED:
-            self.save_file_as()
+            self.save_current_buffer_as()
         else:
             self.save_file_to_disk()
 
@@ -539,9 +534,6 @@ continue editing your document.")
 
     def has_autosave_backup(self, fname):
         return os.path.isfile(fname)
-
-    def supercede_gui(self, gui):
-        self.gui = gui
 
 
 class VimEmulator(object):

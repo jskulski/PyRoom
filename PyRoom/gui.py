@@ -444,6 +444,29 @@ Open those instead of the original file?''')
         restore_dialog.show_all()
         return restore_dialog
 
+    def ask_user_which_file_to_save_to(self, current_filename):
+        chooser = gtk.FileChooserDialog(
+            'PyRoom',
+            self.window,
+            gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(
+                gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                gtk.STOCK_SAVE, gtk.RESPONSE_OK
+            )
+        )
+        chooser.set_default_response(gtk.RESPONSE_OK)
+        if current_filename:
+            chooser.set_filename(current_filename)
+        user_response = chooser.run()
+        response_ok = user_response == gtk.RESPONSE_OK
+        chosen_filename = chooser.get_filename()
+        chooser.destroy()
+
+        if response_ok:
+            return chosen_filename
+        else:
+            return None
+
     def ask_user_which_file_to_open(self):
         chooser = gtk.FileChooserDialog(
             'PyRoom',
