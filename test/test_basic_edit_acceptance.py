@@ -103,7 +103,6 @@ class TestBasicEditAcceptance(TestCase):
             preferences
         )
 
-
     def _create_private_session_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')

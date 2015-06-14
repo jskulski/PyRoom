@@ -503,3 +503,73 @@ Open those instead of the original file?''')
             max_height=monitor_geometry.height
         )
 
+
+class MockPreferences():
+    def show(self):
+        pass
+
+class MockGUI(AbstractGUI):
+
+    class MockWindow:
+        def add_accel_group(self, *args, **kwargs):
+            pass
+
+    class MockTexbox:
+        def connect(self, *args, **kwargs):
+            pass
+        def modify_font(self, *args, **kwargs):
+            pass
+        def emit(self, *args, **kwargs):
+            pass
+
+    class MockStatus:
+        def set_text(self, *args, **kwargs):
+            pass
+
+    window = MockWindow()
+    textbox = MockTexbox()
+    status = MockStatus()
+
+    def __init__(self):
+        pass
+
+    def apply_theme(self):
+        super(MockGUI, self).apply_theme()
+
+    def scroll_event(self, widget, event):
+        super(MockGUI, self).scroll_event(widget, event)
+
+    def destroy(self, widget, data):
+        super(MockGUI, self).destroy(widget, data)
+
+    def quit(self):
+        super(MockGUI, self).quit()
+
+    def scroll_down(self):
+        super(MockGUI, self).scroll_down()
+
+    def scroll_up(self):
+        super(MockGUI, self).scroll_up()
+
+    def show_text_buffer(self, text_buffer):
+        super(MockGUI, self).show_text_buffer(text_buffer)
+
+    def place_cursor_at_start_of_buffer(self, buffer_insert):
+        super(MockGUI, self).place_cursor_at_start_of_buffer(buffer_insert)
+
+    def show_changed_buffer_status(self, buffer_id, buffer_filename):
+        super(MockGUI, self).show_changed_buffer_status(buffer_id, buffer_filename)
+
+    def style_textbox(self, *args, **kwargs):
+        pass
+
+    def create_close_buffer_dialog_and_register_callbacks(self, *args, **kwargs):
+        pass
+
+    def create_quit_dialog_and_register_handlers(self, *args, **kwargs):
+        pass
+
+    def tell_user(self, *args, **kwargs):
+        pass
+
+

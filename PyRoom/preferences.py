@@ -251,7 +251,7 @@ class Preferences(object):
         self.showborderbutton.set_active(self.config.showborderstate)
         font_type = self.config.get('visual', 'use_font_type')
         self.font_radios[font_type].set_active(True)
-        
+
         self.toggleautosave(self.autosave)
 
         self.window.set_transient_for(self.gui.window)

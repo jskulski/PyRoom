@@ -142,13 +142,14 @@ class BasicEdit(object):
                  pyroom_config,
                  gui,
                  session,
-                 preferences=None,
+                 preferences
     ):
         self.current = 0
         self.buffers = []
         self.config = pyroom_config
         self.gui = gui
         self.session = session
+        self.preferences = preferences
 
         if (self.config.get('editor', 'vim_emulation_mode') == '1'):
             self.vim_emulator = VimEmulator()
@@ -158,13 +159,6 @@ class BasicEdit(object):
         if self.config.clear_session:
             self.session.clear()
 
-        if preferences is None:
-            self.preferences = Preferences(
-                gui=self.gui,
-                pyroom_config=self.config
-            )
-        else:
-            self.preferences = preferences
 
         try:
             self.recent_manager = gtk.recent_manager_get_default()

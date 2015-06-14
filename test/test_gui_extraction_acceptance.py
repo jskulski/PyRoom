@@ -9,12 +9,16 @@ __builtin__._ = lambda str: str
 
 
 import editor_input
-from PyRoom.gui import AbstractGUI
+
 from PyRoom.gui import GUI
+from PyRoom.gui import MockGUI
+from PyRoom.gui import MockPreferences
+
 from PyRoom.preferences import PyroomConfig
 from PyRoom.factory import Factory
 from PyRoom.basic_edit import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
+from PyRoom.session import PrivateSession
 
 
 class GUIExtractionAcceptanceTest(TestCase):
@@ -51,8 +55,9 @@ class GUIExtractionAcceptanceTest(TestCase):
     #     pyroom_config = PyroomConfig()
     #     mock_gui = MockGUI()
     #     gui = GUI(pyroom_config)
+    #     session = PrivateSession()
     #     preferences = MockPreferences()
-    #     BasicEdit(pyroom_config, mock_gui, preferences)
+    #     BasicEdit(pyroom_config, mock_gui, session, preferences)
 
     # def test_user_is_asked_to_restore_backup_if_backup_exists(self):
     #     pass
@@ -206,59 +211,3 @@ class GUIExtractionAcceptanceTest(TestCase):
             self.mock_buffers[1].get_insert()
         )
         self.assertEquals(0.0, position)
-
-
-
-class MockGUI(AbstractGUI):
-
-    class MockWindow:
-        def add_accel_group(self, *args, **kwargs):
-            pass
-
-    class MockTexbox:
-        def modify_font(self, *args, **kwargs):
-            pass
-
-    class MockStatus:
-        def set_text(self, *args, **kwargs):
-            pass
-
-    window = MockWindow()
-    textbox = MockTexbox()
-    status = MockStatus()
-
-    def __init__(self):
-        pass
-
-    def apply_theme(self):
-        super(MockGUI, self).apply_theme()
-
-    def scroll_event(self, widget, event):
-        super(MockGUI, self).scroll_event(widget, event)
-
-    def destroy(self, widget, data):
-        super(MockGUI, self).destroy(widget, data)
-
-    def quit(self):
-        super(MockGUI, self).quit()
-
-    def scroll_down(self):
-        super(MockGUI, self).scroll_down()
-
-    def scroll_up(self):
-        super(MockGUI, self).scroll_up()
-        
-    def show_text_buffer(self, text_buffer):
-        super(MockGUI, self).show_text_buffer(text_buffer)
-
-    def place_cursor_at_start_of_buffer(self, buffer_insert):
-        super(MockGUI, self).place_cursor_at_start_of_buffer(buffer_insert)
-
-    def show_changed_buffer_status(self, buffer_id, buffer_filename):
-        super(MockGUI, self).show_changed_buffer_status(buffer_id, buffer_filename)
-
-
-
-class MockPreferences():
-    def show(self):
-        pass
