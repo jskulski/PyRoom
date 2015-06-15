@@ -92,19 +92,7 @@ def dispatch(*args, **kwargs):
     return eat
 
     
-def make_accel_group(edit_instance):
-    keybindings = {
-        'h': edit_instance.show_help,
-        'i': edit_instance.show_info,
-        'n': edit_instance.new_buffer,
-        'o': edit_instance.open_file_dialog,
-        'p': edit_instance.preferences.show,
-        'q': edit_instance.save_dialog_or_quit_editor,
-        's': edit_instance.save_file_to_disk_and_session,
-        'w': edit_instance.close_dialog,
-        'y': edit_instance.redo,
-        'z': edit_instance.undo,
-    }
+def make_accel_group(edit_instance, keybindings):
     ag = gtk.AccelGroup()
     for key, value in keybindings.items():
         ag.connect_group(
@@ -165,7 +153,19 @@ class BasicEdit(object):
         except AttributeError:
             self.recent_manager = None
 
-        self.gui.window.add_accel_group(make_accel_group(self))
+        keybindings = {
+            'h': self.show_help,
+            'i': self.show_info,
+            'n': self.new_buffer,
+            'o': self.open_file_dialog,
+            'p': self.preferences.show,
+            'q': self.save_dialog_or_quit_editor,
+            's': self.save_file_to_disk_and_session,
+            'w': self.close_dialog,
+            'y': self.redo,
+            'z': self.undo,
+        }
+        self.gui.window.add_accel_group(make_accel_group(self, keybindings))
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
         self.autosave_timeout_id = ''
@@ -196,9 +196,6 @@ class BasicEdit(object):
         )
 
         self.keybindings = define_keybindings(self)
-        # this sucks, shouldn't have to call this here, textbox should
-        # have its background and padding color from GUI().__init__() already
-        # self.gui.apply_theme()
 
     def key_press_event(self, widget, event):
         """ key press event dispatcher """
