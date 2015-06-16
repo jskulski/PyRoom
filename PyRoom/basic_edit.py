@@ -161,6 +161,7 @@ class BasicEdit(object):
             'z': self.undo,
         }
         self.gui.window.add_accel_group(make_accel_group(self, keybindings))
+        self._attach_buffer_paging_keys_to_gui()
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
         self.autosave_timeout_id = ''
@@ -170,10 +171,9 @@ class BasicEdit(object):
         for filename in opened_file_list:
             self.open_file(filename)
 
-        if opened_file_list == []:
+        if not opened_file_list:
             self.new_buffer()
 
-        self.gui.textbox.connect('key-press-event', self.key_press_event)
         self.gui.style_textbox()
 
         # Autosave timer object
@@ -190,16 +190,17 @@ class BasicEdit(object):
             self.quit_dialog_cancel_button
         )
 
+    def _attach_buffer_paging_keys_to_gui(self):
         self.keybindings = define_keybindings(self)
+        self.gui.textbox.connect('key-press-event', self._handle_buffer_paging_key_presses)
 
-    def key_press_event(self, widget, event):
+    def _handle_buffer_paging_key_presses(self, widget, event):
         """ key press event dispatcher """
         if event.state & gtk.gdk.CONTROL_MASK:
             if event.hardware_keycode in self.keybindings:
                 self.keybindings[event.hardware_keycode]()
                 return True
         return False
-
 
     def show_info(self):
         """ Display buffer information on status label for 5 seconds """
