@@ -56,8 +56,7 @@ DEFAULT_CONF = {
     },
     'editor':{
         'autosavetime':'2',
-        'autosave':'0',
-        'vim_emulation_mode':'0',
+        'autosave':'0'
     },
 }
 
@@ -241,8 +240,6 @@ class Preferences(object):
             self.autosave_time = 0
         self.linespacing = self.config.get("visual", "linespacing")
         self.autosavestate = int(self.autosavestate)
-
-        self.vim_emulation_mode = False
 
         # Set up pyroom from conf file
         self.linespacing_spinbutton.set_value(int(self.linespacing))

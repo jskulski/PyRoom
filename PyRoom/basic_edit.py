@@ -139,11 +139,6 @@ class BasicEdit(object):
         self.session = session
         self.preferences = preferences
 
-        if (self.config.get('editor', 'vim_emulation_mode') == '1'):
-            self.vim_emulator = VimEmulator()
-        else:
-            self.vim_emulator = None
-
         if self.config.clear_session:
             self.session.clear()
 
@@ -203,16 +198,6 @@ class BasicEdit(object):
             if event.hardware_keycode in self.keybindings:
                 self.keybindings[event.hardware_keycode]()
                 return True
-
-        if self.vim_emulator and self.vim_emulator.in_command_mode() and event.keyval == gtk.keysyms.i:
-            self.gui.tell_user('- Insert Mode -')
-            self.vim_emulator.toggle_mode()
-            return True
-
-        if self.vim_emulator and self.vim_emulator.in_insert_mode() and event.keyval == gtk.keysyms.Escape:
-            self.gui.tell_user('- Command Mode -')
-            self.vim_emulator.toggle_mode()
-            return True
         return False
 
 
@@ -527,28 +512,3 @@ continue editing your document.")
         return os.path.isfile(fname)
 
 
-class VimEmulator(object):
-
-    COMMAND_MODE = 'COMMAND_MODE_MAGIC_STRING'
-    INSERT_MODE = 'INSERT_MODE_MAGIC_STRING'
-
-    def __init__(self):
-        self.mode = self.COMMAND_MODE
-        pass
-
-    def toggle_mode(self):
-        if self.mode == self.COMMAND_MODE:
-            self.mode = self.INSERT_MODE
-        else:
-            self.mode = self.COMMAND_MODE
-
-    def in_command_mode(self):
-        return self.mode == self.COMMAND_MODE
-
-    def in_insert_mode(self):
-        return self.mode == self.INSERT_MODE
-
-
-class KeyPressDispatch(object):
-    def __init__(self):
-        pass
