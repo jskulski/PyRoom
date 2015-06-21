@@ -503,6 +503,43 @@ Open those instead of the original file?''')
             max_height=monitor_geometry.height
         )
 
+    def bind_control_key_commands(self, ctrl_keybindings, ctrl_shift_keybindings):
+        self.window.add_accel_group(self._make_accel_group(
+            ctrl_keybindings, ctrl_shift_keybindings))
+
+    def _make_accel_group(self, ctrl_keybindings, ctrl_shift_keybindings):
+
+        def dispatch(*args, **kwargs):
+            """call the method passed as args[1] without passing other arguments"""
+            def eat(accel_group, acceleratable, keyval, modifier):
+                """eat all the extra arguments
+
+                this is ugly, but it works with the code we already had
+                before we changed to AccelGroup et al"""
+                args[0]()
+                pass
+            return eat
+
+        ag = gtk.AccelGroup()
+        for key, editor_function in ctrl_keybindings.items():
+            ag.connect_group(
+                key,
+                gtk.gdk.CONTROL_MASK,
+                gtk.ACCEL_VISIBLE,
+                dispatch(editor_function)
+            )
+
+        for key, editor_function in ctrl_shift_keybindings.items():
+            ag.connect_group(
+                key,
+                gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK,
+                gtk.ACCEL_VISIBLE,
+                dispatch(editor_function)
+            )
+
+        return ag
+
+
 
 class MockPreferences():
     def show(self):

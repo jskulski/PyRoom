@@ -80,53 +80,6 @@ Commands:
 """) % KEY_BINDINGS
 
 
-
-def make_accel_group(edit_instance, keybindings):
-
-    def dispatch(*args, **kwargs):
-        """call the method passed as args[1] without passing other arguments"""
-        def eat(accel_group, acceleratable, keyval, modifier):
-            """eat all the extra arguments
-
-            this is ugly, but it works with the code we already had
-            before we changed to AccelGroup et al"""
-            args[0]()
-            pass
-        return eat
-
-    ag = gtk.AccelGroup()
-    for key, value in keybindings.items():
-
-        if isinstance(key, basestring):
-            keysym = ord(key)
-        else:
-            keysym = key
-
-        ag.connect_group(
-            keysym,
-            gtk.gdk.CONTROL_MASK,
-            gtk.ACCEL_VISIBLE,
-            dispatch(value)
-        )
-
-    ag.connect_group(
-        ord('s'),
-        gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK,
-        gtk.ACCEL_VISIBLE,
-        dispatch(edit_instance.save_current_buffer_as)
-    )
-
-    return ag
-
-def define_keybindings(edit_instance, basic_bindings):
-    """define keybindings, respectively to keyboard layout"""
-    keymap = gtk.gdk.keymap_get_default()
-    translated_bindings = {}
-    for key, value in basic_bindings.items():
-        hardware_keycode = keymap.get_entries_for_keyval(key)[0][0]
-        translated_bindings[hardware_keycode] = value
-    return translated_bindings
-
 class BasicEdit(object):
     """editing logic that gets passed around
        also, handles interaction and creation of the GUI"""
@@ -152,7 +105,7 @@ class BasicEdit(object):
         except AttributeError:
             self.recent_manager = None
 
-        keybindings = {
+        control_key_bindings = {
             gtk.keysyms.h: self.show_help,
             gtk.keysyms.i: self.show_info,
             gtk.keysyms.n: self.new_buffer,
@@ -166,7 +119,11 @@ class BasicEdit(object):
             gtk.keysyms.Page_Up: self.prev_buffer,
             gtk.keysyms.Page_Down: self.next_buffer
         }
-        self.gui.window.add_accel_group(make_accel_group(self, keybindings))
+        control_shift_key_bindings = {
+            gtk.keysyms.s: self.save_current_buffer_as
+        }
+        self.gui.bind_control_key_commands(control_key_bindings, control_shift_key_bindings)
+
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
         self.autosave_timeout_id = ''
