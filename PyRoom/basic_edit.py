@@ -96,18 +96,26 @@ def make_accel_group(edit_instance, keybindings):
 
     ag = gtk.AccelGroup()
     for key, value in keybindings.items():
+
+        if isinstance(key, basestring):
+            keysym = ord(key)
+        else:
+            keysym = key
+
         ag.connect_group(
-            ord(key),
+            keysym,
             gtk.gdk.CONTROL_MASK,
             gtk.ACCEL_VISIBLE,
             dispatch(value)
         )
+
     ag.connect_group(
         ord('s'),
         gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK,
         gtk.ACCEL_VISIBLE,
         dispatch(edit_instance.save_current_buffer_as)
     )
+
     return ag
 
 def define_keybindings(edit_instance, basic_bindings):
@@ -145,7 +153,7 @@ class BasicEdit(object):
             self.recent_manager = None
 
         keybindings = {
-            'h': self.show_help,
+            gtk.keysyms.h: self.show_help,
             'i': self.show_info,
             'n': self.new_buffer,
             'o': self.open_file_dialog,
@@ -154,7 +162,8 @@ class BasicEdit(object):
             's': self.save_file_to_disk_and_session,
             'w': self.close_dialog,
             'y': self.redo,
-            'z': self.undo,
+            'z': self.undo
+            # gtk.keysyms.Page_Down: self.next_buffer,
         }
         self.gui.window.add_accel_group(make_accel_group(self, keybindings))
         self._attach_buffer_paging_keys_to_gui()
