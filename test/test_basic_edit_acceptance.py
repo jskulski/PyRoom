@@ -84,25 +84,6 @@ class TestBasicEditAcceptance(TestCase):
         editor = self._create_private_session_editor()
         self.assertFalse(editor.get_current_buffer().has_filename())
 
-    def test_can_create_editor_with_injected_preferences(self):
-        pyroom_config = PyroomConfig()
-        pyroom_config.set('session', 'private', '1')
-        preferences = Preferences(
-            gui=GUI(pyroom_config),
-            pyroom_config=pyroom_config
-        )
-        editor = BasicEdit(
-            pyroom_config,
-            preferences=preferences,
-            gui=GUI(pyroom_config),
-            session=PrivateSession()
-        )
-
-        self.assertEquals(
-            editor.preferences,
-            preferences
-        )
-
     def _create_private_session_editor(self):
         pyroom_config = PyroomConfig()
         pyroom_config.set('session', 'private', '1')

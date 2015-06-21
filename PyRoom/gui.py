@@ -539,11 +539,15 @@ Open those instead of the original file?''')
 
         return ag
 
+    def get_displayed_text(self):
+        text_buffer = self.textbox.get_buffer()
+        return text_buffer.get_text(
+            text_buffer.get_start_iter(),
+            text_buffer.get_end_iter()
+        )
 
 
-class MockPreferences():
-    def show(self):
-        pass
+
 
 class MockGUI(AbstractGUI):
 
@@ -552,23 +556,46 @@ class MockGUI(AbstractGUI):
             pass
 
     class MockTexbox:
+
+        def __init__(self):
+            self.buffer = ""
+
         def connect(self, *args, **kwargs):
             pass
+
         def modify_font(self, *args, **kwargs):
             pass
-        def emit(self, *args, **kwargs):
+
+        def emit(self, event_key, event):
+            if event_key == 'key_press_event':
+                key_char = self.convert_to_ascii_code(event.keyval)
+                self.buffer = self.buffer + key_char
             pass
+
+        def convert_to_ascii_code(self, keyval):
+            key_char = str(keyval)
+            return chr(int(key_char))
+
+        def get_buffer_text(self):
+            return self.buffer
+
+    class MockQuitDialog:
+        pass
+
+    class MockCloseBufferDialog:
+        pass
 
     class MockStatus:
         def set_text(self, *args, **kwargs):
             pass
 
-    window = MockWindow()
-    textbox = MockTexbox()
-    status = MockStatus()
 
     def __init__(self):
-        pass
+        self.window = self.MockWindow()
+        self.textbox = self.MockTexbox()
+        self.status = self.MockStatus()
+        self.quitdialog = self.MockQuitDialog()
+        self.close_buffer_dialog = self.MockCloseBufferDialog()
 
     def apply_theme(self):
         super(MockGUI, self).apply_theme()
@@ -609,4 +636,17 @@ class MockGUI(AbstractGUI):
     def tell_user(self, *args, **kwargs):
         pass
 
+    def bind_control_key_commands(self, *args, **kwargs):
+        pass
+
+    def get_displayed_text(self):
+        return self.textbox.get_buffer_text()
+
+
+class MockPreferences:
+    def __init__(self):
+        self.autosave_time = 20
+
+    def show(self):
+        pass
 

@@ -6,6 +6,7 @@ from PyRoom.session import PrivateSession
 from PyRoom.session import FileStoreSession
 from PyRoom.gui import GUI
 from PyRoom.gui import MockGUI
+from PyRoom.gui import MockPreferences
 
 
 class Factory(object):
@@ -29,8 +30,9 @@ class Factory(object):
         return session
 
     def create_gui(self, pyroom_config):
-        # return MockGUI()
-        return GUI(pyroom_config)
+        return MockGUI()
+        # return GUI(pyroom_config)
     
     def create_new_preferences(self, pyroom_config, gui):
-        return Preferences(gui, pyroom_config)
+        return MockPreferences()
+        # return Preferences(gui, pyroom_config)
