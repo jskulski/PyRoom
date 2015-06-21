@@ -80,19 +80,20 @@ Commands:
 """) % KEY_BINDINGS
 
 
-def dispatch(*args, **kwargs):
-    """call the method passed as args[1] without passing other arguments"""
-    def eat(accel_group, acceleratable, keyval, modifier):
-        """eat all the extra arguments
 
-        this is ugly, but it works with the code we already had
-        before we changed to AccelGroup et al"""
-        args[0]()
-        pass
-    return eat
-
-    
 def make_accel_group(edit_instance, keybindings):
+
+    def dispatch(*args, **kwargs):
+        """call the method passed as args[1] without passing other arguments"""
+        def eat(accel_group, acceleratable, keyval, modifier):
+            """eat all the extra arguments
+
+            this is ugly, but it works with the code we already had
+            before we changed to AccelGroup et al"""
+            args[0]()
+            pass
+        return eat
+
     ag = gtk.AccelGroup()
     for key, value in keybindings.items():
         ag.connect_group(
@@ -109,13 +110,9 @@ def make_accel_group(edit_instance, keybindings):
     )
     return ag
 
-def define_keybindings(edit_instance):
+def define_keybindings(edit_instance, basic_bindings):
     """define keybindings, respectively to keyboard layout"""
     keymap = gtk.gdk.keymap_get_default()
-    basic_bindings = {
-        gtk.keysyms.Page_Up: edit_instance.prev_buffer,
-        gtk.keysyms.Page_Down: edit_instance.next_buffer,
-    }
     translated_bindings = {}
     for key, value in basic_bindings.items():
         hardware_keycode = keymap.get_entries_for_keyval(key)[0][0]
@@ -141,7 +138,6 @@ class BasicEdit(object):
 
         if self.config.clear_session:
             self.session.clear()
-
 
         try:
             self.recent_manager = gtk.recent_manager_get_default()
@@ -191,7 +187,11 @@ class BasicEdit(object):
         )
 
     def _attach_buffer_paging_keys_to_gui(self):
-        self.keybindings = define_keybindings(self)
+        basic_bindings = {
+            gtk.keysyms.Page_Up: self.prev_buffer,
+            gtk.keysyms.Page_Down: self.next_buffer,
+        }
+        self.keybindings = define_keybindings(self, basic_bindings)
         self.gui.textbox.connect('key-press-event', self._handle_buffer_paging_key_presses)
 
     def _handle_buffer_paging_key_presses(self, widget, event):
