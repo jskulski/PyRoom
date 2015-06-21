@@ -154,19 +154,19 @@ class BasicEdit(object):
 
         keybindings = {
             gtk.keysyms.h: self.show_help,
-            'i': self.show_info,
-            'n': self.new_buffer,
-            'o': self.open_file_dialog,
-            'p': self.preferences.show,
-            'q': self.save_dialog_or_quit_editor,
-            's': self.save_file_to_disk_and_session,
-            'w': self.close_dialog,
-            'y': self.redo,
-            'z': self.undo
-            # gtk.keysyms.Page_Down: self.next_buffer,
+            gtk.keysyms.i: self.show_info,
+            gtk.keysyms.n: self.new_buffer,
+            gtk.keysyms.o: self.open_file_dialog,
+            gtk.keysyms.p: self.preferences.show,
+            gtk.keysyms.q: self.save_dialog_or_quit_editor,
+            gtk.keysyms.s: self.save_file_to_disk_and_session,
+            gtk.keysyms.w: self.close_dialog,
+            gtk.keysyms.y: self.redo,
+            gtk.keysyms.z: self.undo,
+            gtk.keysyms.Page_Up: self.prev_buffer,
+            gtk.keysyms.Page_Down: self.next_buffer
         }
         self.gui.window.add_accel_group(make_accel_group(self, keybindings))
-        self._attach_buffer_paging_keys_to_gui()
         self.UNNAMED_FILENAME = FILE_UNNAMED
 
         self.autosave_timeout_id = ''
@@ -194,22 +194,6 @@ class BasicEdit(object):
             self.quit_dialog_close_button_handler,
             self.quit_dialog_cancel_button
         )
-
-    def _attach_buffer_paging_keys_to_gui(self):
-        basic_bindings = {
-            gtk.keysyms.Page_Up: self.prev_buffer,
-            gtk.keysyms.Page_Down: self.next_buffer,
-        }
-        self.keybindings = define_keybindings(self, basic_bindings)
-        self.gui.textbox.connect('key-press-event', self._handle_buffer_paging_key_presses)
-
-    def _handle_buffer_paging_key_presses(self, widget, event):
-        """ key press event dispatcher """
-        if event.state & gtk.gdk.CONTROL_MASK:
-            if event.hardware_keycode in self.keybindings:
-                self.keybindings[event.hardware_keycode]()
-                return True
-        return False
 
     def show_info(self):
         """ Display buffer information on status label for 5 seconds """
