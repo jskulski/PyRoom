@@ -17,7 +17,7 @@ from PyRoom.gui import MockPreferences
 from PyRoom.preferences import PyroomConfig
 from PyRoom.factory import Factory
 from PyRoom.undoable_buffer import UndoableBuffer
-from PyRoom.basic_edit import BasicEdit
+from PyRoom.editor import BasicEdit
 from PyRoom.session import PrivateSession
 
 

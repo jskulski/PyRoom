@@ -1,5 +1,5 @@
 
-from PyRoom.basic_edit import BasicEdit
+from PyRoom.editor import BasicEdit
 from PyRoom.preferences import PyroomConfig
 from PyRoom.preferences import Preferences
 from PyRoom.session import PrivateSession
@@ -30,9 +30,9 @@ class Factory(object):
         return session
 
     def create_gui(self, pyroom_config):
-        return MockGUI()
-        # return GUI(pyroom_config)
+        # return MockGUI()
+        return GUI(pyroom_config)
     
     def create_new_preferences(self, pyroom_config, gui):
-        return MockPreferences()
-        # return Preferences(gui, pyroom_config)
+        # return MockPreferences()
+        return Preferences(gui, pyroom_config)

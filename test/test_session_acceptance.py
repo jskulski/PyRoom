@@ -14,7 +14,7 @@ import editor_input
 from PyRoom.factory import Factory
 from PyRoom.preferences import PyroomConfig
 
-from PyRoom.basic_edit import FileStoreSession
+from PyRoom.editor import FileStoreSession
 
 class SessionAcceptanceTest(unittest.TestCase):
 

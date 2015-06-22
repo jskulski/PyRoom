@@ -12,7 +12,7 @@ import editor_input
 from PyRoom.factory import Factory
 from PyRoom.preferences import PyroomConfig
 from PyRoom.session import PrivateSession
-from PyRoom.basic_edit import BasicEdit
+from PyRoom.editor import BasicEdit
 from PyRoom.undoable_buffer import UndoableBuffer
 
 from PyRoom.preferences import Preferences

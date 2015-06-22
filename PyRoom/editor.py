@@ -18,12 +18,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""
-provide basic editor functionality
-
-contains basic functions needed for pyroom - any core functionality is included
-within this file
-"""
 
 import gtk
 import gtk.glade
