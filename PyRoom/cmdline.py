@@ -40,7 +40,7 @@ import gtk
 
 import PyRoom
 from PyRoom.factory import Factory
-from editor import BasicEdit
+from editor import Editor
 from pyroom_error import handle_error
 from preferences import PyroomConfigFileBuilderAndReader
 

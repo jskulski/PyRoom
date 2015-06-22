@@ -12,7 +12,7 @@ import editor_input
 from PyRoom.factory import Factory
 from PyRoom.preferences import PyroomConfig
 from PyRoom.session import PrivateSession
-from PyRoom.editor import BasicEdit
+from PyRoom.editor import Editor
 from PyRoom.undoable_buffer import UndoableBuffer
 
 from PyRoom.preferences import Preferences
@@ -35,7 +35,7 @@ class TestBasicEditAcceptance(TestCase):
         pyroom_config.set('session', 'private', '1')
         editor = self.factory.create_new_editor(pyroom_config)
 
-        self.assertIsInstance(editor, BasicEdit)
+        self.assertIsInstance(editor, Editor)
 
     def test_can_type_in_editor_and_see_it_in_buffer(self):
         editor = self._create_private_session_editor()

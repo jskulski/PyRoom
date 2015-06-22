@@ -1,5 +1,5 @@
 
-from PyRoom.editor import BasicEdit
+from PyRoom.editor import Editor
 from PyRoom.preferences import PyroomConfig
 from PyRoom.preferences import Preferences
 from PyRoom.session import PrivateSession
@@ -15,7 +15,7 @@ class Factory(object):
         gui = self.create_gui(pyroom_config)
         session = self.create_new_session(pyroom_config)
         preferences = self.create_new_preferences(pyroom_config, gui)
-        return BasicEdit(
+        return Editor(
             pyroom_config=pyroom_config,
             gui=gui,
             session=session,

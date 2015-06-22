@@ -74,9 +74,7 @@ Commands:
 """) % KEY_BINDINGS
 
 
-class BasicEdit(object):
-    """editing logic that gets passed around
-       also, handles interaction and creation of the GUI"""
+class Editor(object):
 
     def __init__(self,
                  pyroom_config,

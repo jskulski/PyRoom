@@ -17,7 +17,7 @@ from PyRoom.gui import MockPreferences
 from PyRoom.preferences import PyroomConfig
 from PyRoom.factory import Factory
 from PyRoom.undoable_buffer import UndoableBuffer
-from PyRoom.editor import BasicEdit
+from PyRoom.editor import Editor
 from PyRoom.session import PrivateSession
 
 
@@ -56,7 +56,7 @@ class GUIExtractionAcceptanceTest(TestCase):
         mock_gui = MockGUI()
         session = PrivateSession()
         preferences = MockPreferences()
-        BasicEdit(pyroom_config, mock_gui, session, preferences)
+        Editor(pyroom_config, mock_gui, session, preferences)
 
     # def test_user_is_asked_to_restore_backup_if_backup_exists(self):
     #     pass

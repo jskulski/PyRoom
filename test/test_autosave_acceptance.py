@@ -15,7 +15,7 @@ from PyRoom import autosave
 
 from PyRoom.factory import Factory
 from PyRoom.preferences import PyroomConfig
-from PyRoom.editor import BasicEdit
+from PyRoom.editor import Editor
 
 
 class TestAutosaveAcceptance(TestCase):
