@@ -119,8 +119,17 @@ class PyroomConfig(SafeConfigParser):
     def read_themes_list(self):
         """get all the theme files sans file suffix and the custom theme"""
         themeslist = []
-        rawthemeslist = os.listdir(self.themes_dir)
-        globalthemeslist = os.listdir(self.global_themes_dir)
+
+        try:
+            rawthemeslist = os.listdir(self.themes_dir)
+        except OSError:
+            rawthemeslist = []
+
+        try:
+            globalthemeslist = os.listdir(self.global_themes_dir)
+        except OSError:
+            globalthemeslist = []
+
         for themefile in rawthemeslist:
             if themefile.endswith('theme') and themefile != 'custom.theme':
                 themeslist.append(themefile[:-6])
