@@ -26,7 +26,7 @@ class SessionAcceptanceTest(unittest.TestCase):
 
         self.pyroom_config = PyroomConfig()
         self.pyroom_config.set('session', 'filepath', self.session_filepath)
-        self.base_edit = self.factory.create_new_editor(self.pyroom_config)
+        self.editor = self.factory.create_new_editor(self.pyroom_config)
 
     def tearDown(self):
         if (os.path.isfile(self.session_filepath)):
@@ -36,7 +36,7 @@ class SessionAcceptanceTest(unittest.TestCase):
             os.remove(self.test_filepath)
 
     def test_we_can_tell_the_editor_where_to_store_the_session(self):
-        test_filepath = self._edit_test_file_and_save(self.base_edit)
+        test_filepath = self._edit_test_file_and_save(self.editor)
 
         file_store_session = FileStoreSession(self.session_filepath)
         self.assertEquals(
@@ -52,7 +52,7 @@ class SessionAcceptanceTest(unittest.TestCase):
         if (os.path.isfile(saved_filepath)):
             os.remove(saved_filepath)
 
-        editor = self.base_edit
+        editor = self.editor
 
         editor_input.type_keys('Hello, how are you to day?', editor)
         editor.get_current_buffer().filename = saved_filepath
@@ -67,53 +67,53 @@ class SessionAcceptanceTest(unittest.TestCase):
         )
 
     def test_assert_opened_file_is_added_to_session(self):
-        self.base_edit.open_file_and_add_to_session(self.test_filepath)
+        self.editor.open_file_and_add_to_session(self.test_filepath)
 
-        session_filenames = self.base_edit.session.get_open_filenames()
+        session_filenames = self.editor.session.get_open_filenames()
 
         self.assertTrue(self.test_filepath in session_filenames)
 
     def test_assert_opened_then_closed_file_is_not_in_session(self):
-        self.base_edit.open_file_and_add_to_session(self.test_filepath)
-        self.base_edit.close_current_buffer()
+        self.editor.open_file_and_add_to_session(self.test_filepath)
+        self.editor.close_current_buffer()
 
-        session_filenames = self.base_edit.session.get_open_filenames()
+        session_filenames = self.editor.session.get_open_filenames()
         self.assertTrue(self.test_filepath not in session_filenames)
 
     def test_session_is_persisted_outside_editor(self):
-        self.base_edit.open_file_and_add_to_session(self.test_filepath)
-        del self.base_edit
+        self.editor.open_file_and_add_to_session(self.test_filepath)
+        del self.editor
 
-        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
-        session_filenames = restarted_base_edit.session.get_open_filenames()
+        restarted_editor = self.factory.create_new_editor(self.pyroom_config)
+        session_filenames = restarted_editor.session.get_open_filenames()
         self.assertTrue(self.test_filepath in session_filenames)
 
     def test_editor_can_be_started_with_clean_session(self):
-        self.base_edit.open_file_and_add_to_session(self.test_filepath)
-        del self.base_edit
+        self.editor.open_file_and_add_to_session(self.test_filepath)
+        del self.editor
 
         self.pyroom_config.clear_session = True
-        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
+        restarted_editor = self.factory.create_new_editor(self.pyroom_config)
 
-        session_filenames = restarted_base_edit.session.get_open_filenames()
+        session_filenames = restarted_editor.session.get_open_filenames()
         self.assertEquals([], session_filenames)
 
     def test_buffers_are_opened_for_files_in_session(self):
-        self.base_edit.open_file_and_add_to_session(self.test_filepath)
-        del self.base_edit
+        self.editor.open_file_and_add_to_session(self.test_filepath)
+        del self.editor
 
-        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
+        restarted_editor = self.factory.create_new_editor(self.pyroom_config)
 
-        buffer_filenames = [buffer.filename for buffer in restarted_base_edit.buffers]
+        buffer_filenames = [buffer.filename for buffer in restarted_editor.buffers]
         self.assertTrue(self.test_filepath in buffer_filenames)
 
     def test_opening_buffers_during_init_does_not_readd_to_session(self):
-        self.base_edit.open_file_and_add_to_session(self.test_filepath)
-        del self.base_edit
+        self.editor.open_file_and_add_to_session(self.test_filepath)
+        del self.editor
 
-        restarted_base_edit = self.factory.create_new_editor(self.pyroom_config)
+        restarted_editor = self.factory.create_new_editor(self.pyroom_config)
 
-        session_filenames = restarted_base_edit.session.get_open_filenames()
+        session_filenames = restarted_editor.session.get_open_filenames()
         self.assertEquals([self.test_filepath], session_filenames)
 
     def test_shelf_is_created(self):
