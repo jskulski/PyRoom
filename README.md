@@ -1,16 +1,13 @@
 # PyRoom Fork 
 
-Hello there! I wanted to make a few modifications to PyRoom and found the project to be
-largely abandoned.
+PyRoom is a fullscreen editor written in python that I forked as a way to learn python for an upcoming position. 
 
-I ran into issues branching the bzr on launchpad, so getting around that by
-just taking the source. If this becomes anything other than a personal fork
-I'll go back and retry importing the bzr history.
+To get started, I wanted to add a few features like autosaving, having multiple buffers, maybe a vim emulation mode, etc.  Besides learning python, I was intentionally overengineering and applying a strict red/green/refactor methodology to this project, having just (re)read Fowler's Refactoring, Michael Feather's Working Effectively with Legacy Code and Kent Beck's XP. So clearly, the first were to decouple the GUI and Editor components of PyRoom.
 
-Cheers,
-JSK
+Cheers!
+jsk
 
-ORIGINAL README FOLLOWS:
+## Original PyRoom Readme 
 
 ====== PyRoom Project ======
 
